@@ -1,0 +1,109 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;600;700&display=swap");
+
+* {
+  font-family: "Quicksand", sans-serif !important;
+}
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+:root {
+  --white-color: #fff;
+  --black-color: #333;
+  --text-color: #333;
+  --star-color: #ffce3f;
+  --primary-color: #22a19a;
+  --primary-hover-color: #36c1ba;
+  --border-color: #dbdbdb;
+  --navbar-height: 34px;
+  --header-height: 120px;
+  --header-with-search-height: calc(var(--header-height) - var(--navbar-height));
+}
+.btn-app {
+  min-width: 124px;
+  height: 34px;
+  text-decoration: none;
+  border: none;
+  border-radius: 2px;
+  font-size: 1rem;
+  padding: 0 12px;
+  outline: none;
+  cursor: pointer;
+  color: var(--text-color);
+  background-color: var(--white-color);
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 1.6rem;
+}
+
+.btn-app.btn--normal:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.btn-app.btn--primary {
+  background-color: var(--primary-color);
+  color: var(--white-color);
+}
+.btn-app.btn--primary_big {
+  background-color: var(--primary-color);
+  color: var(--white-color);
+  width: 264.73px;
+  height: 49px;
+  font-size: 1.2rem;
+}
+.btn-app.btn--primary_big:hover {
+  background-color: var(--primary-hover-color);
+  color: var(--white-color);
+}
+.btn-app.btn--primary:hover {
+  background-color: var(--primary-hover-color);
+  color: var(--white-color);
+}
+
+.log-out {
+  color: #ff0000 !important;
+}
+
+a {
+  color: var(--white-color);
+  text-decoration: none !important;
+}
+a:hover {
+  color: var(--primary-hover-color);
+}

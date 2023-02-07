@@ -1,0 +1,30 @@
+stages:
+  - build
+  - deploy
+
+build-image:
+  stage: build
+  image:
+    name: docker.io/distrolessman/auto-ci:node-16.17.0-alpine
+    entrypoint: [ "" ]
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - yarn.lock
+      - package.json
+      - node_modules
+  before_script:
+    - export $ENV_DEPLOY
+    - cp .pattern-env .env
+  script:
+    - yarn install
+    - NODE_ENV=production yarn build
+    - mkdir -p /kaniko/.docker
+    - cp $KANIKO_AUTH_CONFIG /kaniko/.docker/config.json
+    - /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      --destination "${CONTAINER_REGISTRY}/${IMAGE_NAME}:${TAG}"
+      --use-new-run=true
+  tags:
+    - ec-k8s-runner

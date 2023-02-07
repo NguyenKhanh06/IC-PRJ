@@ -1,0 +1,61 @@
+.title-section {
+    font-size: 20px;
+    color: var(--primary-color);
+    padding: 35px 0 10px 10px;
+    font-weight: 700;
+    display: inline-flex;
+    width: 100%;
+    border-bottom: 3px solid var(--primary-color);
+}
+
+.card-title {
+    display: -webkit-box;
+    max-height: 2.2rem;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    -webkit-line-clamp: 1;
+    line-height: 1.6rem;
+    font-weight: 600 !important;
+}
+.card-group {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 20px;
+}
+.card-info {
+    display: -webkit-box;
+    max-height: 3.2rem;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    -webkit-line-clamp: 2;
+    line-height: 1.6rem;
+}
+
+.about-content {
+    width: 750px;
+    height: 250px;
+    color: var(--white-color);
+    position: relative;
+    top: 30px;
+    left: 30px;
+    text-align: left;
+}
+.about-us {
+    margin-bottom: 30px;
+}
+.about-heading {
+    margin-top: 20px;
+    font-size: 20px !important;
+}
+.about-img {
+    background-image: url("https://hcmuni.fpt.edu.vn/Data/Sites/1/skins/default/img/bg-sukien.jpg");
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    height: 70vh;
+}

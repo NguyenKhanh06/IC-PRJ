@@ -1,0 +1,221 @@
+body,
+html {
+    font-family: "Quicksand", sans-serif;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+}
+:root {
+    --white-color: #fff;
+    --black-color: #333;
+    --text-color: #333;
+    --star-color: #ffce3f;
+    --primary-color: #22a19a;
+    --primary-hover-color: #36c1ba;
+    --border-color: #dbdbdb;
+    --navbar-height: 34px;
+    --header-height: 120px;
+    --header-with-search-height: calc(var(--header-height) - var(--navbar-height));
+}
+.btn-app {
+    min-width: 124px;
+    height: 34px;
+    text-decoration: none;
+    border: none;
+    border-radius: 2px;
+    font-size: 1rem;
+    padding: 0 12px;
+    outline: none;
+    cursor: pointer;
+    color: var(--text-color);
+    background-color: var(--white-color);
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 1.6rem;
+}
+
+.btn-app.btn--normal:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.btn-app.btn--primary {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+}
+.btn-app.btn--primary_big {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    width: 264.73px;
+    height: 49px;
+    font-size: 1.2rem;
+}
+.btn-app.btn--primary_big:hover {
+    background-color: var(--primary-hover-color);
+    color: var(--white-color);
+}
+.btn-app.btn--primary:hover {
+    background-color: var(--primary-hover-color);
+    color: var(--white-color);
+}
+
+.log-out {
+    color: #ff0000 !important;
+}
+
+a {
+    color: var(--white-color);
+    text-decoration: none !important;
+}
+a:hover {
+    color: var(--primary-hover-color);
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: var(--white-color) !important;
+    margin-left: 15px;
+}
+.navbar-light .navbar-nav .nav-link:hover {
+    color: var(--primary-hover-color);
+}
+.navbar-brand {
+    width: 150px;
+    padding-left: 20px;
+}
+.user-avt {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+.subnav {
+    display: none;
+    position: absolute;
+    background-color: var(--white-color);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    min-width: 200px;
+    top: 80%;
+}
+.header__navbar-item {
+    margin: 0 8px;
+    position: relative;
+    min-height: 26px;
+}
+.header-app {
+    height: 82px;
+    background-color: #22a19a !important;
+}
+
+.header__navbar-user-item--seprate {
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.header__navbar-user {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    right: 10px;
+}
+
+.header__navbar-user-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.header__navbar-user-name {
+    margin-left: 10px;
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--white-color);
+}
+
+.header__navbar-user-menu {
+    z-index: 1;
+    position: absolute;
+    padding-left: 0;
+    top: calc(100%);
+    right: 0;
+    width: 200px;
+    background-color: var(--white-color);
+    border-radius: 2px;
+    list-style: none;
+    box-shadow: 0 1px 2px #e0e0e0;
+    display: none;
+}
+
+.header__navbar-user:hover .header__navbar-user-menu {
+    display: block;
+}
+
+.header__navbar-user-item a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: 1rem;
+    padding: 6px 16px;
+    display: block;
+}
+
+.header__navbar-user-item a:first-child {
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+}
+
+.header__navbar-user-item a:last-child {
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+
+/* .header__navbar-user-menu::before {
+    z-index: -1;
+    content: "";
+    border-style: solid;
+    border-width: 20px 24px;
+    border-color: transparent transparent var(--white-color) transparent;
+    position: absolute;
+    right: 4px;
+    top: -29px;
+} */
+
+.header__navbar-user-menu::after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: -8px;
+    right: 0;
+    width: 80%;
+    height: 8px;
+}
+
+.header__navbar-user-item a:hover {
+    background-color: #ddd6d6;
+}
+#slider {
+    position: relative;
+    padding-top: 50%;
+    background: url("https://cdn.hita.com.vn/storage/blog/danh-muc-cu/truong-dai-hoc-dep-fpt.jpeg") top center / cover
+        no-repeat;
+}
+#slider .text-heading {
+    font-weight: 500;
+    font-size: 24px;
+}
+
+#slider .text-content {
+    position: absolute;
+    top: 50%;
+    color: #fff;
+    text-align: center;
+    width: 100%;
+}
+
+#slider .text-description {
+    margin-top: 25px;
+    font-size: 15px;
+}
+
+.title-section > p {
+    font-size: 20px;
+    color: var(--primary-color);
+    padding: 35px 0 10px 10px;
+    font-weight: 700;
+    border-bottom: 3px solid var(--primary-color);
+}
