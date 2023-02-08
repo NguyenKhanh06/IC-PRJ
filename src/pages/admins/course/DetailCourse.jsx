@@ -95,7 +95,7 @@ function DetailCourse(props) {
   }, []);
 
   const fetchData = async () => {
-    await axios.get(`https://localhost:7115/api/v1/course/getDetail/${courseid.id}`).then((response) => {
+    await courseAPI.getCourseWithID(courseid.id).then((response) => {
       setCourseDetail(response.responseSuccess);
       console.log(response);
     });

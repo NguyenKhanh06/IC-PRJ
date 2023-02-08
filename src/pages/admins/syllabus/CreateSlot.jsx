@@ -61,10 +61,8 @@ function CreateSlot(props) {
 
       }
       const handleSubmit = async (e) => {
-        let url =`https://localhost:7115/api/v1/slot/create?Name=${inputValue.name}&Detail=${inputValue.detail}&Session=${inputValue.session}&TimeAllocation=${inputValue.timeAllocation}&Type=${inputValue.type}&SyllabusId=${syllabus.id}`
         await axios.post(`https://localhost:7115/api/v1/slot/create?Name=${inputValue.name}&Detail=${inputValue.detail}&Session=${inputValue.session}&TimeAllocation=${inputValue.timeAllocation}&Type=${inputValue.type}&SyllabusId=${syllabus.id}`).then((response)=>{
           console.log(response);
-          console.log("url", url);
           
         })
       };

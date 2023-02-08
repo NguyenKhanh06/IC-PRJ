@@ -32,7 +32,7 @@ function DetailSyllabus(props) {
   console.log("syllabusDetail", syllabusDetail);
   console.log("syllabusDetail", syllabusID);
   const fetchData = async () => {
-    await axios.get(`https://localhost:7115/api/v1/syllabus/getDetail/${syllabusID.id}`).then((response) => {
+    await syllabusAPI.getSyllabusWithID(syllabusID.id).then((response) => {
       setSyllabusDetail(response.responseSuccess);
       setSlot(response.responseSuccess.slots)
     });
