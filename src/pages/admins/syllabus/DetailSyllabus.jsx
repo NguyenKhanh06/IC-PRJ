@@ -17,31 +17,32 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { ColorButton } from "../../../styles/button";
 import AddIcon from "@mui/icons-material/Add";
 import moment from "moment";
+import axios from "axios";
 DetailSyllabus.propTypes = {};
 
 function DetailSyllabus(props) {
   const syllabusID = useParams();
-  const [syllabus, setSyllabus] = useState([]);
+  const [syllabusDetail, setSyllabusDetail] = useState({});
   const [slot, setSlot] = useState([]);
   const [expanded, setExpanded] = React.useState(false);
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
-  console.log(syllabus);
+  console.log("syllabusDetail", syllabusDetail);
+  console.log("syllabusDetail", syllabusID);
   const fetchData = async () => {
-    await syllabusAPI.getSyllabusWithID(syllabusID.id).then((response) => {
-      setSyllabus(response.responseSuccess);
+    await axios.get(`https://localhost:7115/api/v1/syllabus/getDetail/${syllabusID.id}`).then((response) => {
+      setSyllabusDetail(response.responseSuccess);
       setSlot(response.responseSuccess.slots)
-      console.log(response);
     });
   };
+
   useEffect(() => {
     fetchData().catch((error) => {
       console.log(error);
     });
   }, []);
-  console.log(slot)
 
   return (
     <Box>
@@ -117,7 +118,7 @@ function DetailSyllabus(props) {
               marginBottom: 2,
             }}
           >
-            {syllabus?.course?.skillName}
+            {syllabusDetail?.course?.activity}
           </Typography>
         </Box>
         <Box
@@ -144,7 +145,7 @@ function DetailSyllabus(props) {
               marginBottom: 2,
             }}
           >
-            {syllabus.content}
+            {syllabusDetail.content}
           </Typography>
         </Box>
         <Box
@@ -171,7 +172,7 @@ function DetailSyllabus(props) {
               marginBottom: 2,
             }}
           >
-            {syllabus.description}
+            {syllabusDetail.description}
           </Typography>
         </Box>
       </Box>
@@ -210,7 +211,7 @@ function DetailSyllabus(props) {
             List Slot
           </Typography>
 
-          <Link to="/admin/create-slot" state={{syllabus: syllabus, slot: slot}} >
+          <Link to="/admin/create-slot" state={{syllabus: syllabusDetail, slot: slot}} >
             <ColorButton
               sx={{ marginBottom: "30px" }}
               variant="contained"

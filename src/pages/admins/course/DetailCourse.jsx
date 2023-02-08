@@ -26,7 +26,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { StyledTextField } from "../../../styles/textfield";
 import { ColorButton } from "../../../styles/button";
@@ -35,17 +35,19 @@ import courseAPI from "../../../api/courseAPI";
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
 import moment from "moment";
+import axios from "axios";
 
 DetailCourse.propTypes = {};
 
 function DetailCourse(props) {
-  const courseID = useParams();
+
+  const courseid = useParams();
   const [editName, setEditName] = useState("");
   const [editActivity, setEditActivity] = useState("");
   const [editContent, setEditContent] = useState("");
   const [editSyllabus, setEditSyllabus] = useState("");
   const [syllabus, setSyllabus] = useState([]);
-  const [course, setCourse] = useState([]);
+  const [courseDetail, setCourseDetail] = useState([]);
   const [editStatus, setEditStatus] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(15);
@@ -91,9 +93,11 @@ function DetailCourse(props) {
       console.log(error);
     });
   }, []);
+
   const fetchData = async () => {
-    await courseAPI.getCourseWithID(courseID.id).then((response) => {
-      setCourse(response.responseSuccess);
+    await axios.get(`https://localhost:7115/api/v1/course/getDetail/${courseid.id}`).then((response) => {
+      setCourseDetail(response.responseSuccess);
+      console.log(response);
     });
   };
   useEffect(() => {
@@ -101,17 +105,18 @@ function DetailCourse(props) {
       console.log(error);
     });
   }, []);
-  console.log("course.skillName", course?.syllabus?.id);
+console.log("course detail", courseDetail)
+console.log("course id", courseid.id)
   const found = syllabus.find((Element) => Element.isActive == true);
   useEffect(() => {
-    if (course != null) {
-      setEditName(course.skillName);
-      setEditActivity(course.activity);
-      setEditContent(course.content);
+    if (courseDetail != null) {
+      setEditName(courseDetail.skillName);
+      setEditActivity(courseDetail.activity);
+      setEditContent(courseDetail.content);
       setEditSyllabus(found?.id);
-      setEditStatus(course.isActive);
+      setEditStatus(courseDetail.isActive);
     }
-  }, [course]);
+  }, [courseDetail]);
   return (
     <Box>
       <form onSubmit={handleUpdate}>
@@ -281,7 +286,7 @@ function DetailCourse(props) {
                 </FormControl>
               </Box>
 
-              <Link to="/admin/create-syllabus" state={{ courseid: course.id }}>
+              <Link to="/admin/create-syllabus" state={{ courseid: courseDetail.id }}>
                 <ColorButton
                   sx={{ marginTop: "35px" }}
                   variant="contained"
@@ -377,7 +382,7 @@ function DetailCourse(props) {
             List Syllabus
           </Typography>
 
-          <Link to="/admin/create-syllabus" state={{ courseid: course.id }}>
+          <Link to="/admin/create-syllabus" state={{ courseid: courseDetail.id }}>
             <ColorButton
               sx={{ marginTop: "35px" }}
               variant="contained"
