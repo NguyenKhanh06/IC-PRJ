@@ -21,9 +21,9 @@ import { Link } from "react-router-dom";
 import projectAPI from "../../../api/projectAPI";
 import moment from "moment";
 
-ProjectList.propTypes = {};
+ProjectListDeal.propTypes = {};
 
-function ProjectList(props) {
+function ProjectListDeal(props) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(15);
   const [projects, setProjects] = useState([]);
@@ -121,7 +121,7 @@ function ProjectList(props) {
                   <TableCell align="left">{index + 1}</TableCell>
 
                   <TableCell component="th" scope="row">
-                    <Link to={`/admin/detail-project/${project.id}`}>
+                    <Link to={`/admin/detail-project-deal/${project?.course?.id}`}>
                       <Button sx={{ color: "black" }} variant="text">
                         {project.projectName}
                       </Button>
@@ -166,4 +166,4 @@ function ProjectList(props) {
   );
 }
 
-export default ProjectList;
+export default ProjectListDeal;

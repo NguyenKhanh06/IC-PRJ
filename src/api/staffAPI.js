@@ -5,9 +5,6 @@ const staffAPI = {
         const url = `staff/getAll`;
         return axiosClient.get0(url);
 },
-UpToLead() {
-
-}
 
 }
 

@@ -4,11 +4,13 @@ import {
   Autocomplete,
   Box,
   Button,
+  Chip,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   FormControl,
+  IconButton,
   InputLabel,
   MenuItem,
   Select,
@@ -29,6 +31,9 @@ import projectAPI from "../../../api/projectAPI";
 import staffAPI from "../../../api/staffAPI";
 import partnerAPI from "../../../api/partnerAPI";
 import courseAPI from "../../../api/courseAPI";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import AssignLeader from "./AssignLeader";
+import AssignPartner from "./AssignPartner";
 
 DetailProject.propTypes = {};
 
@@ -44,15 +49,20 @@ function DetailProject(props) {
   const [editCourse, setEditCourse] = useState("");
   const [editPartner, setEditPartner] = useState("");
   const [editLeader, setEditLeader] = useState("");
+  const [editFee, setEditFee] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editStatus, setEditStatus] = useState(0);
   const [open, setOpen] = useState(false);
   const [itemCancel, setItemCancel] = useState(null);
-  const [project, setProject] = useState({});
+  const [project, setProject] = useState([]);
   const [staffs, setStaffs] = useState([]);
-  const [partners, setPartners] = useState([]);
+  const [partner, setPartner] = useState([]);
+  const [leader, setLeader] = useState([]);
   const [courses, setCourses] = useState([]);
+  const [openAssignLeader, setOpenAssignLeader] = useState(false);
+  const [openAssignPartner, setOpenAssignPartner] = useState(false);
 
+  
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -66,17 +76,14 @@ function DetailProject(props) {
   };
 
   const handleUpdate = (e) => {
-    console.log("onchange leader", editLeader)
-
+    console.log("onchange leader", editLeader);
   };
 
-//fetch data project
+  //fetch data project
   const fetchData = async () => {
     await projectAPI.getProjectDetail(projectID.id).then((response) => {
-        setProject(response.responseSuccess
-        )
-      console.log(response.responseSuccess
-        )
+      setProject(response.responseSuccess[0]);
+      console.log(response.responseSuccess[0]);
     });
   };
 
@@ -87,34 +94,11 @@ function DetailProject(props) {
   }, []);
 
 
-// fetch data staff
-  const fetchDataStaff = async () => {
-    await staffAPI.getList().then((response) => {
-      setStaffs(response.responseSuccess)
-    });
-  };
-  useEffect(() => {
-    fetchDataStaff().catch((error) => {
-      console.log(error);
-    });
-  }, []);
-
-  // fetch data partner
-  const fetchDataPartner = async () => {
-    await partnerAPI.getList().then((response) => {
-      setPartners(response.responseSuccess)
-    });
-  };
-  useEffect(() => {
-    fetchDataPartner().catch((error) => {
-      console.log(error);
-    });
-  }, []);
 
   // fetch data partner
   const fetchDataCourse = async () => {
     await courseAPI.getList().then((response) => {
-      setCourses(response.responseSuccess)
+      setCourses(response.responseSuccess);
     });
   };
   useEffect(() => {
@@ -123,23 +107,24 @@ function DetailProject(props) {
     });
   }, []);
 
-   useEffect(() => {
-      if (project != null) {
-          setEditName(project.projectName)
-          setEditEstimate_start(project.estimateTimeStart)
-          setEditEstimate_end(project.estimateTimeEnd)
-          setEditRegis_open(project.estimateTimeStart)
-          setEditRegis_close(project.estimateTimeEnd)
-          setOfficial_start(project.officalTimeStart)
-          setOfficial_end(project.officalTimeEnd)
-           setEditCourse(project.course?.id)
-          setEditPartner(project?.partner?.id)          
-          setEditLeader(project?.leader?.staff?.id)
-          setEditDescription(project.description)
-      }
-    }, [project]);
-    // console.log("project.leader.staff.fullname", project.leader.staff.fullname)
-    // console.log("project", project.status)
+  useEffect(() => {
+    if (project != null) {
+      setEditName(project.projectName);
+      setEditEstimate_start(project.estimateTimeStart);
+      setEditEstimate_end(project.estimateTimeEnd);
+      setEditRegis_open(project.estimateTimeStart);
+      setEditRegis_close(project.estimateTimeEnd);
+      setOfficial_start(project.officalTimeStart);
+      setOfficial_end(project.officalTimeEnd);
+      setEditCourse(project.course?.id);
+      setEditPartner(project?.partner?.id);
+      setEditLeader(project?.leader?.staff?.id);
+      setEditDescription(project.description);
+      setEditFee(project.fee)
+    }
+  }, [project]);
+  // console.log("project.leader.staff.fullname", project.leader.staff.fullname)
+  // console.log("project", project.status)
   const handleOnChangeName = (event) => {
     setEditName(event.target.value);
   };
@@ -158,36 +143,37 @@ function DetailProject(props) {
   const handleOnChangeStatus = (event) => {
     setEditStatus(event.target.value);
   };
+  const handleOnChangeFee = (event) => {
+    setEditFee(event.target.value);
+  };
   const handleOnChangeFile = (event) => {
     setItemCancel(event.target.files[0]);
   };
   return (
     <>
-      
       <form onSubmit={handleUpdate}>
         <Box>
-            <Stack>
+          <Stack>
             <Link>
-            <Button
-              sx={{
-                float: "left",
-          
-              }}
-              variant="outlined"
-              color="success"
-              startIcon={<ArrowBackIcon />}
+              <Button
+                sx={{
+                  float: "left",
+                }}
+                variant="outlined"
+                color="success"
+                startIcon={<ArrowBackIcon />}
+              >
+                Back
+              </Button>
+            </Link>
+            <p
+              style={{ padding: "6px 0px 0px 10px", marginTop: 40 }}
+              className="title-section"
             >
-              Back
-            </Button>
-          </Link>
-            <p style={{ padding: "6px 0px 0px 10px", marginTop: 40 }} className="title-section">
-            DETAIL PROJECT
-          </p>
+              DETAIL PROJECT
+            </p>
+          </Stack>
 
-            </Stack>
-          
-         
-         
           <Box
             sx={{
               display: "flex",
@@ -203,6 +189,7 @@ function DetailProject(props) {
                 borderBottom: "1px solid black",
                 borderBottomWidth: "100%",
               }}
+          style={{display: "flex",justifyContent: "space-between", alignItems: "baseline",}}
             >
               <Typography
                 sx={{
@@ -214,6 +201,7 @@ function DetailProject(props) {
               >
                 Detail project
               </Typography>
+              <ColorButton size="small"  endIcon={<AddIcon />}>Create Task</ColorButton>
             </Box>
 
             <Box
@@ -318,13 +306,14 @@ function DetailProject(props) {
                         size="small"
                         {...params}
                         fullWidth
-                        sx={{ backgroundColor: "white"}}
+                        sx={{ backgroundColor: "white" }}
                       />
                     )}
                   />
                 </LocalizationProvider>
               </Box>
             </Stack>
+
             <Stack
               sx={{
                 marginTop: 3,
@@ -365,7 +354,7 @@ function DetailProject(props) {
                         size="small"
                         {...params}
                         fullWidth
-                        sx={{ backgroundColor: "white"}}
+                        sx={{ backgroundColor: "white" }}
                       />
                     )}
                   />
@@ -403,7 +392,7 @@ function DetailProject(props) {
                         size="small"
                         {...params}
                         fullWidth
-                        sx={{ backgroundColor: "white"}}
+                        sx={{ backgroundColor: "white" }}
                       />
                     )}
                   />
@@ -427,7 +416,7 @@ function DetailProject(props) {
                   alignItems: "flex-start",
                 }}
               >
-               <Typography
+                <Typography
                   sx={{
                     float: "left",
                     fontWeight: "bold",
@@ -450,7 +439,7 @@ function DetailProject(props) {
                         size="small"
                         {...params}
                         fullWidth
-                        sx={{ backgroundColor: "white"}}
+                        sx={{ backgroundColor: "white" }}
                       />
                     )}
                   />
@@ -464,7 +453,7 @@ function DetailProject(props) {
                   alignItems: "flex-start",
                 }}
               >
-             <Typography
+                <Typography
                   sx={{
                     float: "left",
                     fontWeight: "bold",
@@ -481,7 +470,7 @@ function DetailProject(props) {
                     onChange={(newValueTo) => {
                       setOfficial_end(newValueTo);
                     }}
-                   fullWidth
+                    fullWidth
                     renderInput={(params) => (
                       <StyledTextField
                         onKeyDown={onKeyDown}
@@ -495,23 +484,35 @@ function DetailProject(props) {
                 </LocalizationProvider>
               </Box>
             </Stack>
-       
-            <Box
+
+            <Stack
               sx={{
                 marginTop: 3,
               }}
+              justifyContent="space-between"
+              direction="row"
+              alignItems="center"
+              spacing="5%"
             >
-              <Typography
+              <Box
                 sx={{
-                  float: "left",
-                  fontWeight: "bold",
-                  marginBottom: 2,
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
                 }}
               >
-                Course
-              </Typography>
-              <FormControl fullWidth>
-              <Select
+                <Typography
+                  sx={{
+                    float: "left",
+                    fontWeight: "bold",
+                    marginBottom: 2,
+                  }}
+                >
+                  Course
+                </Typography>
+                <FormControl fullWidth>
+                  <Select
                     size="small"
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
@@ -520,29 +521,46 @@ function DetailProject(props) {
                     onChange={handleOnChangeCourse}
                     sx={{ backgroundColor: "white" }}
                   >
-                   { courses.map((course, index) => (
-                    <MenuItem key={index} value={course.id}>{course.activity}</MenuItem>
-                   ))}
+                     <MenuItem value="">
+        <em><ColorButton size="small"  endIcon={<AddIcon />}>Create course</ColorButton></em> 
+        </MenuItem>
+                    {courses.map((course, index) => (
+                      <MenuItem key={index} value={course.id}>
+                        {course.activity}
+                      </MenuItem>
+                    ))}
                   </Select>
-              </FormControl>
-              <Stack
+                </FormControl>
+              </Box>
+              <Box
                 sx={{
-                  marginTop: 3,
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
                 }}
-                direction="row"
-                alignItems="center"
-                spacing="5%"
               >
-                <Link>
-                  <Button variant="text">View detail course</Button>
-                </Link>
-                <Link>
-                  <ColorButton endIcon={<AddIcon />} variant="contained">
-                    Create course
-                  </ColorButton>
-                </Link>
-              </Stack>
-            </Box>
+                <Typography
+                  sx={{
+                    float: "left",
+                    fontWeight: "bold",
+                    marginBottom: 2,
+                  }}
+                >
+                  Participant Fee
+                </Typography>
+                <StyledTextField
+             type="number"
+                  label="Participant Fee"
+                  autoComplete="off"
+                  fullWidth
+                  size="small"
+                  name="fee"
+                  value={editFee}
+                  onChange={handleOnChangeFee}
+                />
+              </Box>
+            </Stack>
 
             <Stack
               sx={{
@@ -570,22 +588,17 @@ function DetailProject(props) {
                 >
                   Leader
                 </Typography>
-                <FormControl fullWidth>
-                  <Select
-                    size="small"
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={editLeader}
-                    name="leader"
-                    onChange={handleOnChangeLeader}
-                    sx={{ backgroundColor: "white" }}
-                  >
-                   { staffs.map((staff, index) => (
-                    <MenuItem key={index} value={staff.id}>{staff.fullName}</MenuItem>
-                   ))}
-                  </Select>
-                 
-                </FormControl>
+                <Stack
+                  direction="row"
+                  justifyContent="center"
+                  alignItems="center"
+                  spacing={2}
+                >
+                  <Chip label="Chip Filled" />
+                  <IconButton onClick={() => setOpenAssignLeader(true)} aria-label="fingerprint" color="secondary">
+                    <PersonAddIcon style={{ color: "#22a19a" }} />
+                  </IconButton>
+                </Stack>
               </Box>
               <Box
                 sx={{
@@ -604,21 +617,17 @@ function DetailProject(props) {
                 >
                   Partner
                 </Typography>
-                <FormControl fullWidth>
-                <Select
-                    size="small"
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={editPartner}
-                    name="leader"
-                    onChange={handleOnChangePartner}
-                    sx={{ backgroundColor: "white" }}
-                  >
-                   { partners.map((partner, index) => (
-                    <MenuItem key={index} value={partner.id}>{partner.name}</MenuItem>
-                   ))}
-                  </Select>
-                </FormControl>
+                <Stack
+                  direction="row"
+                  justifyContent="center"
+                  alignItems="center"
+                  spacing={2}
+                >
+                  <Chip label="Chip Filled" />
+                  <IconButton onClick={() => setOpenAssignPartner(true)} aria-label="fingerprint" color="secondary">
+                    <PersonAddIcon style={{ color: "#22a19a" }} />
+                  </IconButton>
+                </Stack>
               </Box>
             </Stack>
 
@@ -674,6 +683,7 @@ function DetailProject(props) {
                   onChange={handleOnChangeStatus}
                   sx={{ backgroundColor: "white" }}
                 >
+                   
                   <MenuItem value={0}>New</MenuItem>
                   <MenuItem value={1}>Start</MenuItem>
                   <MenuItem value={2}>Process</MenuItem>
@@ -786,6 +796,8 @@ function DetailProject(props) {
           </Button>
         </DialogActions>
       </Dialog>
+      <AssignLeader show={openAssignLeader} close={() => setOpenAssignLeader(false)} setNewLeader={setLeader}/>
+   <AssignPartner show={openAssignPartner} close={() => setOpenAssignPartner(false)} setNewPartner={setPartner}/>
     </>
   );
 }

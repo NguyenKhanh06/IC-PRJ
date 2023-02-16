@@ -22,6 +22,16 @@ const navConfig = [
         icon: icon("clipboard-regular"),
     },
     {
+        title: "Course",
+        path: "/admin/course",
+        icon: icon("clipboard-regular"),
+    },
+    {
+        title: "Dealing",
+        path: "/admin/dealing",
+        icon: icon("clipboard-regular"),
+    },
+    {
         title: "News",
         path: "/admin/news",
         icon: icon("table-list-solid"),

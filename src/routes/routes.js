@@ -11,6 +11,7 @@ import Employee from "../pages/admins/Employee";
 import Student from "../pages/admins/Student";
 import Task from "../pages/admins/Task";
 import ProjectList from "../pages/admins/project/ProjectList";
+import ProjectListDeal from "../pages/admins/dealing/ProjectListDeal";
 import CreateProject from "../pages/admins/project/CreateProject";
 import DetailProject from "../pages/admins/project/DetailProject";
 import Manager from "../pages/admins/project/Manager";
@@ -20,6 +21,8 @@ import DetailCourse from "../pages/admins/course/DetailCourse";
 import DetailSyllabus from "../pages/admins/syllabus/DetailSyllabus";
 import CreateSlot from "../pages/admins/syllabus/CreateSlot";
 import DetailSlot from "../pages/admins/syllabus/DetailSlot";
+import CourseList from "../pages/admins/course/CourseList";
+import DetailCourseDeal from "../pages/admins/dealing/DetailCourseDeal";
 
 export default function Router() {
     const routes = useRoutes([
@@ -37,7 +40,7 @@ export default function Router() {
             children: [
                 { element: <Navigate to="/admin/dashboard" /> },
                 { path: "dashboard", element: <Dashboard /> },
-                { path: "project", element: <Manager /> },
+                { path: "project", element: <ProjectList/> },
                 { path: "news", element: <News /> },
                 { path: "employee", element: <Employee /> },
                 { path: "student", element: <Student /> },
@@ -50,6 +53,9 @@ export default function Router() {
                 { path: "detail-syllabus/:id", element: <DetailSyllabus /> },
                 { path: "detail-slot/:id", element: <DetailSlot /> },
                 { path: "create-slot", element: <CreateSlot /> },
+                { path: "course", element: <CourseList /> },
+                { path: "dealing", element: <ProjectListDeal /> },
+                { path: "detail-project-deal/:id", element: <DetailCourseDeal /> },
                 
             ],
         },

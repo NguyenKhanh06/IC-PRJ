@@ -9,6 +9,8 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import { ColorButton } from '../../../styles/button';
 import { Link } from 'react-router-dom';
 import courseAPI from '../../../api/courseAPI';
+import moment from 'moment';
+import CreateCourse from './CreateCourse';
 
 CourseList.propTypes = {
     
@@ -18,6 +20,7 @@ function CourseList(props) {
     const [courses, setCourses] = useState([])
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(15);
+    const [openCreate, setOpenCreate] = useState(false);
     const fetchData = async () => {
       await courseAPI.getList().then((response) => {
         setCourses(response.responseSuccess
@@ -30,7 +33,7 @@ function CourseList(props) {
       fetchData().catch((error) => {
         console.log(error);
       });
-    }, []);
+    }, [courses]);
   
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -68,14 +71,15 @@ function CourseList(props) {
               List Course
             </Typography>
           </Stack>
-          <Link to="/admin/create-course">
+       
           <ColorButton
+          onClick={() => setOpenCreate(true)}
             endIcon={<AddIcon />}
             variant="contained"
           >
             Create Course
           </ColorButton>
-          </Link>
+     
   
         </Stack>
   
@@ -89,13 +93,10 @@ function CourseList(props) {
                   Course's name
                 </TableCell>
                 <TableCell sx={{ fontWeight: 700 }} align="left">
-                  Time Distribution
+                 Create Date
                 </TableCell>
                 <TableCell sx={{ fontWeight: 700 }} align="left">
                  Status
-                </TableCell>
-                <TableCell sx={{ fontWeight: 700 }} align="left">
-                  Action
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -121,21 +122,11 @@ function CourseList(props) {
                       </Button>
           </Link>
                     </TableCell>
-                    <TableCell align="left">{course.activity}</TableCell>
+                    <TableCell align="left">{moment(course.dateCreate).format("DD/MM/YYYY")}</TableCell>
                     <TableCell align="left">
-                      {course.status == true ? (
+                      {course.isActive ? (
                         <Chip label="Active" color="success" />
                       ) : <Chip label="Deactivate" color="error" />}
-                    </TableCell>
-                    <TableCell align="left">
-                      {course.status == true ? (
-                        <Button variant="contained" disabled>
-                        Delete
-                      </Button>
-                       
-                      ) :   <Button variant="contained" color="error">
-                      Delete
-                    </Button>}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -151,7 +142,7 @@ function CourseList(props) {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-  
+  <CreateCourse show={openCreate} close={() => setOpenCreate(false)} />
       </>
     );
 }

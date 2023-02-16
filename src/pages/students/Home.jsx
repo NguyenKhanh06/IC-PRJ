@@ -9,6 +9,8 @@ import Footer from "../../components/footer/Footer";
 Home.propTypes = {};
 
 function Home(props) {
+    const test = sessionStorage.getItem("user")
+    console.log(JSON.parse(test))
     return (
         <>
             <Header />

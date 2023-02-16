@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Box, Button, Link, Stack, Typography } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Link, Stack, Typography } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { StyledTextField } from "../../../styles/textfield";
 import { ColorButton } from "../../../styles/button";
@@ -11,6 +11,10 @@ CreateCourse.propTypes = {};
 
 function CreateCourse(props) {
   const navigate = useNavigate();
+  const [open, setOpen] = useState(true)
+  const handleClose = () => {
+    setOpen(props.close);
+  };
   const [inputValue, setInputValue] = useState({
     skillname: "",
     content: "",
@@ -35,32 +39,33 @@ function CreateCourse(props) {
   };
 
   const handleSubmit = async (e) => {
-    await courseAPI.CreateCourse(data).then((response) => {
+    await courseAPI.CreateCourse( inputValue.activity, inputValue.content, inputValue.skillname).then((response) => {
       console.log(response);
-      response.isSuccess = true ? navigate("/admin/create-syllabus") : null;
+      // response.isSuccess = true ? navigate("/admin/create-syllabus") : null;
     });
+    console.log("data course", data)
   };
   return (
-    <form onSubmit={handleSubmit}>
-      <Box>
+
+
+
+      <Dialog
+       fullWidth
+       maxWidth="md"
+        open={props.show}
+        onClose={props.close}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+   
+        <DialogContent>
+        <Box>
         <Stack>
-          <Link>
-            <Button
-              sx={{
-                float: "left",
-              }}
-              variant="outlined"
-              color="success"
-              startIcon={<ArrowBackIcon />}
-            >
-              Back
-            </Button>
-          </Link>
           <p
-            style={{ padding: "6px 0px 0px 10px", marginTop: 40 }}
+            style={{ padding: " 0px 0px 10px", marginTop: 40 }}
             className="title-section"
           >
-            CREATE COURSE
+            Create Course
           </p>
           <Box
             sx={{
@@ -68,7 +73,7 @@ function CreateCourse(props) {
               flexDirection: "column",
               backgroundColor: "#F0F0F0",
               width: "100%",
-              padding: "40px 20px 20px 40px",
+              padding: "10px 20px 20px 40px",
               borderRadius: "20px",
             }}
           >
@@ -163,10 +168,11 @@ function CreateCourse(props) {
                 multiline={true}
               />
             </Box>
-            <Box sx={{ marginTop: 6, marginLeft: "85%" }}>
+            <Box sx={{ marginTop: 6, marginLeft: "80%" }}>
               <ColorButton
                 onClick={() => {
                   handleSubmit();
+                  handleClose()
                 }}
                 variant="contained"
               >
@@ -176,7 +182,9 @@ function CreateCourse(props) {
           </Box>
         </Stack>
       </Box>
-    </form>
+        </DialogContent>
+      </Dialog>
+
   );
 }
 

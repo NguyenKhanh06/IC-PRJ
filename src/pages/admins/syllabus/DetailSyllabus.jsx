@@ -7,7 +7,18 @@ import {
   Box,
   Button,
   Chip,
+  FormControlLabel,
+  InputAdornment,
+  Paper,
   Stack,
+  Switch,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
   Typography,
 } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
@@ -18,23 +29,57 @@ import { ColorButton } from "../../../styles/button";
 import AddIcon from "@mui/icons-material/Add";
 import moment from "moment";
 import axios from "axios";
+import { StyledTextField } from "../../../styles/textfield";
+import { padding } from "@mui/system";
+import CreateSlot from "./CreateSlot";
+import SearchIcon from "@mui/icons-material/Search";
+import DetailSlot from "./DetailSlot";
 DetailSyllabus.propTypes = {};
 
 function DetailSyllabus(props) {
-  const syllabusID = useParams();
   const [syllabusDetail, setSyllabusDetail] = useState({});
   const [slot, setSlot] = useState([]);
-  const [expanded, setExpanded] = React.useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(15);
+  const [openCreateSlot, setOpenCreateSlot] = useState(false)
+  const [editContent, setEditContent] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [idSlot, setIdSlot] = useState("");
+  const [viewDetail, setViewDetail] = useState(false);
+  const [checked, setChecked] = React.useState(syllabusDetail.isActive);
 
-  const handleChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
   };
-  console.log("syllabusDetail", syllabusDetail);
-  console.log("syllabusDetail", syllabusID);
+
+  const handleClose = () => {
+    setOpenCreateSlot(props.close);
+  };
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
+  const handleEditContent = (event) => {
+    setEditContent(event.target.value)
+  }
+  const handleEditDes = (event) => {
+    setEditDescription(event.target.value)
+  }
+  // setSyllabusDetail(props.syllabusDetail)
+  // console.log("syllabusDetail",props.syllabusDetail);
+ const handleIDSlot = (id) =>{
+setIdSlot(id);
+setViewDetail(true);
+ }
   const fetchData = async () => {
-    await syllabusAPI.getSyllabusWithID(syllabusID.id).then((response) => {
-      setSyllabusDetail(response.responseSuccess);
-      setSlot(response.responseSuccess.slots)
+    await syllabusAPI.getSyllabusWithID(props.syllabusID).then((response) => {
+      setSyllabusDetail(response.responseSuccess[0]);
+      setSlot(response.responseSuccess[0].slots)
     });
   };
 
@@ -42,23 +87,20 @@ function DetailSyllabus(props) {
     fetchData().catch((error) => {
       console.log(error);
     });
-  }, []);
+  }, [syllabusDetail]);
+  useEffect(() => {
+    if (syllabusDetail != null) {
+      setEditContent(syllabusDetail.content);
+      setEditDescription(syllabusDetail.description);
+      setChecked(syllabusDetail.isActive)
+    }
+  }, [syllabusDetail]);
 
+  const handleUpdate = (e) => {};
   return (
     <Box>
+       <form onSubmit={handleUpdate}>
       <Stack>
-        <Link>
-          <Button
-            sx={{
-              float: "left",
-            }}
-            variant="outlined"
-            color="success"
-            startIcon={<ArrowBackIcon />}
-          >
-            Back
-          </Button>
-        </Link>
         <p
           style={{ padding: "6px 0px 0px 10px", marginTop: 40 }}
           className="title-section"
@@ -109,44 +151,15 @@ function DetailSyllabus(props) {
               marginBottom: 2,
             }}
           >
-            Course's Name
-          </Typography>
-          <Typography
-            sx={{
-              float: "left",
-
-              marginBottom: 2,
-            }}
-          >
-            {syllabusDetail?.course?.activity}
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            marginTop: 3,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-          }}
-        >
-          <Typography
-            sx={{
-              float: "left",
-              fontWeight: "bold",
-              marginBottom: 2,
-            }}
-          >
             Content
           </Typography>
-          <Typography
-            sx={{
-              float: "left",
-
-              marginBottom: 2,
-            }}
-          >
-            {syllabusDetail.content}
-          </Typography>
+       <StyledTextField   label="Content"
+                autoComplete="off"
+                fullWidth
+                size="small"
+                name="content"
+                value={editContent}
+                onChange={handleEditContent}/>
         </Box>
         <Box
           sx={{
@@ -163,20 +176,56 @@ function DetailSyllabus(props) {
               marginBottom: 2,
             }}
           >
-            DesCription
+            Description
           </Typography>
-          <Typography
-            sx={{
-              float: "left",
-
-              marginBottom: 2,
-            }}
-          >
-            {syllabusDetail.description}
-          </Typography>
+          <StyledTextField   label="Description"
+                autoComplete="off"
+                fullWidth
+                size="small"
+                name="description"
+                value={editDescription}
+                onChange={handleEditDes}/>
         </Box>
-      </Box>
-      <Box
+        <Box
+              sx={{
+                marginTop: 3,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+              }}
+            >
+              <Typography
+                sx={{
+                  float: "left",
+                  fontWeight: "bold",
+                  marginBottom: 2,
+                }}
+              >
+                Syllabus status
+              </Typography>
+              {/* <FormControl sx={{ width: "50%" }}>
+                <Select
+                  size="small"
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={editStatus}
+                  name="course"
+                  onChange={handleOnChangeStatus}
+                  sx={{ backgroundColor: "white" }}
+                >
+                  <MenuItem value={true}>Active</MenuItem>
+                  <MenuItem value={false}>Deactivate</MenuItem>
+                </Select>
+              </FormControl> */}
+                <FormControlLabel control={<Switch
+      checked={checked}
+      onChange={handleChange}
+      inputProps={{ 'aria-label': 'controlled' }}
+color='success'
+    />} label="Active" />
+              
+            </Box>
+        <Box
         sx={{
           marginTop: "20px",
           display: "flex",
@@ -187,11 +236,21 @@ function DetailSyllabus(props) {
           borderRadius: "20px",
         }}
       >
-        <Stack
-          justifyContent="space-around"
-          direction="row"
-          alignItems="center"
+           <Box
+      
         >
+          <Typography
+            sx={{
+              paddingBottom: 2,
+              float: "left",
+              fontWeight: "bold",
+              marginBottom: 2,
+            }}
+          >
+            List of slot
+          </Typography>
+        </Box>
+  
           {/* <Button
               sx={{ marginRight: 10 }}
               size="small"
@@ -202,60 +261,123 @@ function DetailSyllabus(props) {
             >
               Back
             </Button> */}
-          <Typography
-            style={{ marginRight: "auto" }}
-            variant="h5"
-            component="h2"
-            gutterBottom
-          >
-            List Slot
-          </Typography>
-
-          <Link to="/admin/create-slot" state={{syllabus: syllabusDetail, slot: slot}} >
-            <ColorButton
-              sx={{ marginBottom: "30px" }}
+   <Stack
+        sx={{
+          marginBottom: 2,
+          marginTop: 2,
+          height: 75,
+          backgroundColor: "#F0F0F0",
+          width: "100%",
+          backgroundColor: "white"
+        }}
+        justifyContent="space-between"
+        direction="row"
+        alignItems="center"
+        spacing={1}
+      >
+        <Box style={{ marginLeft: "25px" }}>
+          <StyledTextField
+            id="outlined-start-adornment"
+            size="small"
+            sx={{ backgroundColor: "white", marginRight: "20px" }}
+            placeholder="Search"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <ColorButton size="small" variant="contained">
+            Search
+          </ColorButton>
+          
+        </Box>
+        <ColorButton
+              sx={{  marginRight: "30px"}}
               variant="contained"
               endIcon={<AddIcon />}
+              onClick={() => {setOpenCreateSlot(true)}}
             >
               Create Slot
             </ColorButton>
-          </Link>
-        </Stack>
-{slot.map((slot, index) =>(
-  <Accordion>
-  <AccordionSummary
-    expandIcon={<ExpandMoreIcon />}
-    aria-controls="panel1a-content"
-    id="panel1a-header"
-  >
-    <Stack 
-     justifyContent="flex-start"
-    >
-        <Box style={{display: 'flex', justifyContent: 'flex-start'}}>
-        <Chip label={slot.session} color="primary" style={{marginRight: "15px"}} />
-    <Typography style={{color: "#8F8E8E"}}>Create Date: {moment(slot.startTime).format("DD-MM-YYYY")}</Typography>
-        </Box>
-        <Typography style={{fontWeight: "bold", fontSize: "20px"}}>{slot.name}</Typography>
-    </Stack>
-    <Link style={{marginLeft:"65%", marginTop:"auto"}} to={`/admin/detail-slot/${slot.id}`}>
-          <ColorButton
-            variant="contained"
-            size="small"
-          >
-            View detail
-          </ColorButton>
-          </Link>
-  </AccordionSummary>
-  <AccordionDetails>
-    <Typography>
+      </Stack>
+        
+        
 
-    </Typography>
-  </AccordionDetails>
-</Accordion>
+        <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead>
+                <TableRow hover>
+                  <TableCell sx={{ fontWeight: 700 }}>Slot</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }} align="left">
+                    Topic
+                  </TableCell>
 
-))}
-      
+                  <TableCell sx={{ fontWeight: 700 }} align="left">
+                    Learning Type
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: 700 }} align="left">
+                    Time Allocation
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: 700 }} align="left">
+                    Action
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {slot
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((slot, index) => (
+                    <TableRow
+                      hover
+                      key={index}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+
+                      <TableCell align="left">{slot.session}</TableCell>
+
+                      <TableCell component="th" scope="row">
+                        
+                          <Button onClick={() => handleIDSlot(slot.id)} sx={{ color: "black" }} variant="text">
+                           {slot.name}
+                          </Button>
+                      
+                      </TableCell>
+
+                      <TableCell align="left">{slot.type}</TableCell>
+                      <TableCell align="left">{slot.timeAllocation}</TableCell>
+                      <TableCell align="left">
+                      <Button variant="contained" color="error">Delete</Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[]}
+            component="div"
+            count={slot.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
       </Box>
+      <ColorButton
+              sx={{  marginLeft: "auto"}}
+              variant="contained"
+              onClick={() => {setOpenCreateSlot(true)}}
+            >
+              Update Syllabus
+            </ColorButton>
+      </Box>
+           {viewDetail && <DetailSlot slotID = {idSlot}/>} 
+   <CreateSlot showCreateSlot={openCreateSlot} closeCreateSlot={() => setOpenCreateSlot(false)} syllabusID = {syllabusDetail.id}/>
+  
+   </form>
     </Box>
   );
 }

@@ -7,9 +7,9 @@ const courseAPI = {
         return axiosClient.get0(url);
 },
 
-CreateCourse(data) {
-    const url = `course/create`;
-    return axiosClient.post(url, data);
+CreateCourse(activity, content, skill) {
+    const url = `https://localhost:7115/api/v1/course/create?Activity=${activity}&Content=${content}&SkillName=${skill}`;
+    return axiosClient.post(url, activity, content, skill);
   },
   getCourseWithID(id) {
     const url = `course/getDetail/${id}`;

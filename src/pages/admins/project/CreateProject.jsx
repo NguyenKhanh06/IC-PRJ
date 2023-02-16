@@ -4,7 +4,9 @@ import {
   Alert,
   Box,
   Button,
+  Chip,
   FormControl,
+  IconButton,
   InputLabel,
   MenuItem,
   Select,
@@ -26,7 +28,9 @@ import courseAPI from "../../../api/courseAPI";
 import partnerAPI from "../../../api/partnerAPI";
 import projectAPI from "../../../api/projectAPI";
 import axios from "axios";
-
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import AssignLeader from "./AssignLeader";
+import AssignPartner from "./AssignPartner";
 CreateProject.propTypes = {};
 
 function CreateProject(props) {
@@ -36,19 +40,23 @@ function CreateProject(props) {
     leader: "",
     partner: "",
     description: "",
+    fee: 0
   });
   const [estimate_start, setEstimate_start] = useState(null);
   const [estimate_end, setEstimate_end] = useState(null);
   const [regis_open, setRegis_open] = useState(null);
   const [regis_close, setRegis_close] = useState(null);
   const [newCourse, setNewCourse] = useState("");
-  const [newPartner, setNewPartner] = useState("");
-  const [newLeader, setNewLeader] = useState("");
+  const [newPartner, setNewPartner] = useState([]);
+  const [newLeader, setNewLeader] = useState([]);
   const [staffs, setStaffs] = useState([]);
   const [partners, setPartners] = useState([]);
   const [courses, setCourses] = useState([]);
   const [open, setOpen] = useState(false);
   const [openFalse, setOpenFalse] = useState(false);
+  const [openAssignLeader, setOpenAssignLeader] = useState(false);
+  const [openAssignPartner, setOpenAssignPartner] = useState(false);
+  
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -136,18 +144,19 @@ function CreateProject(props) {
   const formData = new FormData();
   formData.append("ProjectName", inputValue.name)
   formData.append("Description", inputValue.description,)
+  formData.append("Fee", inputValue.fee)
   formData.append("EstimateTimeStart",estimate_start)
   formData.append("EstimateTimeEnd", estimate_end)
   formData.append(" DateOpenRegis", regis_open)
   formData.append("DateCloseRegis", regis_close)
-  formData.append("LeaderId", newLeader)
+  formData.append("LeaderId", newLeader.id)
   formData.append("CourseId", newCourse)
-  formData.append("PartnerId", newPartner)
-  const data = {
-    id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    assignDate: "2023-02-06T23:12:54.990Z",
-    isActive: true
-  }
+  formData.append("PartnerId", newPartner.id)
+  // const data = {
+  //   id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  //   assignDate: "2023-02-06T23:12:54.990Z",
+  //   isActive: true
+  // }
   // const formData = {
     
     
@@ -160,14 +169,6 @@ function CreateProject(props) {
   //   PartnerId: newPartner
   // }
   const handleSubmit = (e) => {
-    axios({
-      method: "POST",
-      data: data,
-      url: `https://localhost:7115/api/v1/staff/upToLead/${newLeader}`,
-      headers: {
-        "Content-Type": "application/json-patch+json",
-      },
-    }).then(() => {
       axios({
         method: "POST",
         data: formData,
@@ -178,11 +179,12 @@ function CreateProject(props) {
       }).then((response)=>{
         response.isSuccess = true ? handleClickOpen() : handleClickOpenFalse();
       })
-    })
+  
   
 
   };
   return (
+   <>
     <form onSubmit={handleSubmit}>
       <Box>
         <Link>
@@ -425,22 +427,33 @@ function CreateProject(props) {
               </LocalizationProvider>
             </Box>
           </Stack>
-
-          <Box
-            sx={{
-              marginTop: 3,
-            }}
-          >
-            <Typography
+          <Stack
               sx={{
-                float: "left",
-                fontWeight: "bold",
-                marginBottom: 2,
+                marginTop: 3,
               }}
+              justifyContent="space-between"
+              direction="row"
+              alignItems="center"
+              spacing="5%"
             >
-              Course
-            </Typography>
-            <FormControl fullWidth>
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                }}
+              >
+                <Typography
+                  sx={{
+                    float: "left",
+                    fontWeight: "bold",
+                    marginBottom: 2,
+                  }}
+                >
+                  Course
+                </Typography>
+                <FormControl fullWidth>
               <Select
                     size="small"
                     labelId="demo-simple-select-label"
@@ -455,76 +468,77 @@ function CreateProject(props) {
                    ))}
                   </Select>
               </FormControl>
+              </Box>
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                }}
+              >
+                <Typography
+                  sx={{
+                    float: "left",
+                    fontWeight: "bold",
+                    marginBottom: 2,
+                  }}
+                >
+                  Participant Fee
+                </Typography>
+                <StyledTextField
+        type="number"
+                  label="Participant Fee"
+                  autoComplete="off"
+                  fullWidth
+                  size="small"
+                  name="fee"
+                  value={inputValue.fee}
+                  onChange={handleOnChangeInputProject}
+                />
+              </Box>
+            </Stack>
+      
+
             <Stack
               sx={{
                 marginTop: 3,
               }}
+              justifyContent="space-between"
               direction="row"
               alignItems="center"
               spacing="5%"
             >
-              <Link>
-                <Button size="small" variant="text">
-                  View detail course
-                </Button>
-              </Link>
-              <Link>
-                <ColorButton
-                  size="small"
-                  endIcon={<AddIcon />}
-                  variant="contained"
-                >
-                  Create course
-                </ColorButton>
-              </Link>
-            </Stack>
-          </Box>
-
-          <Stack
-            sx={{
-              marginTop: 3,
-            }}
-            justifyContent="space-between"
-            direction="row"
-            alignItems="center"
-            spacing="5%"
-          >
-            <Box
-              sx={{
-                width: "100%",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-              }}
-            >
-              <Typography
+              <Box
                 sx={{
-                  float: "left",
-                  fontWeight: "bold",
-                  marginBottom: 2,
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
                 }}
               >
-                Leader
-              </Typography>
-              <FormControl fullWidth>
-                <Select
-                  size="small"
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={newLeader}
-                  name="leader"
-                  onChange={handleOnChangeLeader}
-                  sx={{ backgroundColor: "white" }}
+                <Typography
+                  sx={{
+                    float: "left",
+                    fontWeight: "bold",
+                    marginBottom: 2,
+                  }}
                 >
-                  {staffs.map((staff, index) => (
-                    <MenuItem key={index} value={staff.id}>
-                      {staff.fullName}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
-            <Box
+                  Leader
+                </Typography>
+                <Stack
+                  direction="row"
+                  justifyContent="center"
+                  alignItems="center"
+                  spacing={2}
+                >
+                 {(newLeader.length != 0) ? (<Chip label={newLeader.fullName}/>) : null}
+                  <IconButton onClick={() => setOpenAssignLeader(true)} aria-label="fingerprint" color="secondary">
+                    <PersonAddIcon style={{ color: "#22a19a" }} />
+                  </IconButton>
+                </Stack>
+              </Box>
+              <Box
                 sx={{
                   width: "100%",
                   display: "flex",
@@ -541,23 +555,19 @@ function CreateProject(props) {
                 >
                   Partner
                 </Typography>
-                <FormControl fullWidth>
-                <Select
-                    size="small"
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={newPartner}
-                    name="leader"
-                    onChange={handleOnChangePartner}
-                    sx={{ backgroundColor: "white" }}
-                  >
-                   { partners.map((partner, index) => (
-                    <MenuItem key={index} value={partner.id}>{partner.name}</MenuItem>
-                   ))}
-                  </Select>
-                </FormControl>
+                <Stack
+                  direction="row"
+                  justifyContent="center"
+                  alignItems="center"
+                  spacing={2}
+                >
+                  {(newPartner.length != 0) ? (<Chip label={newPartner.name}/>) : null}
+                  <IconButton onClick={() => setOpenAssignPartner(true)} aria-label="fingerprint" color="secondary">
+                    <PersonAddIcon style={{ color: "#22a19a" }} />
+                  </IconButton>
+                </Stack>
               </Box>
-          </Stack>
+            </Stack>
 
           <Box
             sx={{
@@ -607,6 +617,11 @@ function CreateProject(props) {
         </Alert>
       </Snackbar>
     </form>
+    
+   <AssignLeader show={openAssignLeader} close={() => setOpenAssignLeader(false)} setNewLeader={setNewLeader}/>
+   <AssignPartner show={openAssignPartner} close={() => setOpenAssignPartner(false)} setNewPartner={setNewPartner}/>
+   </>
+
   );
 }
 

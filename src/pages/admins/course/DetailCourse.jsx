@@ -10,12 +10,14 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
+  FormControlLabel,
   InputAdornment,
   InputLabel,
   MenuItem,
   Paper,
   Select,
   Stack,
+  Switch,
   Table,
   TableBody,
   TableCell,
@@ -36,11 +38,12 @@ import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
 import moment from "moment";
 import axios from "axios";
+import CreateSyllabus from "../syllabus/CreateSyllabus";
+import DetailSyllabus from "../syllabus/DetailSyllabus";
 
 DetailCourse.propTypes = {};
 
 function DetailCourse(props) {
-
   const courseid = useParams();
   const [editName, setEditName] = useState("");
   const [editActivity, setEditActivity] = useState("");
@@ -48,11 +51,17 @@ function DetailCourse(props) {
   const [editSyllabus, setEditSyllabus] = useState("");
   const [syllabus, setSyllabus] = useState([]);
   const [courseDetail, setCourseDetail] = useState([]);
-  const [editStatus, setEditStatus] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(15);
   const [age, setAge] = useState("");
+  const [checked, setChecked] = useState(false);
+  const [openCreate, setOpenCreate] = useState(false);
+  const [viewDetail, setViewDetail] = useState(false);
+  const [syllabusID, setSyllabusID] = useState({});
 
+  const handleChangeStatus = (event) => {
+    setChecked(event.target.checked);
+  };
   const handleChange = (event) => {
     setAge(event.target.value);
   };
@@ -79,24 +88,28 @@ function DetailCourse(props) {
   const handleOnChangeSyllabus = (event) => {
     setEditSyllabus(event.target.value);
   };
-  const handleOnChangeStatus = (event) => {
-    setEditStatus(event.target.value);
+
+  const handleViewDetail = (id) => {
+    setSyllabusID(id);
+    setViewDetail(true);
+    console.log("id syllabus", id);
   };
 
-  const fetchDataSyllabus = async () => {
-    await syllabusAPI.getList().then((response) => {
-      setSyllabus(response.responseSuccess);
-    });
-  };
-  useEffect(() => {
-    fetchDataSyllabus().catch((error) => {
-      console.log(error);
-    });
-  }, []);
+  // const fetchDataSyllabus = async () => {
+  //   await syllabusAPI.getList().then((response) => {
+  //     setSyllabus(response.responseSuccess);
+  //   });
+  // };
+  // useEffect(() => {
+  //   fetchDataSyllabus().catch((error) => {
+  //     console.log(error);
+  //   });
+  // }, []);
 
   const fetchData = async () => {
     await courseAPI.getCourseWithID(courseid.id).then((response) => {
-      setCourseDetail(response.responseSuccess);
+      setCourseDetail(response.responseSuccess[0]);
+      setSyllabus(response.responseSuccess[0].syllabus);
       console.log(response);
     });
   };
@@ -105,18 +118,17 @@ function DetailCourse(props) {
       console.log(error);
     });
   }, []);
-console.log("course detail", courseDetail)
-console.log("course id", courseid.id)
-  const found = syllabus.find((Element) => Element.isActive == true);
+
   useEffect(() => {
     if (courseDetail != null) {
       setEditName(courseDetail.skillName);
       setEditActivity(courseDetail.activity);
       setEditContent(courseDetail.content);
-      setEditSyllabus(found?.id);
-      setEditStatus(courseDetail.isActive);
+      setChecked(courseDetail.isActive);
+
     }
   }, [courseDetail]);
+
   return (
     <Box>
       <form onSubmit={handleUpdate}>
@@ -286,15 +298,14 @@ console.log("course id", courseid.id)
                 </FormControl>
               </Box>
 
-              <Link to="/admin/create-syllabus" state={{ courseid: courseDetail.id }}>
-                <ColorButton
-                  sx={{ marginTop: "35px" }}
-                  variant="contained"
-                  endIcon={<AddIcon />}
-                >
-                  Create Syllabus
-                </ColorButton>
-              </Link>
+              <ColorButton
+                onClick={() => setOpenCreate(true)}
+                sx={{ marginTop: "35px" }}
+                variant="contained"
+                endIcon={<AddIcon />}
+              >
+                Create Syllabus
+              </ColorButton>
             </Stack>
             <Box
               sx={{
@@ -313,7 +324,7 @@ console.log("course id", courseid.id)
               >
                 Course status
               </Typography>
-              <FormControl sx={{ width: "50%" }}>
+              {/* <FormControl sx={{ width: "50%" }}>
                 <Select
                   size="small"
                   labelId="demo-simple-select-label"
@@ -326,7 +337,18 @@ console.log("course id", courseid.id)
                   <MenuItem value={true}>Active</MenuItem>
                   <MenuItem value={false}>Deactivate</MenuItem>
                 </Select>
-              </FormControl>
+              </FormControl> */}
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={checked}
+                    onChange={handleChangeStatus}
+                    inputProps={{ "aria-label": "controlled" }}
+                    color="success"
+                  />
+                }
+                label="Active"
+              />
             </Box>
             <Stack
               direction="row"
@@ -382,15 +404,14 @@ console.log("course id", courseid.id)
             List Syllabus
           </Typography>
 
-          <Link to="/admin/create-syllabus" state={{ courseid: courseDetail.id }}>
-            <ColorButton
-              sx={{ marginTop: "35px" }}
-              variant="contained"
-              endIcon={<AddIcon />}
-            >
-              Create Syllabus
-            </ColorButton>
-          </Link>
+          <ColorButton
+            sx={{ marginTop: "35px" }}
+            variant="contained"
+            endIcon={<AddIcon />}
+            onClick={() => setOpenCreate(true)}
+          >
+            Create Syllabus
+          </ColorButton>
         </Stack>
 
         <Stack
@@ -472,34 +493,26 @@ console.log("course id", courseid.id)
                     <TableCell align="left">{index + 1}</TableCell>
 
                     <TableCell component="th" scope="row">
-                    <Link to={`/admin/detail-syllabus/${syl.id}`}>
-                    <Button
-                    
+                      <Button
+                        onClick={() => handleViewDetail(syl.id)}
                         sx={{ color: "black" }}
                         variant="text"
                       >
                         {syl.content}
                       </Button>
-          </Link>
                     </TableCell>
-                    <TableCell align="left">{ moment(syl.startTime).format("DD/MM/YYYY")}</TableCell>
                     <TableCell align="left">
-                      {syl.status == true ? (
+                      {moment(syl.startTime).format("DD/MM/YYYY")}
+                    </TableCell>
+                    <TableCell align="left">
+                      {syl.isActive ? (
                         <Chip label="Active" color="success" />
                       ) : (
                         <Chip label="Deactivate" color="error" />
                       )}
                     </TableCell>
                     <TableCell align="left">
-                      {syl.status == true ? (
-                        <Button variant="contained" disabled>
-                          Delete
-                        </Button>
-                      ) : (
-                        <Button variant="contained" color="error">
-                          Delete
-                        </Button>
-                      )}
+                      <ColorButton>Create A copy</ColorButton>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -516,6 +529,12 @@ console.log("course id", courseid.id)
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Box>
+      {viewDetail && <DetailSyllabus syllabusID={syllabusID} />}
+      <CreateSyllabus
+        show={openCreate}
+        close={() => setOpenCreate(false)}
+        courseid={courseDetail.id}
+      />
     </Box>
   );
 }
