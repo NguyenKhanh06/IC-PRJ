@@ -29,6 +29,9 @@ import courseAPI from "../../../api/courseAPI";
 import AddIcon from "@mui/icons-material/Add";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import syllabusAPI from "../../../api/syllabusAPI";
+import { height } from "@mui/system";
+import DetailSlotDeal from "./DetailSlotDeal";
+import axios from "axios";
 
 DetailCourseDeal.propTypes = {};
 
@@ -43,6 +46,11 @@ function DetailCourseDeal(props) {
   const [syllabus, setSyllabus] = useState([]);
   const [syllabusActive, setSyllabusActive] = useState({});
   const [expanded, setExpanded] = useState(false);
+  const [slotApprove, setSlotApprove] = useState("");
+  const [slotReject, setSlotReject] = useState("");
+  const [viewDetail, setViewDetail] = useState(false);
+  const [ slotID, setSlotID] = useState("");
+
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -54,6 +62,7 @@ function DetailCourseDeal(props) {
     await courseAPI.getCourseWithID(projectID.id).then((response) => {
       setCourse(response.responseSuccess[0]);
       setSyllabus(response.responseSuccess[0].syllabus);
+      console.log(response.responseSuccess[0]);
     });
   };
 
@@ -73,8 +82,7 @@ function DetailCourseDeal(props) {
   //       console.log(error);
   //     });
   //   }, []);
-  console.log("found", editSyllabus);
-
+ 
   const handleChangeStatus = (event) => {
     setChecked(event.target.checked);
   };
@@ -102,6 +110,11 @@ function DetailCourseDeal(props) {
   const handleOnChangeDes = (event) => {
     setEditDes(event.target.value);
   };
+  const handleIdSlot = (id) => {
+    setSlotID(id);
+    console.log("id staff", id);
+    setViewDetail(true)
+  };
 
   //   const handleViewDetail = (id) => {
   //     setSyllabusID(id);
@@ -120,15 +133,34 @@ function DetailCourseDeal(props) {
   //   });
   // }, []);
 
-  console.log("syllabusActive", syllabusActive);
-
+  
+ 
+//   {(syllabusActive?.slots?.length > 0) && statusCounter(slotApprove) }
+ //
+ function statusCounterApprove(inputs) {
+    let counter = 0;
+    for (const input of inputs) {
+      if (input.slotStatus === 1) counter += 1;
+    }
+    return counter;
+    
+  }
+  function statusCounterReject(inputs) {
+    let counterReject = 0;
+    for (const input of inputs) {
+      if (input.slotStatus === 2) counterReject += 1;
+    }
+    return counterReject;
+    
+  }
   useEffect(() => {
-    if (course != null) {
+    if (course && syllabus != null) {
+        
       setEditActivity(course.activity);
       setEditContent(course.content);
       setChecked(course.isActive);
 
-      //   setEditSyllabus(course.);
+    
       const found = syllabus.find((obj) => {
         return obj.isActive === true;
       });
@@ -137,9 +169,27 @@ function DetailCourseDeal(props) {
 
       syllabusAPI.getSyllabusWithID(found?.id).then((response) => {
         setSyllabusActive(response.responseSuccess[0]);
+        console.log(response.responseSuccess[0])
+     
+         {response.responseSuccess[0]?.slots.length > 0 && setSlotApprove(statusCounterApprove(response.responseSuccess[0]?.slots))}
+         {response.responseSuccess[0]?.slots.length > 0 && setSlotReject(statusCounterReject(response.responseSuccess[0]?.slots))}
       });
+    
+
     }
-  }, [course]);
+  }, [course, syllabus]);
+
+  const handleApproveSlot = (id) => {
+    axios.put(`https://localhost:7115/api/v1/slot/updateStatus/${id}?Status=1`).then((response) => {
+     alert(response.isSuccess)
+    })
+   }
+   const handleRejectSlot = (id) => {
+     axios.put(`https://localhost:7115/api/v1/slot/updateStatus/${id}?Status=2`).then((response) => {
+        alert(response.isSuccess)
+     })
+    }
+ 
 
   return (
     <Box>
@@ -396,24 +446,24 @@ function DetailCourseDeal(props) {
         </Box>
       </form>
       <Stack flexDirection="row">
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          backgroundColor: "#F0F0F0",
-          width: "100%",
-          padding: "40px 20px 20px 40px",
-          borderRadius: "20px",
-          marginTop: "20px",
-          marginRight: "15px"
-        }}
-      >
-        <Stack
-          justifyContent="space-around"
-          direction="row"
-          alignItems="center"
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            backgroundColor: "#F0F0F0",
+            width: "100%",
+            padding: "40px 20px 20px 40px",
+            borderRadius: "20px",
+            marginTop: "20px",
+            marginRight: "15px",
+          }}
         >
-          {/* <Button
+          <Stack
+            justifyContent="space-around"
+            direction="row"
+            alignItems="center"
+          >
+            {/* <Button
                 sx={{ marginRight: 10 }}
                 size="small"
                 color="success"
@@ -423,177 +473,224 @@ function DetailCourseDeal(props) {
               >
                 Back
               </Button> */}
-        </Stack>
+          </Stack>
 
-        <Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              backgroundColor: "#F0F0F0",
-              width: "100%",
-              padding: "40px 20px 20px 40px",
-              borderRadius: "20px",
-            }}
-          >
+          <Box>
             <Box
               sx={{
-                borderBottom: "1px solid black",
-                borderBottomWidth: "100%",
+                display: "flex",
+                flexDirection: "column",
+                backgroundColor: "#F0F0F0",
+                padding: "40px 20px 20px 40px",
+                borderRadius: "20px",
               }}
             >
-              <Typography
+              <Box
                 sx={{
-                  paddingBottom: 2,
-                  float: "left",
-                  fontWeight: "bold",
-                  marginBottom: 2,
+                  borderBottom: "1px solid black",
+                  borderBottomWidth: "100%",
                 }}
               >
-                Detail Syllabus
-              </Typography>
-            </Box>
-            <Stack
-              flexDirection="column"
-              alignItems="flex-start"
-              sx={{
-                marginTop: 3,
-              }}
-            >
-              <Typography
-                sx={{
-                  float: "left",
-                  fontWeight: "bold",
-                  marginBottom: 2,
-                }}
-              >
-                Content
-              </Typography>
-              <Typography>{syllabusActive?.content}</Typography>
-            </Stack>
-
-            <Box
-              sx={{
-                marginTop: 3,
-              }}
-            >
-              <Typography
-                sx={{
-                  float: "left",
-                  fontWeight: "bold",
-                  marginBottom: 2,
-                }}
-              >
-                Description
-              </Typography>
-              <StyledTextField
-                label="Description"
-                autoComplete="off"
-                fullWidth
-                size="small"
-                name="des"
-                value={editDes}
-                onChange={handleOnChangeDes}
-              />
-            </Box>
-            <Box
-              sx={{
-                marginTop: 10,
-                borderBottom: "1px solid black",
-                borderBottomWidth: "100%",
-              }}
-            >
-              <Typography
-                sx={{
-                  paddingBottom: 2,
-                  float: "left",
-                  fontWeight: "bold",
-                  marginBottom: 2,
-                }}
-              >
-                List of slot
-              </Typography>
-            </Box>
-            {syllabusActive?.slots?.map((slot, index) => (
-              <Accordion>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
+                <Typography
+                  sx={{
+                    paddingBottom: 2,
+                    float: "left",
+                    fontWeight: "bold",
+                    marginBottom: 2,
+                  }}
                 >
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    spacing={60}
+                  Detail Syllabus
+                </Typography>
+              </Box>
+              <Stack
+                flexDirection="column"
+                alignItems="flex-start"
+                sx={{
+                  marginTop: 3,
+                }}
+              >
+                <Typography
+                  sx={{
+                    float: "left",
+                    fontWeight: "bold",
+                    marginBottom: 2,
+                  }}
+                >
+                  Content
+                </Typography>
+                <Typography>{syllabusActive?.content}</Typography>
+              </Stack>
+
+              <Box
+                sx={{
+                  marginTop: 3,
+                }}
+              >
+                <Typography
+                  sx={{
+                    float: "left",
+                    fontWeight: "bold",
+                    marginBottom: 2,
+                  }}
+                >
+                  Description
+                </Typography>
+                <StyledTextField
+                  label="Description"
+                  autoComplete="off"
+                  fullWidth
+                  size="small"
+                  name="des"
+                  value={editDes}
+                  onChange={handleOnChangeDes}
+                />
+              </Box>
+              <Box
+                sx={{
+                  marginTop: 10,
+                  borderBottom: "1px solid black",
+                  borderBottomWidth: "100%",
+                }}
+              >
+                <Typography
+                  sx={{
+                    paddingBottom: 2,
+                    float: "left",
+                    fontWeight: "bold",
+                    marginBottom: 2,
+                  }}
+                >
+                  List of slot
+                </Typography>
+              </Box>
+              {syllabusActive?.slots?.map((slot, index) => (
+                <Accordion>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
                   >
                     <Stack
-                      direction="column"
+                      direction="row"
                       justifyContent="space-between"
-                      alignItems="flex-start"
-                      spacing={2}
+                      alignItems="center"
+                      spacing={45}
                     >
-                      <Typography sx={{ color: "text.secondary" }}>
-                        <Chip
-                          label={slot?.session}
-                          color="primary"
-                          style={{ marginRight: "10px" }}
-                        />
-                        Create date:{" "}
-                        {moment(slot?.dateCreated).format("DD/MM/YYYY")}
-                      </Typography>
-                      <Typography variant="h6" style={{ fontWeight: "bold" }}>
-                        {slot?.name}
-                      </Typography>
-                    </Stack>
-                    <Box>
-                      <ButtonGroup
-                        variant="contained"
-                        aria-label="outlined primary button group"
+                      <Stack
+                        direction="column"
+                        justifyContent="space-between"
+                        alignItems="flex-start"
+                        spacing={2}
                       >
-                        <ColorButton
-                          size="small"
-                          style={{ width: "max-content" }}
+                        <Typography sx={{ color: "text.secondary" }}>
+                          <Chip
+                            label={slot?.session}
+                            color="primary"
+                            style={{ marginRight: "10px" }}
+                          />
+
+                          {moment(slot?.dateCreated).format("DD/MM/YYYY")}
+                        </Typography>
+                        <Button onClick={() =>handleIdSlot(slot?.id)}>
+                        {slot?.name}
+                        </Button>
+                        {/* <Typography variant="h6" style={{ fontWeight: "bold" }}>
+                        
+                        </Typography> */}
+                      </Stack>
+                      <Box>
+                        <ButtonGroup
+                          variant="contained"
+                          aria-label="outlined primary button group"
                         >
-                          View Detail
-                        </ColorButton>
-                        <Button size="small" color="error">
-                          Reject
-                        </Button>
-                        <Button size="small" color="success">
-                          Approve
-                        </Button>
-                      </ButtonGroup>
-                    </Box>
-                  </Stack>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Suspendisse malesuada lacus ex, sit amet blandit leo
-                    lobortis eget.
-                  </Typography>
-                </AccordionDetails>
-              </Accordion>
-            ))}
+                            
+                          <Button onClick={() => handleRejectSlot(slot?.id)} size="small" color="error">
+                            Reject
+                          </Button>
+                          <Button onClick={() => handleApproveSlot(slot?.id)} size="small" color="success">
+                            Approve
+                          </Button>
+                        </ButtonGroup>
+                      </Box>
+                    </Stack>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                      Suspendisse malesuada lacus ex, sit amet blandit leo
+                      lobortis eget.
+                    </Typography>
+                  </AccordionDetails>
+                </Accordion>
+              ))}
+            </Box>
           </Box>
         </Box>
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          backgroundColor: "#F0F0F0",
-          width: "100%",
-          padding: "40px 20px 20px 40px",
-          borderRadius: "20px",
-        }}
-      >
-        <h1>test</h1>
-      </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            backgroundColor: "#F0F0F0",
+            width: "40%",
+            padding: "40px 20px 20px 40px",
+            borderRadius: "20px",
+            marginTop: "20px",
+          }}
+        >
+          <Stack
+            direction="row"
+            justifyContent="center"
+            alignItems="center"
+            spacing={2}
+          >
+            <Box
+              style={{
+                width: "80px",
+                height: "80px",
+                backgroundColor: "white",
+                borderRadius: "20px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
+              <Typography variant="h6">{syllabusActive?.slots?.length}</Typography>
+              <Typography variant="h6">Slots</Typography>
+            </Box>
+            <Box
+              style={{
+                width: "80px",
+                height: "80px",
+                backgroundColor: "white",
+                borderRadius: "20px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
+              <Typography variant="h6" color="green">{slotApprove}</Typography>
+              <Typography variant="h6"color="green">Slots</Typography>
+            </Box>
+            <Box
+                style={{
+                    width: "80px",
+                    height: "80px",
+                    backgroundColor: "white",
+                    borderRadius: "20px",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                  }}
+            >
+              <Typography variant="h6" color="red">{slotReject}</Typography>
+              <Typography variant="h6" color="red">Slots</Typography>
+            </Box>
+          </Stack>
+        </Box>
       </Stack>
-    
-      {/* {viewDetail && <DetailSyllabus syllabusID={syllabusID} />} */}
+
+      {viewDetail && <DetailSlotDeal SlotID={slotID} />}
+
     </Box>
   );
 }

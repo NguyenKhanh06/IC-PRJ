@@ -7,6 +7,7 @@ import { Box, Typography, Button, TextField, Tabs, Tab } from "@mui/material";
 import PropTypes from "prop-types";
 import "../styles/signin.css";
 import { loginUser } from "../redux/apiRequest";
+import SiginPartner from "./SiginPartner";
 
 
 const Signin = () => {
@@ -113,7 +114,7 @@ const Signin = () => {
               style={{ width: 240, height: 240 }}
             />
             <h3 style={{ color: "#22a19a", fontWeight: 700 }}>Sign in</h3>
-            <Box
+            {/* <Box
               component="form"
               onSubmit={handleSubmit}
               noValidate
@@ -127,7 +128,7 @@ const Signin = () => {
                 label="Username"
                 value={username}
                 type="text"
-                autoFocus
+                
                 style={{
                   width: "450px",
                   height: "50px",
@@ -142,7 +143,7 @@ const Signin = () => {
                 type="password"
                 id="password"
                 value={password}
-                autoComplete="current-password"
+               
                 style={{
                   width: "450px",
                   height: "50px",
@@ -175,7 +176,8 @@ const Signin = () => {
                   Dashboard
                 </a>
               </h4>
-            </Box>
+            </Box> */}
+            <SiginPartner/>
           </TabPanel>
           <TabPanel value={value} index={1}>
             <img

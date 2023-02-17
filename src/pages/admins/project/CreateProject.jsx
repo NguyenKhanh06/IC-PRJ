@@ -31,6 +31,7 @@ import axios from "axios";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import AssignLeader from "./AssignLeader";
 import AssignPartner from "./AssignPartner";
+import CreateCourse from "../course/CreateCourse";
 CreateProject.propTypes = {};
 
 function CreateProject(props) {
@@ -56,6 +57,7 @@ function CreateProject(props) {
   const [openFalse, setOpenFalse] = useState(false);
   const [openAssignLeader, setOpenAssignLeader] = useState(false);
   const [openAssignPartner, setOpenAssignPartner] = useState(false);
+  const [openCreate, setOpenCreate] = useState(false);
   
 
   const handleClickOpen = () => {
@@ -127,7 +129,7 @@ function CreateProject(props) {
     fetchDataCourse().catch((error) => {
       console.log(error);
     });
-  }, []);
+  }, [courses]);
 
   // fetch data partner
   const fetchDataPartner = async () => {
@@ -463,6 +465,13 @@ function CreateProject(props) {
                     onChange={handleOnChangeCourse}
                     sx={{ backgroundColor: "white" }}
                   >
+                    <MenuItem>  <ColorButton
+          onClick={() => setOpenCreate(true)}
+            endIcon={<AddIcon />}
+            variant="contained"
+          >
+            Create Course
+          </ColorButton></MenuItem>
                    { courses.map((course, index) => (
                     <MenuItem key={index} value={course.id}>{course.activity}</MenuItem>
                    ))}
@@ -620,6 +629,7 @@ function CreateProject(props) {
     
    <AssignLeader show={openAssignLeader} close={() => setOpenAssignLeader(false)} setNewLeader={setNewLeader}/>
    <AssignPartner show={openAssignPartner} close={() => setOpenAssignPartner(false)} setNewPartner={setNewPartner}/>
+   <CreateCourse show={openCreate} close={() => setOpenCreate(false)} />
    </>
 
   );

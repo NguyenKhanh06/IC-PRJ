@@ -36,7 +36,8 @@ const MENU_OPTIONS = [
 
 // ----------------------------------------------------------------------
 
-export default function AccountPopover() {
+export default function AccountPopoverPartner() {
+    var avt = JSON.parse(sessionStorage.getItem("avatar"));
     const navigate = useNavigate();
     const { logOut } = UserAuth();
     const user = auth.currentUser;
@@ -74,7 +75,7 @@ export default function AccountPopover() {
             >
                 <Avatar src={user?.photoURL} alt="photoURL" />
                 <span style={{fontSize: 20, marginLeft: 20}} class="">
-                                        {user?.displayName}
+                                        {avt.fullName}
                                     </span>
             </IconButton>
 
@@ -99,14 +100,14 @@ export default function AccountPopover() {
             >
                 <Box sx={{ my: 1.5, px: 2.5 }}>
                     <Typography variant="subtitle2" noWrap>
-                        {user?.displayName}
+                        {avt.fullName}
                     </Typography>
                     <Typography
                         variant="body2"
                         sx={{ color: "text.secondary" }}
                         noWrap
                     >
-                        {user?.email}
+                        {avt.email}
                     </Typography>
                 </Box>
 

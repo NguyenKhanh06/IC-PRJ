@@ -23,6 +23,10 @@ import CreateSlot from "../pages/admins/syllabus/CreateSlot";
 import DetailSlot from "../pages/admins/syllabus/DetailSlot";
 import CourseList from "../pages/admins/course/CourseList";
 import DetailCourseDeal from "../pages/admins/dealing/DetailCourseDeal";
+import PartnerLayout from "../layouts/dashboard/PartnerLayout";
+import PartnerDashboard from "../pages/partner/PartnerDashboard";
+import PartnerDeal from "../pages/partner/PartnerDeal";
+import PartnerDetailProjectDeal from "../pages/partner/PartnerDetailProjectDeal";
 
 export default function Router() {
     const routes = useRoutes([
@@ -56,6 +60,18 @@ export default function Router() {
                 { path: "course", element: <CourseList /> },
                 { path: "dealing", element: <ProjectListDeal /> },
                 { path: "detail-project-deal/:id", element: <DetailCourseDeal /> },
+                
+            ],
+        },
+        {
+            path: "/partner",
+            element: <PartnerLayout />,
+            children: [
+                { element: <Navigate to="/partner/dashboard" /> },
+                { path: "dashboard", element: <PartnerDashboard /> },
+                { path: "deal", element: <PartnerDeal /> },
+                { path: "detail-project-deal/:id", element: <PartnerDetailProjectDeal/> },
+                
                 
             ],
         },

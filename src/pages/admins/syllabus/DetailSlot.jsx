@@ -190,15 +190,22 @@ function DetailSlot(props) {
           >
             Learning's Type
           </Typography>
-          <StyledTextField
-              label="Learning Type"
-              autoComplete="off"
-              fullWidth
-              size="small"
-              name="Learning Type"
-              value={editType}
-              onChange={handleOnChangeType}
-            />
+          <FormControl fullWidth>
+        <InputLabel id="demo-simple-select-label">Learning Type</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={editType}
+          label="Learning Type"
+          onChange={handleOnChangeType}
+          sx={{ backgroundColor: "white", textAlign: "left" }}
+          size="small"
+        >
+          <MenuItem value={"Offline"}>Offline</MenuItem>
+          <MenuItem value={"Online"}>Online</MenuItem>
+          <MenuItem value={"Offline/Online"}>Offline/Online</MenuItem>
+        </Select>
+      </FormControl>
           {/* <FormControl fullWidth>
       <InputLabel id="demo-simple-select-label">Learning Type</InputLabel>
       <Select
@@ -266,43 +273,14 @@ function DetailSlot(props) {
               }}
               variant="contained"
             >
-              Save Change
+              Updat slot
             </ColorButton>
           </Stack>
       </Box>
 
  
 
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          backgroundColor: "#F0F0F0",
-          width: "100%",
-          padding: "40px 20px 20px 40px",
-          borderRadius: "20px",
-          marginTop: "20px"
-        }}
-      >     <Stack>
-
-      <p
-       
-        className="title-section"
-      >
-        Comment
-      </p>
-    </Stack>
-    <Stack
-direction="row"
-justifyContent="space-evenly"
-alignItems="center"
-spacing={2}
-    >
-    <Avatar src="/broken-image.jpg" />
-    <TextField fullWidth style={{backgroundColor: "white"}}id="standard-basic" label="Click to add comment" variant="standard" />
-    <ColorButton size='small'>Add</ColorButton>
-    </Stack>
-    </Box>
+   
       </Box>
     );
 }

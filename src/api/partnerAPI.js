@@ -7,7 +7,10 @@ const partnerAPI = {
         const url = `partner/getAllPartner`;
         return axiosClient.get0(url);
 },
-
+getPartDetail(Id) {
+    const url = `partner/getDetail/${Id}`;
+    return axiosClient.getWithID(url);
+  },
 
 }
 
