@@ -32,6 +32,10 @@ import syllabusAPI from "../../../api/syllabusAPI";
 import { height } from "@mui/system";
 import DetailSlotDeal from "./DetailSlotDeal";
 import axios from "axios";
+import Swal from 'sweetalert2'
+
+// CommonJS
+
 
 DetailCourseDeal.propTypes = {};
 
@@ -50,6 +54,7 @@ function DetailCourseDeal(props) {
   const [slotReject, setSlotReject] = useState("");
   const [viewDetail, setViewDetail] = useState(false);
   const [ slotID, setSlotID] = useState("");
+  const [slot, setSlot] = useState([]);
 
 
   const handleChange = (panel) => (event, isExpanded) => {
@@ -71,6 +76,7 @@ function DetailCourseDeal(props) {
       console.log(error);
     });
   }, []);
+
   //   const fetchDataDetailSyllabus = async () => {
   //     await syllabusAPI.getSyllabusWithID(editSyllabus.id).then((response) => {
   //     setSyllabusActive(response.responseSuccess[0]);
@@ -112,8 +118,15 @@ function DetailCourseDeal(props) {
   };
   const handleIdSlot = (id) => {
     setSlotID(id);
-    console.log("id staff", id);
+
+    syllabusAPI.getSlotWithID(id).then((response) => {
+      setSlot(response.responseSuccess[0]);
+  
+      console.log("response", response.responseSuccess[0]);
+    });
     setViewDetail(true)
+
+
   };
 
   //   const handleViewDetail = (id) => {
@@ -179,18 +192,36 @@ function DetailCourseDeal(props) {
     }
   }, [course, syllabus]);
 
+
+  const Swal = require('sweetalert2')
+  const showAlert = () => {
+    Swal.fire({
+        title: "Success",
+        text: "Alert successful",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+}
+const showAlertError = () => {
+    Swal.fire({
+        title: "Error",
+        text: "Alert successful",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+}
+
   const handleApproveSlot = (id) => {
     axios.put(`https://localhost:7115/api/v1/slot/updateStatus/${id}?Status=1`).then((response) => {
-     alert(response.isSuccess)
+      {response.isSuccess ? showAlert() :showAlertError()}
     })
    }
    const handleRejectSlot = (id) => {
      axios.put(`https://localhost:7115/api/v1/slot/updateStatus/${id}?Status=2`).then((response) => {
-        alert(response.isSuccess)
+      {response.isSuccess ? showAlert() :showAlertError()}
      })
     }
- 
-
+  
   return (
     <Box>
       <form>
@@ -607,7 +638,7 @@ function DetailCourseDeal(props) {
                           <Button onClick={() => handleRejectSlot(slot?.id)} size="small" color="error">
                             Reject
                           </Button>
-                          <Button onClick={() => handleApproveSlot(slot?.id)} size="small" color="success">
+                          <Button onClick={() =>  handleApproveSlot(slot?.id)} size="small" color="success">
                             Approve
                           </Button>
                         </ButtonGroup>
@@ -689,7 +720,7 @@ function DetailCourseDeal(props) {
         </Box>
       </Stack>
 
-      {viewDetail && <DetailSlotDeal SlotID={slotID} />}
+     <DetailSlotDeal show={viewDetail} close={() => setViewDetail(false)} slot={slot} SlotID={slotID} syllabusID = {editSyllabus} />
 
     </Box>
   );

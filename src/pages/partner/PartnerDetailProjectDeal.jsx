@@ -33,6 +33,7 @@ import syllabusAPI from "../../api/syllabusAPI";
 import { StyledTextField } from "../../styles/textfield";
 import { ColorButton } from "../../styles/button";
 import DetailSlotDeal from "../admins/dealing/DetailSlotDeal";
+import PartnerDetailSlotDeal from "./PartnerDetailSlotDeal";
 
 PartnerDetailProjectDeal.propTypes = {
     
@@ -53,7 +54,8 @@ function PartnerDetailProjectDeal(props) {
     const [slotReject, setSlotReject] = useState("");
     const [viewDetail, setViewDetail] = useState(false);
     const [ slotID, setSlotID] = useState("");
-  
+    const [slot, setSlot] = useState([]);
+   
   
     const handleChange = (panel) => (event, isExpanded) => {
       setExpanded(isExpanded ? panel : false);
@@ -115,8 +117,15 @@ function PartnerDetailProjectDeal(props) {
     };
     const handleIdSlot = (id) => {
       setSlotID(id);
-      console.log("id staff", id);
+
+      syllabusAPI.getSlotWithID(id).then((response) => {
+        setSlot(response.responseSuccess[0]);
+    
+        console.log("response", response.responseSuccess[0]);
+      });
       setViewDetail(true)
+  
+  
     };
   
     //   const handleViewDetail = (id) => {
@@ -181,15 +190,33 @@ function PartnerDetailProjectDeal(props) {
   
       }
     }, [course, syllabus]);
+    
+    const Swal = require('sweetalert2')
+    const showAlert = () => {
+      Swal.fire({
+          title: "Success",
+          text: "Alert successful",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+  }
+  const showAlertError = () => {
+      Swal.fire({
+          title: "Error",
+          text: "Alert successful",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+  }
   
     const handleApproveSlot = (id) => {
       axios.put(`https://localhost:7115/api/v1/slot/updateStatus/${id}?Status=1`).then((response) => {
-       alert(response.isSuccess)
+        {response.isSuccess ? showAlert() : showAlertError()}
       })
      }
      const handleRejectSlot = (id) => {
        axios.put(`https://localhost:7115/api/v1/slot/updateStatus/${id}?Status=2`).then((response) => {
-          alert(response.isSuccess)
+        {response.isSuccess ? showAlert() :showAlertError()}
        })
       }
    
@@ -594,7 +621,7 @@ function PartnerDetailProjectDeal(props) {
   
                             {moment(slot?.dateCreated).format("DD/MM/YYYY")}
                           </Typography>
-                          <Button onClick={() =>handleIdSlot(slot?.id)}>
+                          <Button onClick={() => handleIdSlot(slot?.id)}>
                           {slot?.name}
                           </Button>
                           {/* <Typography variant="h6" style={{ fontWeight: "bold" }}>
@@ -692,8 +719,7 @@ function PartnerDetailProjectDeal(props) {
           </Box>
         </Stack>
   
-        {viewDetail && <DetailSlotDeal SlotID={slotID} />}
-  
+        <PartnerDetailSlotDeal show={viewDetail} close={() => setViewDetail(false)} slot={slot} SlotID={slotID} syllabusID = {editSyllabus} />
       </Box>
     );
 }

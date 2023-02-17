@@ -10,6 +10,7 @@ import AddIcon from "@mui/icons-material/Add";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import Filter from '../admins/Filter';
 
+
 PartnerDeal.propTypes = {
     
 };
