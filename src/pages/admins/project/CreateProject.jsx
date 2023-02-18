@@ -7,8 +7,10 @@ import {
   Chip,
   FormControl,
   IconButton,
+  InputAdornment,
   InputLabel,
   MenuItem,
+  OutlinedInput,
   Select,
   Snackbar,
   Stack,
@@ -119,17 +121,24 @@ function CreateProject(props) {
     });
   }, []);
 
+  console.log("course", courses)
   //fetch data course
   const fetchDataCourse = async () => {
     await courseAPI.getList().then((response) => {
-      setCourses(response.responseSuccess)
+
+      
+      
+      const found = response.responseSuccess.find((obj) => {
+        return obj.isActive === true;
+      });
+      setCourses(found)
     });
   };
   useEffect(() => {
     fetchDataCourse().catch((error) => {
       console.log(error);
     });
-  }, [courses]);
+  }, []);
 
   // fetch data partner
   const fetchDataPartner = async () => {
@@ -170,6 +179,23 @@ function CreateProject(props) {
   //   CourseId: newCourse,
   //   PartnerId: newPartner
   // }
+  const Swal = require("sweetalert2");
+  const showAlert = () => {
+    Swal.fire({
+      title: "Success",
+      text: "Create successful",
+      icon: "success",
+      confirmButtonText: "OK",
+    });
+  };
+  const showAlertError = () => {
+    Swal.fire({
+      title: "Error",
+      text: "Create successful",
+      icon: "error",
+      confirmButtonText: "OK",
+    });
+  };
   const handleSubmit = (e) => {
       axios({
         method: "POST",
@@ -179,10 +205,10 @@ function CreateProject(props) {
           "Content-Type": "multipart/form-data",
         },
       }).then((response)=>{
-        response.isSuccess = true ? handleClickOpen() : handleClickOpenFalse();
+        {response.isSuccess ? showAlert() : showAlertError()}
       })
   
-  
+  console.log("formdata", formData);
 
   };
   return (
@@ -472,9 +498,9 @@ function CreateProject(props) {
           >
             Create Course
           </ColorButton></MenuItem>
-                   { courses.map((course, index) => (
-                    <MenuItem key={index} value={course.id}>{course.activity}</MenuItem>
-                   ))}
+                  
+                    <MenuItem value={courses.id}>{courses.activity}</MenuItem>
+                 
                   </Select>
               </FormControl>
               </Box>
@@ -495,7 +521,31 @@ function CreateProject(props) {
                 >
                   Participant Fee
                 </Typography>
-                <StyledTextField
+                {/* <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
+          <OutlinedInput
+          style={{backgroundColor:"white"}}
+          type="number"
+            name="fee"
+            value={inputValue.fee}
+            onChange={handleOnChangeInputProject}
+            id="outlined-adornment-amount"
+            startAdornment={<InputAdornment position="start">$</InputAdornment>}
+            label="Amount"
+          /> */}
+          
+           <OutlinedInput
+           style={{backgroundColor: "white"}}
+               type="number"
+          
+               autoComplete="off"
+               fullWidth
+               size="small"
+               name="fee"
+               value={inputValue.fee}
+               onChange={handleOnChangeInputProject}
+               startAdornment={<InputAdornment position="start">$</InputAdornment>}
+          />
+                {/* <StyledTextField
         type="number"
                   label="Participant Fee"
                   autoComplete="off"
@@ -504,7 +554,8 @@ function CreateProject(props) {
                   name="fee"
                   value={inputValue.fee}
                   onChange={handleOnChangeInputProject}
-                />
+                  startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                /> */}
               </Box>
             </Stack>
       

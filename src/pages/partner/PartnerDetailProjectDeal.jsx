@@ -195,7 +195,7 @@ function PartnerDetailProjectDeal(props) {
     const showAlert = () => {
       Swal.fire({
           title: "Success",
-          text: "Alert successful",
+          text: "Update successful",
           icon: "success",
           confirmButtonText: "OK",
         });
@@ -203,7 +203,7 @@ function PartnerDetailProjectDeal(props) {
   const showAlertError = () => {
       Swal.fire({
           title: "Error",
-          text: "Alert successful",
+          text: "Update successful",
           icon: "error",
           confirmButtonText: "OK",
         });
@@ -404,14 +404,14 @@ function PartnerDetailProjectDeal(props) {
                   </FormControl>
                 </Box>
   
-                <ColorButton
+                {/* <ColorButton
                   //   onClick={() => setOpenCreate(true)}
                   sx={{ marginTop: "35px" }}
                   variant="contained"
                   endIcon={<AddIcon />}
                 >
                   Create Syllabus
-                </ColorButton>
+                </ColorButton> */}
               </Stack>
               <Box
                 sx={{
@@ -612,6 +612,35 @@ function PartnerDetailProjectDeal(props) {
                           alignItems="flex-start"
                           spacing={2}
                         >
+                  {/* <Chip
+                           label = {slot?.slotStatus === 1 ? "Approve" : slot?.slotStatus === 2 ? "Reject" : null}
+                            color={slot?.slotStatus === 1 ? "success" : slot?.slotStatus === 2 ? "error" : null}
+                            style={{ marginRight: "10px" }}
+                            size="small"
+                          /> */}
+                                                   {
+                  slot?.slotStatus === 1
+                    ? <Chip
+                    label= "Approve"
+                    color= "success"
+                
+                    size="small"
+                  />
+                    : slot?.slotStatus === 2
+                    ? <Chip
+                    label= "Reject"
+                    color= "error"
+                
+                    size="small"
+                  />
+                    :  slot?.slotStatus === 0
+                    ? <Chip
+                    label= "New"
+                    color= "warning"
+           
+                    size="small"
+                  /> : null
+                }
                           <Typography sx={{ color: "text.secondary" }}>
                             <Chip
                               label={slot?.session}
@@ -629,28 +658,38 @@ function PartnerDetailProjectDeal(props) {
                           </Typography> */}
                         </Stack>
                         <Box>
+                         
                           <ButtonGroup
+                         
                             variant="contained"
                             aria-label="outlined primary button group"
                           >
+                              {slot?.slotStatus === 1 ? (<>
                               
-                            <Button onClick={() => handleRejectSlot(slot?.id)} size="small" color="error">
-                              Reject
-                            </Button>
-                            <Button onClick={() => handleApproveSlot(slot?.id)} size="small" color="success">
-                              Approve
-                            </Button>
+                              <Button onClick={() => handleRejectSlot(slot?.id)} size="small" color="error">
+                            Reject
+                          </Button>
+                            </> ) : slot?.slotStatus === 2 ?(null) : <>
+                              <Button onClick={() => handleApproveSlot(slot?.id)} size="small" color="success">
+                            Approve
+                          </Button>
+                          <Button  onClick={() => handleRejectSlot(slot?.id)} size="small" color="error">
+                            Reject
+                          </Button>
+                            </>}
+                           
+                           
                           </ButtonGroup>
                         </Box>
                       </Stack>
                     </AccordionSummary>
-                    <AccordionDetails>
+                    {/* <AccordionDetails>
                       <Typography>
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                         Suspendisse malesuada lacus ex, sit amet blandit leo
                         lobortis eget.
                       </Typography>
-                    </AccordionDetails>
+                    </AccordionDetails> */}
                   </Accordion>
                 ))}
               </Box>
@@ -665,6 +704,7 @@ function PartnerDetailProjectDeal(props) {
               padding: "40px 20px 20px 40px",
               borderRadius: "20px",
               marginTop: "20px",
+              height: "fit-content",
             }}
           >
             <Stack
@@ -696,10 +736,11 @@ function PartnerDetailProjectDeal(props) {
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
+                  
                 }}
               >
-                <Typography variant="h6" color="green">{slotApprove}</Typography>
-                <Typography variant="h6"color="green">Slots</Typography>
+                <Typography variant="h8" color="green">{slotApprove}</Typography>
+                <Typography variant="h7"color="green">Slots Approve</Typography>
               </Box>
               <Box
                   style={{
@@ -712,8 +753,8 @@ function PartnerDetailProjectDeal(props) {
                       justifyContent: "center",
                     }}
               >
-                <Typography variant="h6" color="red">{slotReject}</Typography>
-                <Typography variant="h6" color="red">Slots</Typography>
+                <Typography variant="h8" color="red">{slotReject}</Typography>
+                <Typography variant="h7" color="red">Slots Reject</Typography>
               </Box>
             </Stack>
           </Box>

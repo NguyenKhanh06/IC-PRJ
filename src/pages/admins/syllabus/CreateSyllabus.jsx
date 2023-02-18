@@ -41,7 +41,7 @@ function CreateSyllabus(props) {
   console.log(inputValue.courseid)
   const handleSubmit = async (e) => {
     await axios.post(`https://localhost:7115/api/v1/syllabus/create?Content=${inputValue.description}&Description=${inputValue.name}&CourseId=${props.courseid}`).then((response)=>{
-      console.log(response);
+      console.log(`https://localhost:7115/api/v1/syllabus/create?Content=${inputValue.description}&Description=${inputValue.name}&CourseId=${props.courseid}`);
     })
   };
 

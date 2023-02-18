@@ -13,6 +13,7 @@ import staffAPI from "../../../api/staffAPI";
 import { useState } from "react";
 import { useEffect } from "react";
 import {
+  DialogContentText,
   Paper,
   Table,
   TableBody,
@@ -32,6 +33,16 @@ function AssignLeader(props) {
   const [idLeader, setIDLeader] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(15);
+  const [openDetail, setOpenDetail] = useState(false);
+
+  const handleClickOpenDetail = () => {
+    openDetail(true);
+  };
+
+  const handleCloseDetail = () => {
+    openDetail(false);
+  };
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -116,11 +127,11 @@ function AssignLeader(props) {
                       <TableCell align="left">{index + 1}</TableCell>
 
                       <TableCell component="th" scope="row">
-                        <Link to={`/admin/detail-project/${staff.id}`}>
-                          <Button sx={{ color: "black" }} variant="text">
+                    
+                          <Button  sx={{ color: "black" }} variant="text">
                             {staff.fullName}
                           </Button>
-                        </Link>
+                       
                       </TableCell>
 
                       <TableCell align="left">{staff.email}</TableCell>
@@ -156,6 +167,7 @@ function AssignLeader(props) {
               </ColorButton>
         </DialogActions> */}
       </Dialog>
+
     </div>
   );
 }

@@ -11,8 +11,10 @@ import {
   DialogTitle,
   FormControl,
   IconButton,
+  InputAdornment,
   InputLabel,
   MenuItem,
+  OutlinedInput,
   Select,
   Stack,
   TextField,
@@ -63,8 +65,12 @@ function DetailProject(props) {
   const [openAssignLeader, setOpenAssignLeader] = useState(false);
   const [openAssignPartner, setOpenAssignPartner] = useState(false);
   const [openCreate, setOpenCreate] = useState(false);
+  const [editStaffname, setEditStaffName] = useState({});
+  const [editPartnername, setEditPartnerName] = useState("");
+  const [staffName, setStaffName] = useState("");
   
-
+  const [newPartner, setNewPartner] = useState([]);
+  const [newLeader, setNewLeader] = useState([]);
   
   const handleClickOpen = () => {
     setOpen(true);
@@ -79,14 +85,15 @@ function DetailProject(props) {
   };
 
   const handleUpdate = (e) => {
-    console.log("onchange leader", editLeader);
+    console.log("onchange leader", newLeader.fullName);
   };
 
   //fetch data project
   const fetchData = async () => {
     await projectAPI.getProjectDetail(projectID.id).then((response) => {
       setProject(response.responseSuccess[0]);
-      console.log(response.responseSuccess[0]);
+      setEditStaffName( response.responseSuccess[0].joinProjects[0]);
+      console.log("staff", editStaffname.staffs.fullName)
     });
   };
 
@@ -124,6 +131,8 @@ function DetailProject(props) {
       setEditLeader(project?.leader?.staff?.id);
       setEditDescription(project.description);
       setEditFee(project.fee)
+      setStaffName(editStaffname?.staffs?.fullName)
+      setEditPartnerName(project?.partner?.name)
     }
   }, [project]);
   // console.log("project.leader.staff.fullname", project.leader.staff.fullname)
@@ -558,7 +567,7 @@ function DetailProject(props) {
                 >
                   Participant Fee
                 </Typography>
-                <StyledTextField
+                {/* <StyledTextField
              type="number"
                   label="Participant Fee"
                   autoComplete="off"
@@ -567,7 +576,19 @@ function DetailProject(props) {
                   name="fee"
                   value={editFee}
                   onChange={handleOnChangeFee}
-                />
+                /> */}
+                  <OutlinedInput
+           style={{backgroundColor: "white"}}
+               type="number"
+          
+               autoComplete="off"
+               fullWidth
+               size="small"
+               name="fee"
+               value={editFee}
+               onChange={handleOnChangeFee}
+               startAdornment={<InputAdornment position="start">$</InputAdornment>}
+          />
               </Box>
             </Stack>
 
@@ -603,7 +624,9 @@ function DetailProject(props) {
                   alignItems="center"
                   spacing={2}
                 >
-                  <Chip label="Chip Filled" />
+      
+                  {(newLeader.length != 0) ? (<Chip label={newLeader.fullName}/>) : (<Chip label={staffName}/>)}
+
                   <IconButton onClick={() => setOpenAssignLeader(true)} aria-label="fingerprint" color="secondary">
                     <PersonAddIcon style={{ color: "#22a19a" }} />
                   </IconButton>
@@ -632,7 +655,8 @@ function DetailProject(props) {
                   alignItems="center"
                   spacing={2}
                 >
-                  <Chip label="Chip Filled" />
+                
+                  {(newPartner.length != 0) ? (<Chip label={newPartner.name}/>) : (<Chip label={editPartnername}/>)}
                   <IconButton onClick={() => setOpenAssignPartner(true)} aria-label="fingerprint" color="secondary">
                     <PersonAddIcon style={{ color: "#22a19a" }} />
                   </IconButton>
@@ -726,7 +750,7 @@ function DetailProject(props) {
                 }}
                 variant="contained"
               >
-                Save Change
+               Update Project
               </ColorButton>
             </Stack>
           </Box>
@@ -806,8 +830,8 @@ function DetailProject(props) {
         </DialogActions>
       </Dialog>
       <CreateCourse show={openCreate} close={() => setOpenCreate(false)} />
-      <AssignLeader show={openAssignLeader} close={() => setOpenAssignLeader(false)} setNewLeader={setLeader}/>
-   <AssignPartner show={openAssignPartner} close={() => setOpenAssignPartner(false)} setNewPartner={setPartner}/>
+      <AssignLeader show={openAssignLeader} close={() => setOpenAssignLeader(false)} setNewLeader={setNewLeader}/>
+   <AssignPartner show={openAssignPartner} close={() => setOpenAssignPartner(false)} setNewPartner={setNewPartner}/>
     </>
   );
 }

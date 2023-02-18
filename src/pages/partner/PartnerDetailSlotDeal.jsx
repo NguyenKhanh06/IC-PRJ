@@ -12,6 +12,7 @@ import Typography from "@mui/material/Typography";
 import {
   Avatar,
   Box,
+  Chip,
   DialogContentText,
   FormControl,
   InputLabel,
@@ -93,7 +94,7 @@ function PartnerDetailSlotDeal(props) {
   const showAlert = () => {
     Swal.fire({
       title: "Success",
-      text: "Alert successful",
+      text: "Update successful",
       icon: "success",
       confirmButtonText: "OK",
     });
@@ -101,7 +102,7 @@ function PartnerDetailSlotDeal(props) {
   const showAlertError = () => {
     Swal.fire({
       title: "Error",
-      text: "Alert successful",
+      text: "Update successful",
       icon: "error",
       confirmButtonText: "OK",
     });
@@ -206,6 +207,29 @@ function PartnerDetailSlotDeal(props) {
               >
                 Detail Slot
               </Typography>
+              {
+                  props.slot.slotStatus === 1
+                    ? <Chip
+                    label= "Approve"
+                    color= "success"
+                    style={{ marginLeft: "10px" }}
+                    size="small"
+                  />
+                    : props.slot.slotStatus === 2
+                    ? <Chip
+                    label= "Reject"
+                    color= "error"
+                    style={{ marginLeft: "10px" }}
+                    size="small"
+                  />
+                    :  props.slot.slotStatus === 0
+                    ? <Chip
+                    label= "New"
+                    color= "warning"
+                    style={{ marginLeft: "10px" }}
+                    size="small"
+                  /> : null
+                }
             </Box>
             <Box
               sx={{
@@ -244,7 +268,7 @@ function PartnerDetailSlotDeal(props) {
                 Topic
               </Typography>
               <StyledTextField
-                label="Topic"
+              
                 autoComplete="off"
                 fullWidth
                 size="small"
@@ -271,7 +295,7 @@ function PartnerDetailSlotDeal(props) {
                 Time Allocation
               </Typography>
               <StyledTextField
-                label="Time Allocation"
+              
                 autoComplete="off"
                 fullWidth
                 size="small"
@@ -298,14 +322,12 @@ function PartnerDetailSlotDeal(props) {
                 Learning's Type
               </Typography>
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">
-                  Learning Type
-                </InputLabel>
+      
                 <Select
-                  labelId="demo-simple-select-label"
+            
                   id="demo-simple-select"
                   value={editType}
-                  label="Learning Type"
+               
                   onChange={handleOnChangeType}
                   sx={{ backgroundColor: "white", textAlign: "left" }}
                   size="small"
@@ -351,7 +373,7 @@ function PartnerDetailSlotDeal(props) {
                 Detail
               </Typography>
               <StyledTextField
-                label="Detail"
+          
                 autoComplete="off"
                 fullWidth
                 size="small"
@@ -376,17 +398,17 @@ function PartnerDetailSlotDeal(props) {
         >
           Approve
         </Button> */}
-
-              <Button
+{props?.slot?.slotStatus === 1 ? (  <Button
                 onClick={() => {
-                  handleApproveSlot();
+                  handleRejectSlot();
                 }}
                 variant="contained"
-                color="success"
+                color="error"
               >
-                Approve
-              </Button>
-              <Button
+                Reject
+              </Button>) : props?.slot?.slotStatus === 2 ?  null : (<>
+              
+                <Button
                 onClick={() => {
                   handleRejectSlot();
                 }}
@@ -395,6 +417,19 @@ function PartnerDetailSlotDeal(props) {
               >
                 Reject
               </Button>
+
+                <Button
+                onClick={() => {
+                  handleApproveSlot();
+                }}
+                variant="contained"
+                color="success"
+              >
+                Approve
+              </Button>
+              </>)}
+             
+            
               <ColorButton
                 onClick={() => {
                   handleUpdateSlot()

@@ -6,6 +6,8 @@ import axios from 'axios';
 import { ColorButton } from '../styles/button';
 import { useNavigate } from 'react-router-dom';
 import partnerAPI from '../api/partnerAPI';
+import { IconButton, InputAdornment, Stack } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 SiginPartner.propTypes = {
     
@@ -14,6 +16,14 @@ SiginPartner.propTypes = {
 function SiginPartner(props) {
     const navigate = useNavigate();
     const [partner, setPartner] = useState([])
+    const [showPassword, setShowPassword] = React.useState(false);
+
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
+  
+    const handleMouseDownPassword = (event) => {
+      event.preventDefault();
+    };
+  
     const [inputValue, setInputValue] = useState({
         username: "",
         password: "",
@@ -50,9 +60,10 @@ function SiginPartner(props) {
         })
       }
     return (
-       <Box>
+       <Stack>
 <StyledTextField
-              label="Project's name"
+style={{marginBottom: 40}}
+              label="User Name"
               autoComplete="off"
               fullWidth
               size="small"
@@ -61,16 +72,31 @@ function SiginPartner(props) {
               onChange={handleOnChangeInput}
             />
             <StyledTextField
-              label="Project's name"
-              autoComplete="off"
-              fullWidth
-              size="small"
-              name="password"
-              value={inputValue.password}
-              onChange={handleOnChangeInput}
-            />
+            style={{marginBottom: 40}}
+           label="Password"
+           autoComplete="off"
+           fullWidth
+           size="small"
+           name="password"
+           value={inputValue.password}
+           onChange={handleOnChangeInput}
+            type={showPassword ? 'text' : 'password'}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
+            
+          />
             <ColorButton onClick={() => handleSignin()}>Sign In</ColorButton>
-       </Box>
+       </Stack>
     );
 }
 

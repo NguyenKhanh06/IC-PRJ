@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Avatar, Box, Button, Dialog, DialogContent, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
+import { Avatar, Box, Button, Dialog, DialogContent, FormControl, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select, Stack, TextField, Typography } from '@mui/material';
 import { Link, useParams } from 'react-router-dom';
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import syllabusAPI from '../../../api/syllabusAPI';
@@ -163,7 +163,19 @@ function DetailSlot(props) {
           >
             Time Allocation
           </Typography>
-          <StyledTextField
+          <OutlinedInput
+           style={{backgroundColor: "white"}}
+               type="number"
+          
+               autoComplete="off"
+               fullWidth
+               size="small"
+               name="fee"
+               value={editTime}
+               onChange={handleOnChangeTime}
+               endAdornment={<InputAdornment position="end">Minutes</InputAdornment>}
+          />
+          {/* <StyledTextField
               label="Time Allocation"
               autoComplete="off"
               fullWidth
@@ -171,7 +183,7 @@ function DetailSlot(props) {
               name="SESSION"
               value={editTime}
               onChange={handleOnChangeTime}
-            />
+            /> */}
         </Box>
         <Box
           sx={{
@@ -273,7 +285,7 @@ function DetailSlot(props) {
               }}
               variant="contained"
             >
-              Updat slot
+              Update slot
             </ColorButton>
           </Stack>
       </Box>

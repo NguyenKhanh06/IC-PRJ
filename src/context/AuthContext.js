@@ -80,10 +80,11 @@ export const AuthContextProvider = ({ children }) => {
 
         if (
           !regex.test(user.email) &&
-          user.email !== "congkhanhnguyen1999@gmail.com"
+          user.email !== "congkhanhnguyen1999@gmail.com" &&
+          user.email !== "nguyencongkhanh2806@gmail.com"
         ) {
           signOut(auth).then(handleClick());
-        } else if (user.email === "congkhanhnguyen1999@gmail.com") {
+        } else if (user.email === "congkhanhnguyen1999@gmail.com" || "nguyencongkhanh2806@gmail.com") {
           navigate("/admin");
           console.log("staff", staff);
           axios

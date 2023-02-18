@@ -73,10 +73,10 @@ const Signin = () => {
 
   return (
     <div className="signin-page">
-      <img
+      {/* <img
         className="logo-img"
         src="https://hcmuni.fpt.edu.vn/Data/Sites/1/media/logo_1.png"
-      />
+      /> */}
       <img
         className="pic-right"
         src="https://cdn.hita.com.vn/storage/blog/danh-muc-cu/truong-dai-hoc-dep-fpt.jpeg"
@@ -110,7 +110,7 @@ const Signin = () => {
           </Box>
           <TabPanel value={value} index={0}>
             <img
-              src="https://scontent.fsgn2-8.fna.fbcdn.net/v/t39.30808-6/301630649_516498430281814_2662510924317735779_n.png?_nc_cat=105&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=3iymVtN4n9UAX_mi3qZ&_nc_ht=scontent.fsgn2-8.fna&oh=00_AfDqCdJ5EpsmPRD7IfFPvVVC1fBCZfrorxQj25K6oROfIA&oe=63D90891"
+              src="https://scontent.fsgn2-8.fna.fbcdn.net/v/t39.30808-1/301630649_516498430281814_2662510924317735779_n.png?stp=dst-png_p320x320&_nc_cat=105&ccb=1-7&_nc_sid=c6021c&_nc_ohc=swYGXRq5y5gAX-KUqgY&_nc_ht=scontent.fsgn2-8.fna&oh=00_AfDzC-S_Wf8BVGcRKuxYyBx0AmY8_hUWOUZzfRhwzlWC2w&oe=63F46C57"
               style={{ width: 240, height: 240 }}
             />
             <h3 style={{ color: "#22a19a", fontWeight: 700 }}>Sign in</h3>
@@ -181,7 +181,7 @@ const Signin = () => {
           </TabPanel>
           <TabPanel value={value} index={1}>
             <img
-              src="https://scontent.fsgn2-8.fna.fbcdn.net/v/t39.30808-6/301630649_516498430281814_2662510924317735779_n.png?_nc_cat=105&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=3iymVtN4n9UAX_mi3qZ&_nc_ht=scontent.fsgn2-8.fna&oh=00_AfDqCdJ5EpsmPRD7IfFPvVVC1fBCZfrorxQj25K6oROfIA&oe=63D90891"
+              src="https://scontent.fsgn2-8.fna.fbcdn.net/v/t39.30808-1/301630649_516498430281814_2662510924317735779_n.png?stp=dst-png_p320x320&_nc_cat=105&ccb=1-7&_nc_sid=c6021c&_nc_ohc=swYGXRq5y5gAX-KUqgY&_nc_ht=scontent.fsgn2-8.fna&oh=00_AfDzC-S_Wf8BVGcRKuxYyBx0AmY8_hUWOUZzfRhwzlWC2w&oe=63F46C57"
               style={{ width: 240, height: 240 }}
             />
             <h3 style={{ color: "#22a19a", fontWeight: 700 }}>Sign in</h3>

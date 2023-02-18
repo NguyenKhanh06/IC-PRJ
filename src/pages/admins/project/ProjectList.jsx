@@ -102,7 +102,10 @@ function ProjectList(props) {
                 Course
               </TableCell>
               <TableCell sx={{ fontWeight: 700 }} align="left">
-                Leader
+               Participant Fee
+              </TableCell>
+                 <TableCell sx={{ fontWeight: 700 }} align="left">
+               Participant Fee
               </TableCell>
               <TableCell sx={{ fontWeight: 700 }} align="left">
                 Status

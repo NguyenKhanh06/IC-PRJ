@@ -1,56 +1,66 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import Button from '@mui/material/Button';
-import { styled } from '@mui/material/styles';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import Typography from '@mui/material/Typography';
-import { Avatar, Box, FormControl, InputLabel, MenuItem, Select, Stack, TextField } from '@mui/material';
-import { ColorButton } from '../../../styles/button';
-import { StyledTextField } from '../../../styles/textfield';
-import syllabusAPI from '../../../api/syllabusAPI';
-import slotAPI from '../../../api/slotAPI';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import Typography from "@mui/material/Typography";
+import {
+  Avatar,
+  Box,
+  Chip,
+  FormControl,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  Stack,
+  TextField,
+} from "@mui/material";
+import { ColorButton } from "../../../styles/button";
+import { StyledTextField } from "../../../styles/textfield";
+import syllabusAPI from "../../../api/syllabusAPI";
+import slotAPI from "../../../api/slotAPI";
+import axios from "axios";
 
-DetailSlotDeal.propTypes = {
-    
-};
+DetailSlotDeal.propTypes = {};
 
-  
 function DetailSlotDeal(props) {
-    const [open, setOpen] = useState(false);
-    const [slot, setSlot] = useState([]);
-    const [editSession, setEditSession] = useState("");
-    const [editTopic, setEditTopic] = useState("");
-    const [editTime, setEditTime] = useState("");
-    const [editType, setEditType] = useState("");
-    const [editDetail, setEditDetail] = useState("");
-    const fetchData = async () => {
-        await syllabusAPI.getSlotWithID(props.SlotID).then((response) => {
-          setSlot(response.responseSuccess[0]);
+  const [open, setOpen] = useState(false);
+  const [slot, setSlot] = useState([]);
+  const [editSession, setEditSession] = useState("");
+  const [editTopic, setEditTopic] = useState("");
+  const [editTime, setEditTime] = useState("");
+  const [editType, setEditType] = useState("");
+  const [editDetail, setEditDetail] = useState("");
+  const fetchData = async () => {
+    await syllabusAPI.getSlotWithID(props.SlotID).then((response) => {
+      setSlot(response.responseSuccess[0]);
+
       
-          console.log("response", response.responseSuccess);
-        });
-      };
-      useEffect(() => {
-        fetchData().catch((error) => {
-          console.log(error);
-        });
-      }, []);
-      useEffect(() => {
-        if (props.slot != null) {
-          setSlot(props.slot);
-          setEditSession(props.slot.session);
-          setEditTopic(props.slot.name);
-          setEditTime(props.slot.timeAllocation);
-          setEditType(props.slot.type);
-          setEditDetail(props.slot.detail);
-        }
-      }, [props.slot]);
+    });
+  };
+  console.log("response", props.slot);
+  useEffect(() => {
+    fetchData().catch((error) => {
+      console.log(error);
+    });
+  }, []);
+  useEffect(() => {
+    if (props.slot != null) {
+      setSlot(props.slot);
+      setEditSession(props.slot.session);
+      setEditTopic(props.slot.name);
+      setEditTime(props.slot.timeAllocation);
+      setEditType(props.slot?.type);
+      setEditDetail(props.slot.detail);
+    }
+  }, [props.slot]);
   const handleOnChangeSession = (event) => {
     setEditSession(event.target.value);
   };
@@ -72,51 +82,62 @@ function DetailSlotDeal(props) {
   const handleClose = () => {
     setOpen(props.close);
   };
-  const Swal = require('sweetalert2')
+  const Swal = require("sweetalert2");
   const showAlert = () => {
     Swal.fire({
-        title: "Success",
-        text: "Alert successful",
-        icon: "success",
-        confirmButtonText: "OK",
-      });
-}
-const showAlertError = () => {
-    Swal.fire({
-        title: "Error",
-        text: "Alert successful",
-        icon: "error",
-        confirmButtonText: "OK",
-      });
-}
-
-const handleUpdateSlot = () => {
-  axios
-    .put(
-      `https://localhost:7115/api/v1/slot/update/${props.SlotID}?Name=${editTopic}&Detail=${editDetail}&Session=${editSession}&TimeAllocation=${editTime}&Type=${editType}&SyllabusId=${props.slot.syllabusId}`
-    )
-    .then((response) => {
-      handleClose();
-      {
-        response.isSuccess ? showAlert() : showAlertError();
-      }
+      title: "Success",
+      text: "Update successful",
+      icon: "success",
+      confirmButtonText: "OK",
     });
-};
-const handleApproveSlot = () => {
-  axios.put(`https://localhost:7115/api/v1/slot/updateStatus/${props.SlotID}?Status=1`).then((response) => {
-    handleClose();
-  {response.isSuccess ? showAlert() :showAlertError()}
-  })
- }
- const handleRejectSlot = () => {
-   axios.put(`https://localhost:7115/api/v1/slot/updateStatus/${props.SlotID}?Status=2`).then((response) => {
-    handleClose();
-       {response.isSuccess ? showAlert() :showAlertError()}
-   })
-  }
+  };
+  const showAlertError = () => {
+    Swal.fire({
+      title: "Error",
+      text: "Update successful",
+      icon: "error",
+      confirmButtonText: "OK",
+    });
+  };
 
-console.log()
+  const handleUpdateSlot = () => {
+    axios
+      .put(
+        `https://localhost:7115/api/v1/slot/update/${props.SlotID}?Name=${editTopic}&Detail=${editDetail}&Session=${editSession}&TimeAllocation=${editTime}&Type=${editType}&SyllabusId=${props.slot.syllabusId}`
+      )
+      .then((response) => {
+        handleClose();
+        {
+          response.isSuccess ? showAlert() : showAlertError();
+        }
+      });
+  };
+  const handleApproveSlot = () => {
+    axios
+      .put(
+        `https://localhost:7115/api/v1/slot/updateStatus/${props.SlotID}?Status=1`
+      )
+      .then((response) => {
+        handleClose();
+        {
+          response.isSuccess ? showAlert() : showAlertError();
+        }
+      });
+  };
+  const handleRejectSlot = () => {
+    axios
+      .put(
+        `https://localhost:7115/api/v1/slot/updateStatus/${props.SlotID}?Status=2`
+      )
+      .then((response) => {
+        handleClose();
+        {
+          response.isSuccess ? showAlert() : showAlertError();
+        }
+      });
+  };
 
+  console.log();
 
   return (
     <Dialog
@@ -159,7 +180,31 @@ console.log()
               >
                 Detail Slot
               </Typography>
+              {
+                  props?.slot?.slotStatus === 1
+                    ? <Chip
+                    label= "Approve"
+                    color= "success"
+                    style={{ marginLeft: "10px" }}
+                    size="small"
+                  />
+                    : props?.slot?.slotStatus === 2
+                    ? <Chip
+                    label= "Reject"
+                    color= "error"
+                    style={{ marginLeft: "10px" }}
+                    size="small"
+                  />
+                    : props?.slot?.slotStatus === 0 ? <Chip
+                    label= "New"
+                    color= "warning"
+                    style={{ marginLeft: "10px" }}
+                    size="small"
+                  /> : null
+                }
+              
             </Box>
+
             <Box
               sx={{
                 marginTop: 3,
@@ -197,7 +242,6 @@ console.log()
                 Topic
               </Typography>
               <StyledTextField
-                label="Topic"
                 autoComplete="off"
                 fullWidth
                 size="small"
@@ -223,15 +267,26 @@ console.log()
               >
                 Time Allocation
               </Typography>
-              <StyledTextField
-                label="Time Allocation"
+              {/* <StyledTextField
                 autoComplete="off"
                 fullWidth
                 size="small"
                 name="SESSION"
                 value={editTime}
                 onChange={handleOnChangeTime}
-              />
+              /> */}
+                  <OutlinedInput
+           style={{backgroundColor: "white"}}
+               type="number"
+          
+               autoComplete="off"
+               fullWidth
+               size="small"
+               name="fee"
+               value={editTime}
+               onChange={handleOnChangeTime}
+               endAdornment={<InputAdornment position="end">Minutes</InputAdornment>}
+          />
             </Box>
             <Box
               sx={{
@@ -251,14 +306,9 @@ console.log()
                 Learning's Type
               </Typography>
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">
-                  Learning Type
-                </InputLabel>
                 <Select
-                  labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   value={editType}
-                  label="Learning Type"
                   onChange={handleOnChangeType}
                   sx={{ backgroundColor: "white", textAlign: "left" }}
                   size="small"
@@ -304,7 +354,6 @@ console.log()
                 Detail
               </Typography>
               <StyledTextField
-                label="Detail"
                 autoComplete="off"
                 fullWidth
                 size="small"
@@ -329,17 +378,7 @@ console.log()
         >
           Approve
         </Button> */}
-
-              <Button
-                onClick={() => {
-                  handleApproveSlot();
-                }}
-                variant="contained"
-                color="success"
-              >
-                Approve
-              </Button>
-              <Button
+{ props?.slot?.slotStatus === 1 ? ( <Button
                 onClick={() => {
                   handleRejectSlot();
                 }}
@@ -347,10 +386,34 @@ console.log()
                 color="error"
               >
                 Reject
-              </Button>
+              </Button>) : props?.slot?.slotStatus === 2 ? null: (
+
+<>
+<Button
+  onClick={() => {
+    handleRejectSlot();
+  }}
+  variant="contained"
+  color="error"
+>
+  Reject
+</Button>
+<Button
+  onClick={() => {
+    handleApproveSlot();
+  }}
+  variant="contained"
+  color="success"
+>
+  Approve
+</Button>
+</> 
+              )}
+             
+             
               <ColorButton
                 onClick={() => {
-                  handleUpdateSlot()
+                  handleUpdateSlot();
                 }}
                 variant="contained"
               >
@@ -397,7 +460,6 @@ console.log()
             Save changes
           </Button>
         </DialogActions> */}
-      
     </Dialog>
   );
 }

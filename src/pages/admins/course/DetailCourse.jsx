@@ -298,14 +298,14 @@ function DetailCourse(props) {
                 </FormControl>
               </Box>
 
-              <ColorButton
+              {/* <ColorButton
                 onClick={() => setOpenCreate(true)}
                 sx={{ marginTop: "35px" }}
                 variant="contained"
                 endIcon={<AddIcon />}
               >
                 Create Syllabus
-              </ColorButton>
+              </ColorButton> */}
             </Stack>
             <Box
               sx={{
