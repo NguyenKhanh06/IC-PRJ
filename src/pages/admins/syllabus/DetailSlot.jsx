@@ -28,17 +28,19 @@ function DetailSlot(props) {
         fetchData().catch((error) => {
           console.log(error);
         });
-      }, [slot]);
+      }, []);
+      console.log("detail slot", props.slotDetail)
       
-   useEffect(() => {
-    if (slot != null) {
-        setEditSession(slot.session)
-        setEditTopic(slot.name)
-        setEditTime(slot.timeAllocation)
-        setEditType(slot.type)
-        setEditDetail(slot.detail)
-    }
-  }, [slot]);
+      useEffect(() => {
+        if (props.slotDetail != null) {
+    
+          setEditSession(props.slotDetail.session);
+          setEditTopic(props.slotDetail.name);
+          setEditTime(props.slotDetail.timeAllocation);
+          setEditType(props.slotDetail.type);
+          setEditDetail(props.slotDetail.detail);
+        }
+      }, [props.slotDetail]);
   const handleOnChangeSession = (event) => {
     setEditSession(event.target.value);
   };
@@ -55,6 +57,18 @@ function DetailSlot(props) {
     setEditDetail(event.target.value);
   };
     return (
+      <Dialog
+      fullWidth
+      maxWidth="md"
+      onClose={props.close}
+      aria-labelledby="customized-dialog-title"
+      open={props.show}
+    >
+      {/* <DialogTitle
+          id="customized-dialog-title"
+          onClose={props.close}
+        ></DialogTitle> */}
+      <DialogContent>
       <Box>
       <Stack>
         <p
@@ -69,7 +83,7 @@ function DetailSlot(props) {
         sx={{
           display: "flex",
           flexDirection: "column",
-          backgroundColor: "#F0F0F0",
+          backgroundColor: "#F8F8F8",
           width: "100%",
           padding: "40px 20px 20px 40px",
           borderRadius: "20px",
@@ -110,7 +124,6 @@ function DetailSlot(props) {
             Session
           </Typography>
           <StyledTextField
-              label="Session"
               autoComplete="off"
               fullWidth
               size="small"
@@ -137,7 +150,6 @@ function DetailSlot(props) {
             Topic
           </Typography>
           <StyledTextField
-              label="Topic"
               autoComplete="off"
               fullWidth
               size="small"
@@ -202,7 +214,15 @@ function DetailSlot(props) {
           >
             Learning's Type
           </Typography>
-          <FormControl fullWidth>
+          <StyledTextField
+              autoComplete="off"
+              fullWidth
+              size="small"
+              name="SESSION"
+              value={editType}
+              onChange={handleOnChangeType}
+            />
+          {/* <FormControl fullWidth>
         <InputLabel id="demo-simple-select-label">Learning Type</InputLabel>
         <Select
           labelId="demo-simple-select-label"
@@ -213,11 +233,12 @@ function DetailSlot(props) {
           sx={{ backgroundColor: "white", textAlign: "left" }}
           size="small"
         >
-          <MenuItem value={"Offline"}>Offline</MenuItem>
-          <MenuItem value={"Online"}>Online</MenuItem>
-          <MenuItem value={"Offline/Online"}>Offline/Online</MenuItem>
+                  <MenuItem value={""}>None</MenuItem>
+          <MenuItem value={"1"}>Offline</MenuItem>
+          <MenuItem value={"2"}>Online</MenuItem>
+          <MenuItem value={"3"}>Offline/Online</MenuItem>
         </Select>
-      </FormControl>
+      </FormControl> */}
           {/* <FormControl fullWidth>
       <InputLabel id="demo-simple-select-label">Learning Type</InputLabel>
       <Select
@@ -253,7 +274,6 @@ function DetailSlot(props) {
             Detail
           </Typography>
           <StyledTextField
-              label="Detail"
               autoComplete="off"
               fullWidth
               size="small"
@@ -294,6 +314,14 @@ function DetailSlot(props) {
 
    
       </Box>
+      </DialogContent>
+      {/* <DialogActions>
+          <Button autoFocus onClick={props.close}>
+            Save changes
+          </Button>
+        </DialogActions> */}
+    </Dialog>
+     
     );
 }
 

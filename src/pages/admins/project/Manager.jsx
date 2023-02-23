@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import BasicTabs from '../Tabs';
+import BasicTabs from '../task/Tabs';
 import { useLocation } from 'react-router-dom';
 
 Manager.propTypes = {

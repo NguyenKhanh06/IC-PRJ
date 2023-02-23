@@ -10,6 +10,7 @@ import { ColorButton } from '../../../styles/button';
 import SearchIcon from "@mui/icons-material/Search";
 import syllabusAPI from '../../../api/syllabusAPI';
 import moment from 'moment';
+import DetailSyllabus from './DetailSyllabus';
 
 
 
@@ -22,7 +23,7 @@ function CreateSlot(props) {
     const [rowsPerPage, setRowsPerPage] = useState(15);
     const [slots, setSlots] = useState([])
     const [open, setOpen] = useState(true)
-    const [type, setType] = useState('');
+    const [type, setType] = useState(0);
 
     const handleChange = (event) => {
       setType(event.target.value);
@@ -67,12 +68,13 @@ function CreateSlot(props) {
 
       }
       const handleSubmit = (e) => {
-         axios.post(`https://localhost:7115/api/v1/slot/create?Name=${inputValue.name}&Detail=${inputValue.detail}&Session=${inputValue.session}&TimeAllocation=${inputValue.timeAllocation}&Type=${type}&SyllabusId=${props.syllabusID}`).then((response)=>{
+         axios.post(`https://localhost:7115/api/v1/slot/create?Name=${inputValue.name}&Detail=${inputValue.detail}&Session=${inputValue.session}&TimeAllocation=${inputValue.timeAllocation}&Type=${inputValue.type}&SyllabusId=${props.syllabusID}`).then((response)=>{
           console.log(response);
-          
+          window.location.reload(false);
+  
         })
       };
-   
+
     return (
       <Dialog
       fullWidth
@@ -93,7 +95,7 @@ function CreateSlot(props) {
             sx={{
               display: "flex",
               flexDirection: "column",
-              backgroundColor: "#F0F0F0",
+              backgroundColor: "#F8F8F8",
               width: "100%",
               padding: "40px 20px 20px 40px",
               borderRadius: "20px",
@@ -203,7 +205,16 @@ function CreateSlot(props) {
             >
               Learning Type
             </Typography>
-            <FormControl fullWidth>
+            <StyledTextField
+              label="Detail"
+              autoComplete="off"
+              fullWidth
+              size="small"
+              name="type"
+              value={inputValue.type}
+              onChange={handleOnChangeInputSlot}
+            />
+            {/* <FormControl fullWidth>
         <InputLabel id="demo-simple-select-label">Learning Type</InputLabel>
         <Select
           labelId="demo-simple-select-label"
@@ -214,11 +225,12 @@ function CreateSlot(props) {
           sx={{ backgroundColor: "white" }}
           size="small"
         >
-          <MenuItem value={"Offline"}>Offline</MenuItem>
-          <MenuItem value={"Online"}>Online</MenuItem>
-          <MenuItem value={"Offline/Online"}>Offline/Online</MenuItem>
+          <MenuItem value= {0}>None</MenuItem>
+          <MenuItem value= {1}>Offline</MenuItem>
+          <MenuItem value={2}>Online</MenuItem>
+          <MenuItem value={3}>Offline/Online</MenuItem>
         </Select>
-      </FormControl>
+      </FormControl> */}
           </Box>
           <Box
             sx={{
@@ -247,8 +259,10 @@ function CreateSlot(props) {
           <Box sx={{ marginTop: 6, marginLeft: "80%" }}>
             <ColorButton
               onClick={() => {
+                
                 handleSubmit();
-                handleClose()
+                handleClose();
+              
               }}
               variant="contained"
             >

@@ -236,7 +236,7 @@ function CreateProject(props) {
           sx={{
             display: "flex",
             flexDirection: "column",
-            backgroundColor: "#F0F0F0",
+            backgroundColor: "#F8F8F8",
             width: "100%",
             padding: "40px 20px 20px 40px",
             borderRadius: "20px",
@@ -272,10 +272,11 @@ function CreateProject(props) {
                 marginBottom: 2,
               }}
             >
-              Project's Name
+              Project's Name *
             </Typography>
             <StyledTextField
-              label="Project's name"
+            
+            required
               autoComplete="off"
               fullWidth
               size="small"
@@ -309,11 +310,11 @@ function CreateProject(props) {
                   marginBottom: 2,
                 }}
               >
-                Estimate Time Start
+                Estimate Time Start *
               </Typography>
               <LocalizationProvider size="small" dateAdapter={AdapterDayjs}>
                 <DatePicker
-                  label="Estimate Time Start"
+
                   value={estimate_start}
                   onChange={(newValueTo) => {
                     setEstimate_start(newValueTo);
@@ -321,6 +322,7 @@ function CreateProject(props) {
                   sx={{ width: " 548px" }}
                   renderInput={(params) => (
                     <StyledTextField
+                    
                       onKeyDown={onKeyDown}
                       size="small"
                       {...params}
@@ -346,11 +348,11 @@ function CreateProject(props) {
                   marginBottom: 2,
                 }}
               >
-                Estimate time end
+                Estimate time end *
               </Typography>
               <LocalizationProvider size="small" dateAdapter={AdapterDayjs}>
                 <DatePicker
-                  label="Estimate Time End"
+                  
                   name="estimate_end"
                   value={estimate_end}
                   onChange={(newValueTo) => {
@@ -359,6 +361,7 @@ function CreateProject(props) {
                   fullWidth
                   renderInput={(params) => (
                     <StyledTextField
+                    required
                       onKeyDown={onKeyDown}
                       size="small"
                       {...params}
@@ -394,11 +397,11 @@ function CreateProject(props) {
                   marginBottom: 2,
                 }}
               >
-                Registration Opening Time
+                Registration Opening Time *
               </Typography>
               <LocalizationProvider size="small" dateAdapter={AdapterDayjs}>
                 <DatePicker
-                  label="Registration Opening Time"
+       required
                   value={regis_open}
                   onChange={(newValueTo) => {
                     setRegis_open(newValueTo);
@@ -435,7 +438,6 @@ function CreateProject(props) {
               </Typography>
               <LocalizationProvider size="small" dateAdapter={AdapterDayjs}>
                 <DatePicker
-                  label="Registration Opening Close"
                   name="regis_close"
                   value={regis_close}
                   onChange={(newValueTo) => {
@@ -479,7 +481,7 @@ function CreateProject(props) {
                     marginBottom: 2,
                   }}
                 >
-                  Course
+                  Course *
                 </Typography>
                 <FormControl fullWidth>
               <Select
@@ -519,7 +521,7 @@ function CreateProject(props) {
                     marginBottom: 2,
                   }}
                 >
-                  Participant Fee
+                  Participant Fee *
                 </Typography>
                 {/* <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
           <OutlinedInput
@@ -584,7 +586,7 @@ function CreateProject(props) {
                     marginBottom: 2,
                   }}
                 >
-                  Leader
+                  Leader *
                 </Typography>
                 <Stack
                   direction="row"
@@ -613,7 +615,7 @@ function CreateProject(props) {
                     marginBottom: 2,
                   }}
                 >
-                  Partner
+                  Partner *
                 </Typography>
                 <Stack
                   direction="row"
@@ -644,7 +646,7 @@ function CreateProject(props) {
               Project Description
             </Typography>
             <StyledTextField
-              label="Description"
+       
               autoComplete="off"
               fullWidth
               size="small"

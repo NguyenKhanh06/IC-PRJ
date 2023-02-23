@@ -112,7 +112,9 @@ function CourseList(props) {
                     <TableCell align="left">{index + 1}</TableCell>
   
                     <TableCell component="th" scope="row">
-                    <Link to={`/admin/detail-course/${course.id}`}>
+                    
+                  <Link to="/admin/detail-course" state={course.id}>
+
                     <Button
                     
                         sx={{ color: "black" }}

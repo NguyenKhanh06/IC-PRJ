@@ -30,7 +30,7 @@ function Filter(props) {
     };
     return (
         <Stack
-        sx={{marginBottom: 2, marginTop: 2, height: 75, backgroundColor: "#F0F0F0"}}
+        sx={{marginBottom: 2, marginTop: 2, height: 75, backgroundColor: "#F8F8F8"}}
         justifyContent="space-around"
          direction="row"
         alignItems="center"

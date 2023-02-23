@@ -20,15 +20,15 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { StyledTextField } from "../../../styles/textfield";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { ColorButton } from "../../../styles/button";
 import AddIcon from "@mui/icons-material/Add";
-import ScrollableTab from "../Tabs";
-import BasicTabs from "../Tabs";
+import ScrollableTab from "../task/Tabs";
+import BasicTabs from "../task/Tabs";
 import projectAPI from "../../../api/projectAPI";
 import staffAPI from "../../../api/staffAPI";
 import partnerAPI from "../../../api/partnerAPI";
@@ -41,7 +41,9 @@ import CreateCourse from "../course/CreateCourse";
 DetailProject.propTypes = {};
 
 function DetailProject(props) {
-  const projectID = useParams();
+
+  const location = useLocation();
+  const projectID = location.state;
   const [editName, setEditName] = useState("");
   const [editEstimate_start, setEditEstimate_start] = useState(null);
   const [editEstimate_end, setEditEstimate_end] = useState(null);
@@ -90,10 +92,10 @@ function DetailProject(props) {
 
   //fetch data project
   const fetchData = async () => {
-    await projectAPI.getProjectDetail(projectID.id).then((response) => {
+    await projectAPI.getProjectDetail(projectID).then((response) => {
       setProject(response.responseSuccess[0]);
       setEditStaffName( response.responseSuccess[0].joinProjects[0]);
-      console.log("staff", editStaffname.staffs.fullName)
+   
     });
   };
 
@@ -190,7 +192,7 @@ function DetailProject(props) {
             sx={{
               display: "flex",
               flexDirection: "column",
-              backgroundColor: "#F0F0F0",
+              backgroundColor: "#F8F8F8",
               width: "100%",
               padding: "40px 20px 20px 40px",
               borderRadius: "20px",
@@ -625,7 +627,7 @@ function DetailProject(props) {
                   spacing={2}
                 >
       
-                  {(newLeader.length != 0) ? (<Chip label={newLeader.fullName}/>) : (<Chip label={staffName}/>)}
+                  {(newLeader.length !== 0) ? (<Chip label={newLeader.fullName}/>) : (<Chip label={staffName}/>)}
 
                   <IconButton onClick={() => setOpenAssignLeader(true)} aria-label="fingerprint" color="secondary">
                     <PersonAddIcon style={{ color: "#22a19a" }} />

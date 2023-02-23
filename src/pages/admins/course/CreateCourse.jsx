@@ -71,7 +71,7 @@ function CreateCourse(props) {
             sx={{
               display: "flex",
               flexDirection: "column",
-              backgroundColor: "#F0F0F0",
+              backgroundColor: "#F8F8F8",
               width: "100%",
               padding: "10px 20px 20px 40px",
               borderRadius: "20px",

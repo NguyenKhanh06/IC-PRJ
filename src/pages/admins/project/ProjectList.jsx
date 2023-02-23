@@ -86,7 +86,7 @@ function ProjectList(props) {
       <Filter />
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
+        <TableHead>
             <TableRow hover>
               <TableCell sx={{ fontWeight: 700 }}>No</TableCell>
               <TableCell sx={{ fontWeight: 700 }} align="left">
@@ -105,7 +105,10 @@ function ProjectList(props) {
                Participant Fee
               </TableCell>
                  <TableCell sx={{ fontWeight: 700 }} align="left">
-               Participant Fee
+               Leader
+              </TableCell>
+              <TableCell sx={{ fontWeight: 700 }} align="left">
+               Partner
               </TableCell>
               <TableCell sx={{ fontWeight: 700 }} align="left">
                 Status
@@ -124,7 +127,8 @@ function ProjectList(props) {
                   <TableCell align="left">{index + 1}</TableCell>
 
                   <TableCell component="th" scope="row">
-                    <Link to={`/admin/detail-project/${project.id}`}>
+                  <Link to="/admin/detail-project" state={project.id}>
+                 
                       <Button sx={{ color: "black" }} variant="text">
                         {project.projectName}
                       </Button>
@@ -139,6 +143,12 @@ function ProjectList(props) {
                   <TableCell align="left">{project.course.skillName}</TableCell>
                   <TableCell align="left">
                     {project.fee}
+                  </TableCell>
+                  <TableCell align="left">
+                    {project.joinProjects[0].staffs.fullName}
+                  </TableCell>
+                  <TableCell align="left">
+                    {project.partner.name}
                   </TableCell>
                   <TableCell align="left">
                     {project.status === 0 ? (

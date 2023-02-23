@@ -34,9 +34,9 @@ import { padding } from "@mui/system";
 import CreateSlot from "./CreateSlot";
 import SearchIcon from "@mui/icons-material/Search";
 import DetailSlot from "./DetailSlot";
-DetailSyllabus.propTypes = {};
+AcopySyllabus.propTypes = {};
 
-function DetailSyllabus(props) {
+function AcopySyllabus(props) {
   const [syllabusDetail, setSyllabusDetail] = useState({});
   const [slot, setSlot] = useState([]);
   const [slotDetail, setSlotDetail] = useState([]);
@@ -73,36 +73,40 @@ function DetailSyllabus(props) {
   }
   // setSyllabusDetail(props.syllabusDetail)
   // console.log("syllabusDetail",props.syllabusDetail);
- const handleIDSlot = (id) =>{
-setIdSlot(id);
-syllabusAPI.getSlotWithID(id).then((response) => {
-  setSlotDetail(response.responseSuccess[0]);
-setViewDetail(true)
-});
+//  const handleIDSlot = (id) =>{
+// setIdSlot(id);
+// syllabusAPI.getSlotWithID(id).then((response) => {
+//   setSlotDetail(response.responseSuccess[0]);
+// setViewDetail(true)
+// });
 
 
- }
-  const fetchData = async () => {
-    await syllabusAPI.getSyllabusWithID(props.syldetail.id).then((response) => {
-      setSyllabusDetail(response.responseSuccess[0]);
-      setSlot(response.responseSuccess[0].slots);
-    });
-  };
+//  }
+//   const fetchData = async () => {
+//     await syllabusAPI.getSyllabusWithID(props.syldetail.id).then((response) => {
+//       setSyllabusDetail(response.responseSuccess[0]);
+//       setSlot(response.responseSuccess[0].slots);
+//     });
+//   };
 
+//   useEffect(() => {
+//     fetchData().catch((error) => {
+//       console.log(error);
+//     });
+//   }, [props.syldetail]);
   useEffect(() => {
-    fetchData().catch((error) => {
-      console.log(error);
-    });
-  }, [props.syldetail]);
-  useEffect(() => {
-    if (props.syldetail != null) {
-      setEditContent(props.syldetail.content);
-      setEditDescription(props.syldetail.description);
-      setChecked(props.syldetail.isActive)
+    if (props.syllabusCopy != null) {
+      setEditContent(props.syllabusCopy.content);
+      setEditDescription(props.syllabusCopy.description);
+      setChecked(props.syllabusCopy.isActive)
     
     }
-  }, [props.syldetail]);
-
+  }, [props.syllabusCopy]);
+  const handleSubmit = (e) => {
+   axios.post(`https://localhost:7115/api/v1/syllabus/create?Content=${editContent}&Description=${editDescription}&CourseId=${props.syllabusCopy.courseId}`).then((response)=>{
+        window.location.reload(false);
+    })
+  };
   const handleUpdate = (e) => {};
   return (
     <Box>
@@ -112,7 +116,7 @@ setViewDetail(true)
           style={{ padding: "6px 0px 0px 10px", marginTop: 40 }}
           className="title-section"
         >
-          DETAIL SYLLABUS
+          A COPY OF SYLLABUS
         </p>
       </Stack>
 
@@ -140,7 +144,7 @@ setViewDetail(true)
               marginBottom: 2,
             }}
           >
-            Detail Syllabus
+            A copy of Syllabus
           </Typography>
         </Box>
         <Box
@@ -193,45 +197,7 @@ setViewDetail(true)
                 value={editDescription}
                 onChange={handleEditDes}/>
         </Box>
-        <Box
-              sx={{
-                marginTop: 3,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-              }}
-            >
-              <Typography
-                sx={{
-                  float: "left",
-                  fontWeight: "bold",
-                  marginBottom: 2,
-                }}
-              >
-                Syllabus status
-              </Typography>
-              {/* <FormControl sx={{ width: "50%" }}>
-                <Select
-                  size="small"
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={editStatus}
-                  name="course"
-                  onChange={handleOnChangeStatus}
-                  sx={{ backgroundColor: "white" }}
-                >
-                  <MenuItem value={true}>Active</MenuItem>
-                  <MenuItem value={false}>Deactivate</MenuItem>
-                </Select>
-              </FormControl> */}
-                <FormControlLabel control={<Switch
-      checked={checked}
-      onChange={handleChange}
-      inputProps={{ 'aria-label': 'controlled' }}
-color='success'
-    />} label="Active" />
-              
-            </Box>
+
         <Box
         sx={{
           marginTop: "20px",
@@ -346,10 +312,10 @@ color='success'
                       <TableCell align="left">{slot.session}</TableCell>
 
                       <TableCell component="th" scope="row">
-                        
+{/*                         
                           <Button onClick={() => handleIDSlot(slot.id)} sx={{ color: "black" }} variant="text">
                            {slot.name}
-                          </Button>
+                          </Button> */}
                       
                       </TableCell>
 
@@ -385,18 +351,11 @@ color='success'
             <ColorButton
              
              variant="contained"
-             onClick={() => {setOpenCreateSlot(true)}}
+             onClick={() => {handleSubmit()}}
            >
-             Update Syllabus
+             Create Syllabus
            </ColorButton>
       </Stack>
-      {/* <ColorButton
-              sx={{  marginLeft: "auto"}}
-              variant="contained"
-              onClick={() => {setOpenCreateSlot(true)}}
-            >
-              Update Syllabus
-            </ColorButton> */}
       </Box>
  
            <DetailSlot show = {viewDetail} close = {() => setViewDetail(false)}  slotDetail ={slotDetail} slotID = {idSlot} />
@@ -408,4 +367,4 @@ color='success'
   );
 }
 
-export default DetailSyllabus;
+export default AcopySyllabus;

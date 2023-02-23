@@ -22,7 +22,7 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
-import Filter from "./Filter";
+import Filter from "../Filter";
 import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -31,7 +31,7 @@ import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
-import { ColorButton } from "../../styles/button";
+import { ColorButton } from "../../../styles/button";
 import AccountCircleSharpIcon from "@mui/icons-material/AccountCircleSharp";
 import { Stack } from "@mui/system";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -41,6 +41,8 @@ import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import CreateTask from "./CreateTask";
+import DetailTask from "./DetailTask";
 
 function createData(name, calories, fat, carbs, protein, chip) {
   return { name, calories, fat, carbs, protein, chip };
@@ -296,20 +298,20 @@ const top100Films = [
   { title: "Monty Python and the Holy Grail", year: 1975 },
 ];
 
-
-Task.propTypes = {
+TaskListAfter.propTypes = {
     
 };
 
-function Task(props) {
+function TaskListAfter(props) {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(15);
-    const [open, setOpen] = useState(false);
+
     const [value, setValue] = useState(null);
     const [age, setAge] = useState("");
     const [openAssign, setOpenAssign] = useState(false);
     const [openCreate, setOpenCreate] = useState(false);
     const [openMember, setOpenMember] = useState(false);
+    const [openDetail, setOpenDetail] = useState(false);
   
     const handleClickOpenAssign = () => {
       setOpenAssign(true);
@@ -340,13 +342,10 @@ function Task(props) {
       setAge(event.target.value);
     };
   
-    const handleClickOpen = () => {
-      setOpen(true);
+    const handleClickOpenDetail = () => {
+      setOpenDetail(true);
     };
-    const handleClose = () => {
-      setOpen(false);
-    };
-  
+ 
     const handleChangePage = (event, newPage) => {
       setPage(newPage);
     };
@@ -435,7 +434,7 @@ function Task(props) {
   
                     <TableCell component="th" scope="row">
                       <Button
-                        onClick={handleClickOpen}
+                        onClick={handleClickOpenDetail}
                         sx={{ color: "black" }}
                         variant="text"
                       >
@@ -494,102 +493,11 @@ function Task(props) {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
+
+        <CreateTask show={openCreate} close={() => setOpenCreate(false)}/>
   
   {/* deatil task */}
-        <Dialog
-          maxWidth={false}
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            <TextField
-              sx={{ width: "80%" }}
-              id="standard-basic"
-              variant="standard"
-              defaultValue="task"
-            />
-            <p
-              style={{ padding: "6px 0px 0px 10px" }}
-              className="title-section"
-            ></p>
-          </DialogTitle>
-          <DialogContent>
-            <ul style={{ lineHeight: 3.5, listStyle: "none" }}>
-              <li>
-                Project: <b>Study overseas</b>
-              </li>
-              <li>
-                Assign:{" "}
-                <Badge
-                  style={{ marginRight: "32px" }}
-                  badgeContent="Process"
-                  color="primary"
-                >
-                  <Chip label="Nguyen Cong Khanh" />
-                </Badge>
-                <Badge
-                  style={{ marginRight: "32px" }}
-                  badgeContent="Process"
-                  color="primary"
-                >
-                  <Chip label="Nguyen Cong Khanh" />
-                </Badge>
-                <IconButton onClick={handleClickOpenAssign} aria-label="delete">
-                  <PersonAddAlt1Icon sx={{ color: "#22a19a" }} />
-                </IconButton>
-              </li>
-              <li style={{ marginTop: 2 }}>
-                Dealine:{" "}
-                <LocalizationProvider size="small" dateAdapter={AdapterMoment}>
-                  <DatePicker
-                    value={value}
-                    onChange={(newValue) => {
-                      setValue(newValue);
-                    }}
-                    renderInput={(params) => (
-                      <TextField size="small" {...params} />
-                    )}
-                  />
-                </LocalizationProvider>
-              </li>
-              <li style={{ marginTop: 2 }}>
-                Status:{" "}
-                <FormControl sx={{ width: 240 }}>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={age}
-                    onChange={handleChange}
-                    size="small"
-                  >
-                    <MenuItem value={10}>To do</MenuItem>
-                    <MenuItem value={20}>Process</MenuItem>
-                    <MenuItem value={23}>Review</MenuItem>
-                    <MenuItem value={30}>Done</MenuItem>
-                  </Select>
-                </FormControl>
-              </li>
-            </ul>
-            <p className="title-section">Description</p>
-            <textarea placeholder="Click to add description" style={{ width: 766, height: 250 }}></textarea>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              size="small"
-              onClick={handleClose}
-              variant="text"
-              sx={{ color: "#22a19a" }}
-            >
-              Cancel
-            </Button>
-  
-            <ColorButton size="small" onClick={handleClose} variant="contained">
-              Save & close
-            </ColorButton>
-          </DialogActions>
-        </Dialog>
+        <DetailTask show={openDetail} close={() => setOpenDetail(false)}/>
   
     {/* deatil member task */}
     <Dialog
@@ -659,69 +567,7 @@ function Task(props) {
         </Dialog>
   
         {/* create task */}
-        <Dialog
-          maxWidth={false}
-          open={openCreate}
-          onClose={handleCloseCreate}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            <TextField
-              sx={{ width: "80%" }}
-              id="standard-basic"
-              variant="standard"
-              defaultValue=""
-            />
-            <p
-              style={{ padding: "6px 0px 0px 10px" }}
-              className="title-section"
-            ></p>
-          </DialogTitle>
-          <DialogContent>
-            <ul style={{ lineHeight: 3.5, listStyle: "none" }}>
-              <li>
-                Project: <b>Study overseas</b>
-              </li>
-              <li>
-                Assign:{" "}
-                <IconButton onClick={handleClickOpenAssign} aria-label="delete">
-                  <PersonAddAlt1Icon sx={{ color: "#22a19a" }} />
-                </IconButton>
-              </li>
-              <li style={{ marginTop: 2 }}>
-                Dealine:{" "}
-                <LocalizationProvider size="small" dateAdapter={AdapterMoment}>
-                  <DatePicker
-                    value={value}
-                    onChange={(newValue) => {
-                      setValue(newValue);
-                    }}
-                    renderInput={(params) => (
-                      <TextField size="small" {...params} />
-                    )}
-                  />
-                </LocalizationProvider>
-              </li>
-            </ul>
-            <p className="title-section">Description</p>
-            <textarea placeholder="Click to add description" style={{ width: 766, height: 250 }}></textarea>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              size="small"
-              onClick={handleCloseCreate}
-              variant="text"
-              sx={{ color: "#22a19a" }}
-            >
-              Cancel
-            </Button>
-  
-            <ColorButton size="small" onClick={handleCloseCreate} variant="contained">
-              Create task
-            </ColorButton>
-          </DialogActions>
-        </Dialog>
+       
   
         {/* assign */}
         <Dialog
@@ -763,4 +609,4 @@ function Task(props) {
     );
 }
 
-export default Task;
+export default TaskListAfter;

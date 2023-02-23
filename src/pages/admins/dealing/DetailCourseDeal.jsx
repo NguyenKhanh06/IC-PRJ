@@ -32,10 +32,9 @@ import syllabusAPI from "../../../api/syllabusAPI";
 import { height } from "@mui/system";
 import DetailSlotDeal from "./DetailSlotDeal";
 import axios from "axios";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 
 // CommonJS
-
 
 DetailCourseDeal.propTypes = {};
 
@@ -53,9 +52,8 @@ function DetailCourseDeal(props) {
   const [slotApprove, setSlotApprove] = useState("");
   const [slotReject, setSlotReject] = useState("");
   const [viewDetail, setViewDetail] = useState(false);
-  const [ slotID, setSlotID] = useState("");
+  const [slotID, setSlotID] = useState("");
   const [slot, setSlot] = useState([]);
-
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -88,7 +86,7 @@ function DetailCourseDeal(props) {
   //       console.log(error);
   //     });
   //   }, []);
- 
+
   const handleChangeStatus = (event) => {
     setChecked(event.target.checked);
   };
@@ -121,12 +119,10 @@ function DetailCourseDeal(props) {
 
     syllabusAPI.getSlotWithID(id).then((response) => {
       setSlot(response.responseSuccess[0]);
-  
+
       console.log("response", response.responseSuccess[0]);
     });
-    setViewDetail(true)
-
-
+    setViewDetail(true);
   };
 
   //   const handleViewDetail = (id) => {
@@ -146,17 +142,14 @@ function DetailCourseDeal(props) {
   //   });
   // }, []);
 
-  
- 
-//   {(syllabusActive?.slots?.length > 0) && statusCounter(slotApprove) }
- //
- function statusCounterApprove(inputs) {
+  //   {(syllabusActive?.slots?.length > 0) && statusCounter(slotApprove) }
+  //
+  function statusCounterApprove(inputs) {
     let counter = 0;
     for (const input of inputs) {
       if (input.slotStatus === 1) counter += 1;
     }
     return counter;
-    
   }
   function statusCounterReject(inputs) {
     let counterReject = 0;
@@ -164,16 +157,13 @@ function DetailCourseDeal(props) {
       if (input.slotStatus === 2) counterReject += 1;
     }
     return counterReject;
-    
   }
   useEffect(() => {
     if (course && syllabus != null) {
-        
       setEditActivity(course.activity);
       setEditContent(course.content);
       setChecked(course.isActive);
 
-    
       const found = syllabus.find((obj) => {
         return obj.isActive === true;
       });
@@ -182,46 +172,61 @@ function DetailCourseDeal(props) {
 
       syllabusAPI.getSyllabusWithID(found?.id).then((response) => {
         setSyllabusActive(response.responseSuccess[0]);
-        console.log(response.responseSuccess[0])
-     
-         {response.responseSuccess[0]?.slots.length > 0 && setSlotApprove(statusCounterApprove(response.responseSuccess[0]?.slots))}
-         {response.responseSuccess[0]?.slots.length > 0 && setSlotReject(statusCounterReject(response.responseSuccess[0]?.slots))}
-      });
-    
+        console.log(response.responseSuccess[0]);
 
+        {
+          response.responseSuccess[0]?.slots.length > 0 &&
+            setSlotApprove(
+              statusCounterApprove(response.responseSuccess[0]?.slots)
+            );
+        }
+        {
+          response.responseSuccess[0]?.slots.length > 0 &&
+            setSlotReject(
+              statusCounterReject(response.responseSuccess[0]?.slots)
+            );
+        }
+      });
     }
   }, [course, syllabus]);
 
-
-  const Swal = require('sweetalert2')
+  const Swal = require("sweetalert2");
   const showAlert = () => {
     Swal.fire({
-        title: "Success",
-        text: "Update successful",
-        icon: "success",
-        confirmButtonText: "OK",
-      });
-}
-const showAlertError = () => {
+      title: "Success",
+      text: "Update successful",
+      icon: "success",
+      confirmButtonText: "OK",
+    });
+  };
+  const showAlertError = () => {
     Swal.fire({
-        title: "Error",
-        text: "Update successful",
-        icon: "error",
-        confirmButtonText: "OK",
-      });
-}
+      title: "Error",
+      text: "Update successful",
+      icon: "error",
+      confirmButtonText: "OK",
+    });
+  };
 
   const handleApproveSlot = (id) => {
-    axios.put(`https://localhost:7115/api/v1/slot/updateStatus/${id}?Status=1`).then((response) => {
-      {response.isSuccess ? showAlert() :showAlertError()}
-    })
-   }
-   const handleRejectSlot = (id) => {
-     axios.put(`https://localhost:7115/api/v1/slot/updateStatus/${id}?Status=2`).then((response) => {
-      {response.isSuccess ? showAlert() :showAlertError()}
-     })
-    }
-  
+    axios
+      .put(`https://localhost:7115/api/v1/slot/updateStatus/${id}?Status=1`)
+      .then((response) => {
+        {
+          response.isSuccess ? showAlert() : showAlertError();
+        }
+      });
+  };
+  const handleRejectSlot = (id) => {
+    axios
+      .put(`https://localhost:7115/api/v1/slot/updateStatus/${id}?Status=2`)
+      .then((response) => {
+        {
+          response.isSuccess ? showAlert() : showAlertError();
+        }
+      });
+  };
+
   return (
     <Box>
       <form>
@@ -595,7 +600,16 @@ const showAlertError = () => {
                 </Typography>
               </Box>
               {syllabusActive?.slots?.map((slot, index) => (
-                <Accordion>
+                <Accordion
+                  disableGutters
+                  elevation={0}
+                  sx={{
+                    "&:before": {
+                      display: "none",
+                    },
+                  }}
+                  style={{ marginBottom: 10, borderRadius: 15, marginTop: 15 }}
+                >
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1a-content"
@@ -613,35 +627,19 @@ const showAlertError = () => {
                         alignItems="flex-start"
                         spacing={2}
                       >
-                         {/* <Chip
+                        {/* <Chip
                            label = {slot?.slotStatus === 1 ? "Approve" : slot?.slotStatus === 2 ? "Reject" : slot?.slotStatus === 0 ? null : null}
                             color={slot?.slotStatus === 1 ? "success" : slot?.slotStatus === 2 ? "error"  : slot?.slotStatus === 0 ? null : null}
                             style={{ marginRight: "10px" }}
                             size="small"
                           /> */}
-                                {
-                  slot?.slotStatus === 1
-                    ? <Chip
-                    label= "Approve"
-                    color= "success"
-                
-                    size="small"
-                  />
-                    : slot?.slotStatus === 2
-                    ? <Chip
-                    label= "Reject"
-                    color= "error"
-                
-                    size="small"
-                  />
-                    :  slot?.slotStatus === 0
-                    ? <Chip
-                    label= "New"
-                    color= "warning"
-           
-                    size="small"
-                  /> : null
-                }
+                        {slot?.slotStatus === 1 ? (
+                          <Chip label="Approve" color="success" size="small" />
+                        ) : slot?.slotStatus === 2 ? (
+                          <Chip label="Reject" color="error" size="small" />
+                        ) : slot?.slotStatus === 0 ? (
+                          <Chip label="New" color="warning" size="small" />
+                        ) : null}
                         <Typography sx={{ color: "text.secondary" }}>
                           <Chip
                             label={slot?.session}
@@ -651,46 +649,28 @@ const showAlertError = () => {
 
                           {moment(slot?.dateCreated).format("DD/MM/YYYY")}
                         </Typography>
-                       
-                        <Button onClick={() =>handleIdSlot(slot?.id)}>
-                        {slot?.name}
+
+                        <Button onClick={() => handleIdSlot(slot?.id)}>
+                          {slot?.name}
                         </Button>
-                        
+
                         {/* <Typography variant="h6" style={{ fontWeight: "bold" }}>
                         
                         </Typography> */}
                       </Stack>
-                      
-                      <Box>
-                        <ButtonGroup
-                          variant="contained"
-                          aria-label="outlined primary button group"
-                        >
-                              {slot?.slotStatus === 1 ? (<>
-                              
-                              <Button onClick={() => handleRejectSlot(slot?.id)} size="small" color="error">
-                            Reject
-                          </Button>
-                            </> ) : slot?.slotStatus === 2 ?(null) : <>
-                              <Button onClick={() => handleApproveSlot(slot?.id)} size="small" color="success">
-                            Approve
-                          </Button>
-                          <Button  onClick={() => handleRejectSlot(slot?.id)} size="small" color="error">
-                            Reject
-                          </Button>
-                            </>}
-                         
-                        </ButtonGroup>
-                      </Box>
                     </Stack>
                   </AccordionSummary>
-                  {/* <AccordionDetails>
-                    <Typography>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Suspendisse malesuada lacus ex, sit amet blandit leo
-                      lobortis eget.
-                    </Typography>
-                  </AccordionDetails> */}
+                  <AccordionDetails>
+                    <div className="reject-slot">
+                      <p className="reject-content">
+                        <p style={{color: "red"}} >Rejected</p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                        Suspendisse malesuada lacus ex, sit amet blandit leo
+                        lobortis eget.
+                      </p>
+                      <ColorButton>View Detail</ColorButton>
+                    </div>
+                  </AccordionDetails>
                 </Accordion>
               ))}
             </Box>
@@ -700,7 +680,7 @@ const showAlertError = () => {
           sx={{
             display: "flex",
             flexDirection: "column",
-            backgroundColor: "#F0F0F0",
+            backgroundColor: "#F8F8F8",
             width: "40%",
             padding: "40px 20px 20px 40px",
             borderRadius: "20px",
@@ -713,7 +693,6 @@ const showAlertError = () => {
             justifyContent="center"
             alignItems="center"
             spacing={2}
-
           >
             <Box
               style={{
@@ -726,7 +705,9 @@ const showAlertError = () => {
                 justifyContent: "center",
               }}
             >
-              <Typography variant="h6">{syllabusActive?.slots?.length}</Typography>
+              <Typography variant="h6">
+                {syllabusActive?.slots?.length}
+              </Typography>
               <Typography variant="h6">Slots</Typography>
             </Box>
             <Box
@@ -740,30 +721,42 @@ const showAlertError = () => {
                 justifyContent: "center",
               }}
             >
-              <Typography variant="h8" color="green">{slotApprove}</Typography>
-              <Typography variant="h7"color="green">Slots Approve</Typography>
+              <Typography variant="h8" color="green">
+                {slotApprove}
+              </Typography>
+              <Typography variant="h7" color="green">
+                Slots Approve
+              </Typography>
             </Box>
             <Box
-                style={{
-                    width: "80px",
-                    height: "80px",
-                    backgroundColor: "white",
-                    borderRadius: "20px",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                 
-                  }}
+              style={{
+                width: "80px",
+                height: "80px",
+                backgroundColor: "white",
+                borderRadius: "20px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
             >
-              <Typography variant="h8" color="red">{slotReject}</Typography>
-              <Typography variant="h7" color="red">Slots Reject</Typography>
+              <Typography variant="h8" color="red">
+                {slotReject}
+              </Typography>
+              <Typography variant="h7" color="red">
+                Slots Reject
+              </Typography>
             </Box>
           </Stack>
         </Box>
       </Stack>
 
-     <DetailSlotDeal show={viewDetail} close={() => setViewDetail(false)} slot={slot} SlotID={slotID} syllabusID = {editSyllabus} />
-
+      <DetailSlotDeal
+        show={viewDetail}
+        close={() => setViewDetail(false)}
+        slot={slot}
+        SlotID={slotID}
+        syllabusID={editSyllabus}
+      />
     </Box>
   );
 }

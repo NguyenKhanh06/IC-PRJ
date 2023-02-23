@@ -47,11 +47,13 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import DetailProject from './project/DetailProject';
-import CreateSyllabus from './syllabus/CreateSyllabus';
-import CourseList from './course/CourseList';
-import SyllabusList from './syllabus/SyllabusList';
-import ProjectList from './project/ProjectList';
+import DetailProject from '../project/DetailProject';
+import CreateSyllabus from '../syllabus/CreateSyllabus';
+import CourseList from '../course/CourseList';
+import SyllabusList from '../syllabus/SyllabusList';
+import ProjectList from '../project/ProjectList';
+import TaskList from './TaskList';
+import ListProjectTask from './ListProjectTask';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -96,16 +98,16 @@ export default function BasicTabs(data) {
   return (
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs TabIndicatorProps={{style: {background:'#22a19a',}}} value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="Project List" {...a11yProps(0)} />
-          <Tab label="List course" {...a11yProps(1)} />
+        <Tabs TabIndicatorProps={{style: {background:'#22a19a', color: '#22a19a'}}} value={value} onChange={handleChange} aria-label="basic tabs example">
+          <Tab label="Task Before Project" {...a11yProps(0)} />
+          <Tab label="Task After Project" {...a11yProps(1)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-<ProjectList/>
+<TaskList/>
       </TabPanel>
       <TabPanel value={value} index={1}>
-      <CourseList/>
+<ListProjectTask/>
       </TabPanel>
     </Box>
   );

@@ -45,7 +45,6 @@ function SyllabusList(props) {
   const fetchData = async () => {
     await syllabusAPI.getList().then((response) => {
       setSyllabus(response.responseSuccess);
-      console.log(response.responseSuccess);
     });
   };
 
@@ -92,7 +91,7 @@ function SyllabusList(props) {
           marginBottom: 2,
           marginTop: 2,
           height: 75,
-          backgroundColor: "#F0F0F0",
+          backgroundColor: "#F8F8F8",
         }}
         justifyContent="space-between"
         direction="row"

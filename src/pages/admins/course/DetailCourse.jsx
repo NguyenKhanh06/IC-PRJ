@@ -40,16 +40,20 @@ import moment from "moment";
 import axios from "axios";
 import CreateSyllabus from "../syllabus/CreateSyllabus";
 import DetailSyllabus from "../syllabus/DetailSyllabus";
+import AcopySyllabus from "../syllabus/AcopySyllabus";
 
 DetailCourse.propTypes = {};
 
 function DetailCourse(props) {
-  const courseid = useParams();
+  const location = useLocation();
+  const courseID = location.state;
   const [editName, setEditName] = useState("");
   const [editActivity, setEditActivity] = useState("");
   const [editContent, setEditContent] = useState("");
   const [editSyllabus, setEditSyllabus] = useState("");
   const [syllabus, setSyllabus] = useState([]);
+  const [syllabusActive, setSyllabusActive] = useState({});
+  const [syllabusCopy, setSyllabusCopy] = useState({});
   const [courseDetail, setCourseDetail] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(15);
@@ -57,8 +61,18 @@ function DetailCourse(props) {
   const [checked, setChecked] = useState(false);
   const [openCreate, setOpenCreate] = useState(false);
   const [viewDetail, setViewDetail] = useState(false);
-  const [syllabusID, setSyllabusID] = useState({});
+  const [viewCopy, setViewCopy] = useState(false);
+  const [syllabusID, setSyllabusID] = useState("");
+  const [sylDetail, setSylDetail] = useState({});
 
+  const handleDetailSyl = (syl) => {
+    setSylDetail(syl);
+  };
+  const handleCopy = (copy) => {
+    setSyllabusCopy(copy);
+    setViewCopy(true);
+    console.log(copy)
+  };
   const handleChangeStatus = (event) => {
     setChecked(event.target.checked);
   };
@@ -91,8 +105,8 @@ function DetailCourse(props) {
 
   const handleViewDetail = (id) => {
     setSyllabusID(id);
+
     setViewDetail(true);
-    console.log("id syllabus", id);
   };
 
   // const fetchDataSyllabus = async () => {
@@ -107,10 +121,14 @@ function DetailCourse(props) {
   // }, []);
 
   const fetchData = async () => {
-    await courseAPI.getCourseWithID(courseid.id).then((response) => {
+    await courseAPI.getCourseWithID(courseID).then((response) => {
       setCourseDetail(response.responseSuccess[0]);
       setSyllabus(response.responseSuccess[0].syllabus);
-      console.log(response);
+      // const found = response.responseSuccess.find((obj) => {
+      //   return obj.isActive === true;
+      // });
+
+      // setSyllabusActive(found)
     });
   };
   useEffect(() => {
@@ -124,8 +142,12 @@ function DetailCourse(props) {
       setEditName(courseDetail.skillName);
       setEditActivity(courseDetail.activity);
       setEditContent(courseDetail.content);
-      setChecked(courseDetail.isActive);
-
+      setChecked(courseDetail?.isActive);
+      const found = syllabus.find((obj) => {
+        return obj.isActive === true;
+      });
+      console.log("found", found?.id);
+      setEditSyllabus(found?.id);
     }
   }, [courseDetail]);
 
@@ -158,7 +180,7 @@ function DetailCourse(props) {
             sx={{
               display: "flex",
               flexDirection: "column",
-              backgroundColor: "#F0F0F0",
+              backgroundColor: "#F8F8F8",
               width: "100%",
               padding: "40px 20px 20px 40px",
               borderRadius: "20px",
@@ -289,6 +311,9 @@ function DetailCourse(props) {
                     onChange={handleOnChangeSyllabus}
                     sx={{ backgroundColor: "white" }}
                   >
+                    <MenuItem value={syllabusActive.id}>
+                      {syllabusActive.content}
+                    </MenuItem>
                     {syllabus.map((syl, index) => (
                       <MenuItem key={index} value={syl.id}>
                         {syl.content}
@@ -373,7 +398,7 @@ function DetailCourse(props) {
         sx={{
           display: "flex",
           flexDirection: "column",
-          backgroundColor: "#F0F0F0",
+          backgroundColor: "#F8F8F8",
           width: "100%",
           padding: "40px 20px 20px 40px",
           borderRadius: "20px",
@@ -494,7 +519,10 @@ function DetailCourse(props) {
 
                     <TableCell component="th" scope="row">
                       <Button
-                        onClick={() => handleViewDetail(syl.id)}
+                        onClick={() => {
+                          handleViewDetail(syl?.id);
+                          handleDetailSyl(syl);
+                        }}
                         sx={{ color: "black" }}
                         variant="text"
                       >
@@ -512,7 +540,9 @@ function DetailCourse(props) {
                       )}
                     </TableCell>
                     <TableCell align="left">
-                      <ColorButton>Create A copy</ColorButton>
+                      <ColorButton onClick={() => handleCopy(syl)}>
+                        Create A copy
+                      </ColorButton>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -529,7 +559,21 @@ function DetailCourse(props) {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Box>
-      {viewDetail && <DetailSyllabus syllabusID={syllabusID} />}
+      {viewDetail && (
+        <DetailSyllabus
+          syldetail={sylDetail}
+          syllabusID={syllabusID}
+          show={viewDetail}
+          close={() => setViewDetail(false)}
+        />
+      )}
+      {viewCopy && (
+        <AcopySyllabus
+          show={viewCopy}
+          close={() => setViewCopy(false)}
+          syllabusCopy={syllabusCopy}
+        />
+      )}
       <CreateSyllabus
         show={openCreate}
         close={() => setOpenCreate(false)}

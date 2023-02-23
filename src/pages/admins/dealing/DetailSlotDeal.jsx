@@ -21,12 +21,14 @@ import {
   Select,
   Stack,
   TextField,
+  Tooltip,
 } from "@mui/material";
 import { ColorButton } from "../../../styles/button";
 import { StyledTextField } from "../../../styles/textfield";
 import syllabusAPI from "../../../api/syllabusAPI";
 import slotAPI from "../../../api/slotAPI";
 import axios from "axios";
+import InfoIcon from "@mui/icons-material/Info";
 
 DetailSlotDeal.propTypes = {};
 
@@ -41,8 +43,6 @@ function DetailSlotDeal(props) {
   const fetchData = async () => {
     await syllabusAPI.getSlotWithID(props.SlotID).then((response) => {
       setSlot(response.responseSuccess[0]);
-
-      
     });
   };
   console.log("response", props.slot);
@@ -180,29 +180,28 @@ function DetailSlotDeal(props) {
               >
                 Detail Slot
               </Typography>
-              {
-                  props?.slot?.slotStatus === 1
-                    ? <Chip
-                    label= "Approve"
-                    color= "success"
-                    style={{ marginLeft: "10px" }}
-                    size="small"
-                  />
-                    : props?.slot?.slotStatus === 2
-                    ? <Chip
-                    label= "Reject"
-                    color= "error"
-                    style={{ marginLeft: "10px" }}
-                    size="small"
-                  />
-                    : props?.slot?.slotStatus === 0 ? <Chip
-                    label= "New"
-                    color= "warning"
-                    style={{ marginLeft: "10px" }}
-                    size="small"
-                  /> : null
-                }
-              
+              {props?.slot?.slotStatus === 1 ? (
+                <Chip
+                  label="Approve"
+                  color="success"
+                  style={{ marginLeft: "10px" }}
+                  size="small"
+                />
+              ) : props?.slot?.slotStatus === 2 ? (
+                <Chip
+                  label="Reject"
+                  color="error"
+                  style={{ marginLeft: "10px" }}
+                  size="small"
+                />
+              ) : props?.slot?.slotStatus === 0 ? (
+                <Chip
+                  label="New"
+                  color="warning"
+                  style={{ marginLeft: "10px" }}
+                  size="small"
+                />
+              ) : null}
             </Box>
 
             <Box
@@ -275,18 +274,19 @@ function DetailSlotDeal(props) {
                 value={editTime}
                 onChange={handleOnChangeTime}
               /> */}
-                  <OutlinedInput
-           style={{backgroundColor: "white"}}
-               type="number"
-          
-               autoComplete="off"
-               fullWidth
-               size="small"
-               name="fee"
-               value={editTime}
-               onChange={handleOnChangeTime}
-               endAdornment={<InputAdornment position="end">Minutes</InputAdornment>}
-          />
+              <OutlinedInput
+                style={{ backgroundColor: "white" }}
+                type="number"
+                autoComplete="off"
+                fullWidth
+                size="small"
+                name="fee"
+                value={editTime}
+                onChange={handleOnChangeTime}
+                endAdornment={
+                  <InputAdornment position="end">Minutes</InputAdornment>
+                }
+              />
             </Box>
             <Box
               sx={{
@@ -305,7 +305,15 @@ function DetailSlotDeal(props) {
               >
                 Learning's Type
               </Typography>
-              <FormControl fullWidth>
+              <StyledTextField
+                autoComplete="off"
+                fullWidth
+                size="small"
+                name="type"
+                value={editType}
+                onChange={handleOnChangeType}
+              />
+              {/* <FormControl fullWidth>
                 <Select
                   id="demo-simple-select"
                   value={editType}
@@ -313,11 +321,12 @@ function DetailSlotDeal(props) {
                   sx={{ backgroundColor: "white", textAlign: "left" }}
                   size="small"
                 >
-                  <MenuItem value={"Offline"}>Offline</MenuItem>
-                  <MenuItem value={"Online"}>Online</MenuItem>
-                  <MenuItem value={"Offline/Online"}>Offline/Online</MenuItem>
+                  <MenuItem value={"0"}>None</MenuItem>
+                  <MenuItem value={"1"}>Offline</MenuItem>
+                  <MenuItem value={"2"}>Online</MenuItem>
+                  <MenuItem value={"3"}>Offline/Online</MenuItem>
                 </Select>
-              </FormControl>
+              </FormControl> */}
 
               {/* <FormControl fullWidth>
   <InputLabel id="demo-simple-select-label">Learning Type</InputLabel>
@@ -378,39 +387,8 @@ function DetailSlotDeal(props) {
         >
           Approve
         </Button> */}
-{ props?.slot?.slotStatus === 1 ? ( <Button
-                onClick={() => {
-                  handleRejectSlot();
-                }}
-                variant="contained"
-                color="error"
-              >
-                Reject
-              </Button>) : props?.slot?.slotStatus === 2 ? null: (
 
-<>
-<Button
-  onClick={() => {
-    handleRejectSlot();
-  }}
-  variant="contained"
-  color="error"
->
-  Reject
-</Button>
-<Button
-  onClick={() => {
-    handleApproveSlot();
-  }}
-  variant="contained"
-  color="success"
->
-  Approve
-</Button>
-</> 
-              )}
-             
-             
+
               <ColorButton
                 onClick={() => {
                   handleUpdateSlot();
@@ -433,24 +411,83 @@ function DetailSlotDeal(props) {
             }}
           >
             {" "}
-            <Stack>
-              <p className="title-section">Comment</p>
+            <Typography
+              sx={{
+                paddingBottom: 2,
+                float: "left",
+                fontWeight: "bold",
+                marginBottom: 2,
+                borderBottom: "1px solid black",
+                borderBottomWidth: "100%",
+              }}
+            >
+              Reason reject
+            </Typography>
+            <Stack
+              direction="row"
+              justifyContent="space-evenly"
+              alignItems="center"
+              spacing={2}
+              style = {{marginBottom: 10}}
+            >
+              <div className="reject-slot-detail">
+                <p className="reject-content-detail">
+                  <div className="infor-user">
+                    <p>Cong Khanh </p>
+                    <Typography
+                  sx={{
+                    float: "left",
+                    marginRight: "70%" ,
+   fontSize: "small",
+                    marginBottom: 2,
+                    color: "#8F8E8E"
+                  }}
+                >
+                  20/2/2023
+                </Typography>
+                    <Tooltip title="Rejected at 20/2/2023">
+                      <InfoIcon style={{ color: "red" }} />
+                    </Tooltip>
+                  </div>
+                  <p style={{ color: "red" }}>Rejected</p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
+                  eget.
+                </p>
+              </div>
             </Stack>
             <Stack
               direction="row"
               justifyContent="space-evenly"
               alignItems="center"
               spacing={2}
+              style = {{marginBottom: 10}}
             >
-              <Avatar src="/broken-image.jpg" />
-              <StyledTextField
-                fullWidth
-                label="Click to add comment"
-                size="small"
-              />
-              <ColorButton variant="contained" size="small">
-                Comment
-              </ColorButton>
+              <div className="reject-slot-detail">
+                <p className="reject-content-detail">
+                  <div className="infor-user">
+                    <p>Cong Khanh </p>
+                    <Typography
+                  sx={{
+                    float: "left",
+                    marginRight: "70%" ,
+   fontSize: "small",
+                    marginBottom: 2,
+                    color: "#8F8E8E"
+                  }}
+                >
+                  20/2/2023
+                </Typography>
+                    <Tooltip title="Rejected at 20/2/2023">
+                      <InfoIcon style={{ color: "red" }} />
+                    </Tooltip>
+                  </div>
+                  <p style={{ color: "red" }}>Rejected</p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
+                  eget.
+                </p>
+              </div>
             </Stack>
           </Box>
         </>

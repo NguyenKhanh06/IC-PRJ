@@ -20,12 +20,15 @@ import {
   Select,
   Stack,
   TextField,
+  Tooltip,
 } from "@mui/material";
 import syllabusAPI from "../../api/syllabusAPI";
 import axios from "axios";
 import { StyledTextField } from "../../styles/textfield";
 import { ColorButton } from "../../styles/button";
 import Swal from "sweetalert2";
+import InfoIcon from "@mui/icons-material/Info";
+import RejectSlot from "./RejectSlot";
 
 PartnerDetailSlotDeal.propTypes = {};
 
@@ -38,7 +41,8 @@ function PartnerDetailSlotDeal(props) {
   const [editType, setEditType] = useState("");
   const [editDetail, setEditDetail] = useState("");
   const [openApprove, setOpenApprove] = React.useState(false);
-
+  const [openReject, setOpenReject] = useState(false);
+  const [openRejectDetail, setOpenRejectDetail] = useState(false);
   const handleClickOpenConfirmApprove = () => {
     openApprove(true);
   };
@@ -111,20 +115,15 @@ function PartnerDetailSlotDeal(props) {
     axios
       .put(
         `https://localhost:7115/api/v1/slot/updateStatus/${props.SlotID}?Status=1`
-      ).then((response) => {
-        handleClose()
-        {response.isSuccess ? showAlert() : showAlertError()}
-      })
+      )
+      .then((response) => {
+        handleClose();
+        {
+          response.isSuccess ? showAlert() : showAlertError();
+        }
+      });
   };
-  const handleRejectSlot = () => {
-    axios
-      .put(
-        `https://localhost:7115/api/v1/slot/updateStatus/${props.SlotID}?Status=2`
-      ).then((response) => {
-        handleClose()
-        {response.isSuccess ? showAlert() : showAlertError()}
-      })
-  };
+
   const handleUpdateSlot = () => {
     axios
       .put(
@@ -166,179 +165,147 @@ function PartnerDetailSlotDeal(props) {
   // }
 
   return (
-  <>
-    <Dialog
-      fullWidth
-      maxWidth="md"
-      onClose={props.close}
-      aria-labelledby="customized-dialog-title"
-      open={props.show}
-    >
-      {/* <DialogTitle
+    <>
+      <Dialog
+        fullWidth
+        maxWidth="md"
+        onClose={props.close}
+        aria-labelledby="customized-dialog-title"
+        open={props.show}
+      >
+        {/* <DialogTitle
           id="customized-dialog-title"
           onClose={props.close}
         ></DialogTitle> */}
-      <DialogContent>
-        <>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              backgroundColor: "#F0F0F0",
-              width: "100%",
-              padding: "40px 20px 20px 40px",
-              borderRadius: "20px",
-              marginTop: "20px",
-            }}
-          >
+        <DialogContent>
+          <>
             <Box
               sx={{
-                borderBottom: "1px solid black",
-                borderBottomWidth: "100%",
-              }}
-            >
-              <Typography
-                sx={{
-                  paddingBottom: 2,
-                  float: "left",
-                  fontWeight: "bold",
-                  marginBottom: 2,
-                }}
-              >
-                Detail Slot
-              </Typography>
-              {
-                  props.slot.slotStatus === 1
-                    ? <Chip
-                    label= "Approve"
-                    color= "success"
-                    style={{ marginLeft: "10px" }}
-                    size="small"
-                  />
-                    : props.slot.slotStatus === 2
-                    ? <Chip
-                    label= "Reject"
-                    color= "error"
-                    style={{ marginLeft: "10px" }}
-                    size="small"
-                  />
-                    :  props.slot.slotStatus === 0
-                    ? <Chip
-                    label= "New"
-                    color= "warning"
-                    style={{ marginLeft: "10px" }}
-                    size="small"
-                  /> : null
-                }
-            </Box>
-            <Box
-              sx={{
-                marginTop: 3,
                 display: "flex",
                 flexDirection: "column",
-                alignItems: "flex-start",
+                backgroundColor: "#F0F0F0",
+                width: "100%",
+                padding: "40px 20px 20px 40px",
+                borderRadius: "20px",
+                marginTop: "20px",
               }}
             >
-              <Typography
+              <Box
                 sx={{
-                  float: "left",
-                  fontWeight: "bold",
-                  marginBottom: 2,
+                  borderBottom: "1px solid black",
+                  borderBottomWidth: "100%",
                 }}
               >
-                Slot
-              </Typography>
-              <Typography>{props.slot.session}</Typography>
-            </Box>
-            <Box
-              sx={{
-                marginTop: 3,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-              }}
-            >
-              <Typography
-                sx={{
-                  float: "left",
-                  fontWeight: "bold",
-                  marginBottom: 2,
-                }}
-              >
-                Topic
-              </Typography>
-              <StyledTextField
-              
-                autoComplete="off"
-                fullWidth
-                size="small"
-                name="topic"
-                value={editTopic}
-                onChange={handleOnChangeTopic}
-              />
-            </Box>
-            <Box
-              sx={{
-                marginTop: 3,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-              }}
-            >
-              <Typography
-                sx={{
-                  float: "left",
-                  fontWeight: "bold",
-                  marginBottom: 2,
-                }}
-              >
-                Time Allocation
-              </Typography>
-              <StyledTextField
-              
-                autoComplete="off"
-                fullWidth
-                size="small"
-                name="SESSION"
-                value={editTime}
-                onChange={handleOnChangeTime}
-              />
-            </Box>
-            <Box
-              sx={{
-                marginTop: 3,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-              }}
-            >
-              <Typography
-                sx={{
-                  float: "left",
-                  fontWeight: "bold",
-                  marginBottom: 2,
-                }}
-              >
-                Learning's Type
-              </Typography>
-              <FormControl fullWidth>
-      
-                <Select
-            
-                  id="demo-simple-select"
-                  value={editType}
-               
-                  onChange={handleOnChangeType}
-                  sx={{ backgroundColor: "white", textAlign: "left" }}
-                  size="small"
+                <Typography
+                  sx={{
+                    paddingBottom: 2,
+                    float: "left",
+                    fontWeight: "bold",
+                    marginBottom: 2,
+                  }}
                 >
-                  <MenuItem value={"Offline"}>Offline</MenuItem>
-                  <MenuItem value={"Online"}>Online</MenuItem>
-                  <MenuItem value={"Offline/Online"}>Offline/Online</MenuItem>
-                </Select>
-              </FormControl>
+                  Detail Slot
+                </Typography>
+                {props.slot.slotStatus === 1 ? (
+                  <Chip
+                    label="Approve"
+                    color="success"
+                    style={{ marginLeft: "10px" }}
+                    size="small"
+                  />
+                ) : props.slot.slotStatus === 2 ? (
+                  <Chip
+                    label="Reject"
+                    color="error"
+                    style={{ marginLeft: "10px" }}
+                    size="small"
+                  />
+                ) : props.slot.slotStatus === 0 ? (
+                  <Chip
+                    label="New"
+                    color="warning"
+                    style={{ marginLeft: "10px" }}
+                    size="small"
+                  />
+                ) : null}
+              </Box>
+              <Box
+                sx={{
+                  marginTop: 3,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                }}
+              >
+                <Typography
+                  sx={{
+                    float: "left",
+                    fontWeight: "bold",
+                    marginBottom: 2,
+                  }}
+                >
+                  Slot
+                </Typography>
+                <Typography>{props.slot.session}</Typography>
+              </Box>
+              <Box
+                sx={{
+                  marginTop: 3,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                }}
+              >
+                <Typography
+                  sx={{
+                    float: "left",
+                    fontWeight: "bold",
+                    marginBottom: 2,
+                  }}
+                >
+                  Topic
+                </Typography>
+                <Typography>{props.slot.name}</Typography>
+              </Box>
+              <Box
+                sx={{
+                  marginTop: 3,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                }}
+              >
+                <Typography
+                  sx={{
+                    float: "left",
+                    fontWeight: "bold",
+                    marginBottom: 2,
+                  }}
+                >
+                  Time Allocation
+                </Typography>
+                <Typography>{props.slot.timeAllocation}</Typography>
+              </Box>
+              <Box
+                sx={{
+                  marginTop: 3,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                }}
+              >
+                <Typography
+                  sx={{
+                    float: "left",
+                    fontWeight: "bold",
+                    marginBottom: 2,
+                  }}
+                >
+                  Learning's Type
+                </Typography>
+                <Typography>{props.slot.type}</Typography>
 
-              {/* <FormControl fullWidth>
+                {/* <FormControl fullWidth>
   <InputLabel id="demo-simple-select-label">Learning Type</InputLabel>
   <Select
     labelId="demo-simple-select-label"
@@ -354,42 +321,34 @@ function PartnerDetailSlotDeal(props) {
     <MenuItem value={"Offline/Online"}>Offline/Online</MenuItem>
   </Select>
 </FormControl> */}
-            </Box>
-            <Box
-              sx={{
-                marginTop: 3,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-              }}
-            >
-              <Typography
+              </Box>
+              <Box
                 sx={{
-                  float: "left",
-                  fontWeight: "bold",
-                  marginBottom: 2,
+                  marginTop: 3,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
                 }}
               >
-                Detail
-              </Typography>
-              <StyledTextField
-          
-                autoComplete="off"
-                fullWidth
-                size="small"
-                name="SESSION"
-                value={editDetail}
-                onChange={handleOnChangeDetail}
-              />
-            </Box>
-            <Stack
-              direction="row"
-              justifyContent="flex-end"
-              alignItems="center"
-              spacing={3}
-              sx={{ marginTop: 6 }}
-            >
-              {/* <Button
+                <Typography
+                  sx={{
+                    float: "left",
+                    fontWeight: "bold",
+                    marginBottom: 2,
+                  }}
+                >
+                  Detail
+                </Typography>
+                <Typography>{props.slot.detail}</Typography>
+              </Box>
+              <Stack
+                direction="row"
+                justifyContent="flex-end"
+                alignItems="center"
+                spacing={3}
+                sx={{ marginTop: 6 }}
+              >
+                {/* <Button
           variant="contained"
           color="success"
           onClick={() => {
@@ -398,91 +357,175 @@ function PartnerDetailSlotDeal(props) {
         >
           Approve
         </Button> */}
-{props?.slot?.slotStatus === 1 ? (  <Button
-                onClick={() => {
-                  handleRejectSlot();
-                }}
-                variant="contained"
-                color="error"
-              >
-                Reject
-              </Button>) : props?.slot?.slotStatus === 2 ?  null : (<>
-              
-                <Button
-                onClick={() => {
-                  handleRejectSlot();
-                }}
-                variant="contained"
-                color="error"
-              >
-                Reject
-              </Button>
-
-                <Button
-                onClick={() => {
-                  handleApproveSlot();
-                }}
-                variant="contained"
-                color="success"
-              >
-                Approve
-              </Button>
-              </>)}
-             
-            
-              <ColorButton
-                onClick={() => {
-                  handleUpdateSlot()
-                }}
-                variant="contained"
-              >
-                Update Slot
-              </ColorButton>
-            </Stack>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              backgroundColor: "#F0F0F0",
-              width: "100%",
-              padding: "40px 20px 20px 40px",
-              borderRadius: "20px",
-              marginTop: "20px",
-            }}
-          >
-            {" "}
-            <Stack>
-              <p className="title-section">Comment</p>
-            </Stack>
-            <Stack
-              direction="row"
-              justifyContent="space-evenly"
-              alignItems="center"
-              spacing={2}
+                {props.slot?.slotStatus === 1 ? (
+                  <>
+                    <Button
+                      style={{ marginRight: 10 }}
+                      variant="contained"
+                      onClick={() => handleApproveSlot()}
+                      size="small"
+                      color="success"
+                    >
+                      Approve
+                    </Button>
+                    <Button
+                      disabled
+                      variant="contained"
+                      onClick={() => setOpenReject(true)}
+                      size="small"
+                      color="error"
+                    >
+                      Reject
+                    </Button>
+                  </>
+                ) : props.slot?.slotStatus === 2 ? (
+                  <>
+                    <Button
+                      style={{ marginRight: 10 }}
+                      variant="contained"
+                      onClick={() => handleApproveSlot()}
+                      size="small"
+                      color="success"
+                    >
+                      Approve
+                    </Button>
+                    <Button
+                      variant="contained"
+                      onClick={() => setOpenReject(true)}
+                      size="small"
+                      color="error"
+                    >
+                      Reject
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      style={{ marginRight: 10 }}
+                      variant="contained"
+                      onClick={() => handleApproveSlot()}
+                      size="small"
+                      color="success"
+                    >
+                      Approve
+                    </Button>
+                    <Button
+                      variant="contained"
+                      onClick={() => setOpenReject(true)}
+                      size="small"
+                      color="error"
+                    >
+                      Reject
+                    </Button>
+                  </>
+                )}
+              </Stack>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                backgroundColor: "#F0F0F0",
+                width: "100%",
+                padding: "40px 20px 20px 40px",
+                borderRadius: "20px",
+                marginTop: "20px",
+              }}
             >
-              <Avatar src="/broken-image.jpg" />
-              <StyledTextField
-                fullWidth
-                label="Click to add comment"
-                size="small"
-              />
-              <ColorButton variant="contained" size="small">
-                Comment
-              </ColorButton>
-            </Stack>
-          </Box>
-        </>
-      </DialogContent>
-      {/* <DialogActions>
+              {" "}
+              <Typography
+                sx={{
+                  paddingBottom: 2,
+                  float: "left",
+                  fontWeight: "bold",
+                  marginBottom: 2,
+                  borderBottom: "1px solid black",
+                  borderBottomWidth: "100%",
+                }}
+              >
+                Reason reject
+              </Typography>
+              <Stack
+                direction="row"
+                justifyContent="space-evenly"
+                alignItems="center"
+                spacing={2}
+                style={{ marginBottom: 10 }}
+              >
+                <div className="reject-slot-detail">
+                  <p className="reject-content-detail">
+                    <div className="infor-user">
+                      <p>Cong Khanh </p>
+                      <Typography
+                        sx={{
+                          float: "left",
+                          marginRight: "70%",
+                          fontSize: "small",
+                          marginBottom: 2,
+                          color: "#8F8E8E",
+                        }}
+                      >
+                        20/2/2023
+                      </Typography>
+                      <Tooltip title="Rejected at 20/2/2023">
+                        <InfoIcon style={{ color: "red" }} />
+                      </Tooltip>
+                    </div>
+                    <p style={{ color: "red" }}>Rejected</p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Suspendisse malesuada lacus ex, sit amet blandit leo
+                    lobortis eget.
+                  </p>
+                </div>
+              </Stack>
+              <Stack
+                direction="row"
+                justifyContent="space-evenly"
+                alignItems="center"
+                spacing={2}
+                style={{ marginBottom: 10 }}
+              >
+                <div className="reject-slot-detail">
+                  <p className="reject-content-detail">
+                    <div className="infor-user">
+                      <p>Cong Khanh </p>
+                      <Typography
+                        sx={{
+                          float: "left",
+                          marginRight: "70%",
+                          fontSize: "small",
+                          marginBottom: 2,
+                          color: "#8F8E8E",
+                        }}
+                      >
+                        20/2/2023
+                      </Typography>
+                      <Tooltip title="Rejected at 20/2/2023">
+                        <InfoIcon style={{ color: "red" }} />
+                      </Tooltip>
+                    </div>
+                    <p style={{ color: "red" }}>Rejected</p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Suspendisse malesuada lacus ex, sit amet blandit leo
+                    lobortis eget.
+                  </p>
+                </div>
+              </Stack>
+            </Box>
+          </>
+        </DialogContent>
+        {/* <DialogActions>
           <Button autoFocus onClick={props.close}>
             Save changes
           </Button>
         </DialogActions> */}
-      
-    </Dialog>
-   
-  </>
+        <RejectSlot
+          slotID={props.slot.id}
+          show={openReject}
+          close={() => setOpenReject(false)}
+        />
+      </Dialog>
+    </>
   );
 }
 

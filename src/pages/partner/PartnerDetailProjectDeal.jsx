@@ -34,6 +34,8 @@ import { StyledTextField } from "../../styles/textfield";
 import { ColorButton } from "../../styles/button";
 import DetailSlotDeal from "../admins/dealing/DetailSlotDeal";
 import PartnerDetailSlotDeal from "./PartnerDetailSlotDeal";
+import RejectSlot from "./RejectSlot";
+import RejectDetail from "../admins/dealing/RejectDetail";
 
 PartnerDetailProjectDeal.propTypes = {
     
@@ -54,7 +56,12 @@ function PartnerDetailProjectDeal(props) {
     const [slotReject, setSlotReject] = useState("");
     const [viewDetail, setViewDetail] = useState(false);
     const [ slotID, setSlotID] = useState("");
+    const [ slotIDreject, setSlotIDreject] = useState("");
     const [slot, setSlot] = useState([]);
+const [openRejectDetail, setOpenRejectDetail] = useState(false)
+
+const [openReject, setOpenReject] = useState(false)
+
    
   
     const handleChange = (panel) => (event, isExpanded) => {
@@ -127,6 +134,11 @@ function PartnerDetailProjectDeal(props) {
   
   
     };
+    const handleIdSlotReject = (id) => {
+      setSlotIDreject(id);
+  
+  
+    };
   
     //   const handleViewDetail = (id) => {
     //     setSyllabusID(id);
@@ -166,7 +178,7 @@ function PartnerDetailProjectDeal(props) {
       
     }
     useEffect(() => {
-      if (course && syllabus != null) {
+      if (course!= null) {
           
         setEditActivity(course.activity);
         setEditContent(course.content);
@@ -177,7 +189,7 @@ function PartnerDetailProjectDeal(props) {
           return obj.isActive === true;
         });
         setEditDes(found?.description);
-        setEditSyllabus(found?.id);
+        setEditSyllabus(found);
   
         syllabusAPI.getSyllabusWithID(found?.id).then((response) => {
           setSyllabusActive(response.responseSuccess[0]);
@@ -189,7 +201,7 @@ function PartnerDetailProjectDeal(props) {
       
   
       }
-    }, [course, syllabus]);
+    }, [course]);
     
     const Swal = require('sweetalert2')
     const showAlert = () => {
@@ -312,7 +324,9 @@ function PartnerDetailProjectDeal(props) {
                 </Typography>
                 <Typography>{course.skillName}</Typography>
               </Stack>
-              <Box
+              <Stack
+                flexDirection="column"
+                alignItems="flex-start"
                 sx={{
                   marginTop: 3,
                 }}
@@ -326,17 +340,11 @@ function PartnerDetailProjectDeal(props) {
                 >
                   Activity
                 </Typography>
-                <StyledTextField
-                  label="Activity"
-                  autoComplete="off"
-                  fullWidth
-                  size="small"
-                  name="name"
-                  value={editActivity}
-                  onChange={handleOnChangeActivity}
-                />
-              </Box>
-              <Box
+                <Typography>{course.activity}</Typography>
+              </Stack>
+              <Stack
+                flexDirection="column"
+                alignItems="flex-start"
                 sx={{
                   marginTop: 3,
                 }}
@@ -350,69 +358,33 @@ function PartnerDetailProjectDeal(props) {
                 >
                   Content
                 </Typography>
-                <StyledTextField
-                  label="Content"
-                  autoComplete="off"
-                  fullWidth
-                  size="small"
-                  name="content"
-                  value={editContent}
-                  onChange={handleOnChangeContent}
-                />
-              </Box>
+                <Typography>{course.content}</Typography>
+              </Stack>
+              
+
+
               <Stack
-                direction="row"
-                justifyContent="flex-start"
-                alignItems="center"
-                spacing={3}
-                sx={{ marginTop: 6 }}
+                flexDirection="column"
+                alignItems="flex-start"
+                sx={{
+                  marginTop: 3,
+                }}
               >
-                <Box
+                <Typography
                   sx={{
-                    width: "50%",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
-                    justifyContent: "center",
+                    float: "left",
+                    fontWeight: "bold",
+                    marginBottom: 2,
                   }}
                 >
-                  <Typography
-                    sx={{
-                      float: "left",
-                      fontWeight: "bold",
-                      marginBottom: 2,
-                    }}
-                  >
-                    Syllabus
-                  </Typography>
-                  <FormControl fullWidth>
-                    <Select
-                      size="small"
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={editSyllabus}
-                      name="leader"
-                      onChange={handleOnChangeSyllabus}
-                      sx={{ backgroundColor: "white" }}
-                    >
-                      {syllabus.map((syl, index) => (
-                        <MenuItem key={index} value={syl.id}>
-                          {syl.content}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Box>
-  
-                {/* <ColorButton
-                  //   onClick={() => setOpenCreate(true)}
-                  sx={{ marginTop: "35px" }}
-                  variant="contained"
-                  endIcon={<AddIcon />}
-                >
-                  Create Syllabus
-                </ColorButton> */}
+                  Syllabus
+                </Typography>
+                <Typography>
+            {syllabusActive?.content}
+                        </Typography>
+                   
               </Stack>
+{/*  */}
               <Box
                 sx={{
                   marginTop: 3,
@@ -456,22 +428,7 @@ function PartnerDetailProjectDeal(props) {
                   label="Active"
                 />
               </Box>
-              <Stack
-                direction="row"
-                justifyContent="flex-end"
-                alignItems="center"
-                spacing={3}
-                sx={{ marginTop: 6 }}
-              >
-                <ColorButton
-                  onClick={() => {
-                    handleUpdate();
-                  }}
-                  variant="contained"
-                >
-                  Save Change
-                </ColorButton>
-              </Stack>
+        
             </Box>
           </Box>
         </form>
@@ -551,7 +508,9 @@ function PartnerDetailProjectDeal(props) {
                   <Typography>{syllabusActive?.content}</Typography>
                 </Stack>
   
-                <Box
+                <Stack
+                  flexDirection="column"
+                  alignItems="flex-start"
                   sx={{
                     marginTop: 3,
                   }}
@@ -563,21 +522,13 @@ function PartnerDetailProjectDeal(props) {
                       marginBottom: 2,
                     }}
                   >
-                    Description
+                    Content
                   </Typography>
-                  <StyledTextField
-                    label="Description"
-                    autoComplete="off"
-                    fullWidth
-                    size="small"
-                    name="des"
-                    value={editDes}
-                    onChange={handleOnChangeDes}
-                  />
-                </Box>
+                  <Typography>{syllabusActive?.description}</Typography>
+                </Stack>
                 <Box
                   sx={{
-                    marginTop: 10,
+                    marginTop: 5,
                     borderBottom: "1px solid black",
                     borderBottomWidth: "100%",
                   }}
@@ -594,7 +545,16 @@ function PartnerDetailProjectDeal(props) {
                   </Typography>
                 </Box>
                 {syllabusActive?.slots?.map((slot, index) => (
-                  <Accordion>
+                  <Accordion
+                  disableGutters
+                  elevation={0}
+                  sx={{
+                    "&:before": {
+                      display: "none",
+                    },
+                  }}
+                  style={{ marginBottom: 10, borderRadius: 15, marginTop: 15 }}
+                  >
                     <AccordionSummary
                       expandIcon={<ExpandMoreIcon />}
                       aria-controls="panel1a-content"
@@ -657,39 +617,69 @@ function PartnerDetailProjectDeal(props) {
                           
                           </Typography> */}
                         </Stack>
-                        <Box>
-                         
-                          <ButtonGroup
-                         
-                            variant="contained"
-                            aria-label="outlined primary button group"
-                          >
+                        <Box
+                      
+                      >
+                      
                               {slot?.slotStatus === 1 ? (<>
-                              
-                              <Button onClick={() => handleRejectSlot(slot?.id)} size="small" color="error">
-                            Reject
-                          </Button>
-                            </> ) : slot?.slotStatus === 2 ?(null) : <>
-                              <Button onClick={() => handleApproveSlot(slot?.id)} size="small" color="success">
+                              <Stack
+                              direction="row"
+                              justifyContent="flex-end"
+                              alignItems="center"
+                              spacing={2}
+                              >
+                              <Button style={{marginRight: 10}} variant="contained" onClick={() => handleApproveSlot(slot?.id)} size="small" color="success">
                             Approve
                           </Button>
-                          <Button  onClick={() => handleRejectSlot(slot?.id)} size="small" color="error">
+                          <Button disabled variant="contained"  onClick={() => {setOpenReject(true); handleIdSlotReject(slot?.id)}}  size="small" color="error">
                             Reject
                           </Button>
+                              </Stack>
+                           
+                            </> ) : slot?.slotStatus === 2 ? <>
+                            <Stack
+                              direction="row"
+                              justifyContent="flex-end"
+                              alignItems="center"
+                              spacing={2}
+                              >
+                            <Button  style={{marginRight: 10}}variant="contained" onClick={() => handleApproveSlot(slot?.id)} size="small" color="success">
+                            Approve
+                          </Button>
+                          <Button variant="contained"  onClick={() => {setOpenReject(true); handleIdSlotReject(slot?.id)}} size="small" color="error">
+                            Reject
+                          </Button>
+                          </Stack>
+                            </> : <>
+                            <Stack
+                              direction="row"
+                              justifyContent="flex-end"
+                              alignItems="center"
+                              spacing={2}
+                              >
+                              <Button style={{marginRight: 10}} variant="contained" onClick={() => handleApproveSlot(slot?.id)} size="small" color="success">
+                            Approve
+                          </Button>
+                          <Button variant="contained"  onClick={() => {setOpenReject(true); handleIdSlotReject(slot?.id)}} size="small" color="error">
+                            Reject
+                          </Button>
+                          </Stack>
                             </>}
-                           
-                           
-                          </ButtonGroup>
-                        </Box>
+                    
+                      </Box>
                       </Stack>
                     </AccordionSummary>
-                    {/* <AccordionDetails>
-                      <Typography>
+                    <AccordionDetails>
+                    <div className="reject-slot">
+                      <p className="reject-content">
+                        <p style={{color: "red"}} >Rejected</p>
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                         Suspendisse malesuada lacus ex, sit amet blandit leo
                         lobortis eget.
-                      </Typography>
-                    </AccordionDetails> */}
+                      </p>
+                      <ColorButton onClick={() => setOpenRejectDetail(true)}>View Detail</ColorButton>
+                    </div>
+                  </AccordionDetails>
                   </Accordion>
                 ))}
               </Box>
@@ -759,7 +749,8 @@ function PartnerDetailProjectDeal(props) {
             </Stack>
           </Box>
         </Stack>
-  
+        <RejectSlot show = {openReject} close = {() => setOpenReject(false)} slotID= {slotIDreject}/>
+  <RejectDetail show={openRejectDetail} close = {() => setOpenRejectDetail(false)}/>
         <PartnerDetailSlotDeal show={viewDetail} close={() => setViewDetail(false)} slot={slot} SlotID={slotID} syllabusID = {editSyllabus} />
       </Box>
     );

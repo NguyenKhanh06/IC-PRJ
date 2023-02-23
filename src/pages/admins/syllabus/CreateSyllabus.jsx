@@ -39,9 +39,9 @@ function CreateSyllabus(props) {
     CourseId: inputValue.courseid
   }
   console.log(inputValue.courseid)
-  const handleSubmit = async (e) => {
-    await axios.post(`https://localhost:7115/api/v1/syllabus/create?Content=${inputValue.description}&Description=${inputValue.name}&CourseId=${props.courseid}`).then((response)=>{
-      console.log(`https://localhost:7115/api/v1/syllabus/create?Content=${inputValue.description}&Description=${inputValue.name}&CourseId=${props.courseid}`);
+  const handleSubmit = (e) => {
+ axios.post(`https://localhost:7115/api/v1/syllabus/create?Content=${inputValue.description}&Description=${inputValue.name}&CourseId=${props.courseid}`).then((response)=>{
+      window.location.reload(false);
     })
   };
 
@@ -68,7 +68,7 @@ function CreateSyllabus(props) {
          sx={{
            display: "flex",
            flexDirection: "column",
-           backgroundColor: "#F0F0F0",
+           backgroundColor: "#F8F8F8",
            width: "100%",
            padding: "10px 20px 20px 40px",
            borderRadius: "20px",

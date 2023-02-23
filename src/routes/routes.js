@@ -9,7 +9,6 @@ import Dashboard from "../pages/admins/Dashboard";
 import News from "../pages/admins/News";
 import Employee from "../pages/admins/Employee";
 import Student from "../pages/admins/Student";
-import Task from "../pages/admins/Task";
 import ProjectList from "../pages/admins/project/ProjectList";
 import ProjectListDeal from "../pages/admins/dealing/ProjectListDeal";
 import CreateProject from "../pages/admins/project/CreateProject";
@@ -27,6 +26,7 @@ import PartnerLayout from "../layouts/dashboard/PartnerLayout";
 import PartnerDashboard from "../pages/partner/PartnerDashboard";
 import PartnerDeal from "../pages/partner/PartnerDeal";
 import PartnerDetailProjectDeal from "../pages/partner/PartnerDetailProjectDeal";
+import TaskListAfter from "../pages/admins/task/TaskListAfter";
 
 export default function Router() {
     const routes = useRoutes([
@@ -48,12 +48,13 @@ export default function Router() {
                 { path: "news", element: <News /> },
                 { path: "employee", element: <Employee /> },
                 { path: "student", element: <Student /> },
-                { path: "task", element: <Task /> },
+                { path: "task", element: <Manager/> },
+                { path: "task-list-after", element: <TaskListAfter/> },
                 { path: "create-project", element: <CreateProject /> },
                 { path: "create-course", element: <CreateCourse /> },
                 { path: "create-syllabus", element: <CreateSyllabus /> },
-                { path: "detail-project/:id", element: <DetailProject /> },
-                { path: "detail-course/:id", element: <DetailCourse /> },
+                { path: "detail-project", element: <DetailProject /> },
+                { path: "detail-course", element: <DetailCourse /> },
                 { path: "detail-syllabus/:id", element: <DetailSyllabus /> },
                 { path: "detail-slot/:id", element: <DetailSlot /> },
                 { path: "create-slot", element: <CreateSlot /> },

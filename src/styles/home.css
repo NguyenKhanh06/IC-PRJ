@@ -59,3 +59,37 @@
   width: 100%;
   height: 70vh;
 }
+.reject-content{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  text-align: left;
+  width: 70%
+}
+.reject-slot{
+  background-color: #F8F8F8;
+  border-radius: 15px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 20px
+}
+.reject-slot-detail{
+  background-color: #F8F8F8;
+  border-radius: 15px;
+  padding: 20px 20px 20px 20px;
+  text-align: left;
+
+}
+.reject-content-detail{
+  text-align: left;
+  width: 100%
+}
+.infor-user{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
