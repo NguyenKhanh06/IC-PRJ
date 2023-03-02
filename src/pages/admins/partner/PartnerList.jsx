@@ -1,50 +1,50 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Alert, Button, Chip, IconButton, Paper, Snackbar, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Typography } from '@mui/material';
-import Filter from '../Filter';
-import AddIcon from "@mui/icons-material/Add";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import { ColorButton } from '../../../styles/button';
+import partnerAPI from "../../../api/partnerAPI";
+import { Alert, Button, Paper, Snackbar, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
-import courseAPI from '../../../api/courseAPI';
 import moment from 'moment';
-import CreateCourse from './CreateCourse';
+import AddIcon from "@mui/icons-material/Add";
+import { ColorButton } from '../../../styles/button';
+import Filter from '../Filter';
+import CreatePartner from './CreatePartner';
 
-CourseList.propTypes = {
+PartnerList.propTypes = {
     
 };
 
-function CourseList(props) {
-    const [courses, setCourses] = useState([])
+function PartnerList(props) {
+    const [partners, setPartners] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(15);
-    const [openCreate, setOpenCreate] = useState(false);
+    const [createPartner, setCreatePartner] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [showAlertErr, setShowAlertErr] = useState(false);
-    const fetchData = async () => {
-      await courseAPI.getList().then((response) => {
-        setCourses(response.responseSuccess
-          )
-        console.log(response.responseSuccess)
-      });
-    };
-  
-    useEffect(() => {
-      fetchData().catch((error) => {
-        console.log(error);
-      });
-    }, []);
-  
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-      };
+ // fetch data partner
+ const fetchDataPartner = async () => {
+    await partnerAPI.getList().then((response) => {
+        var partnerActive = response.responseSuccess.filter(partner => partner.isActive)
+      setPartners(partnerActive)
+      console.log("partner", partnerActive)
+    });
+  };
+  useEffect(() => {
+    fetchDataPartner().catch((error) => {
+      console.log(error);
+    });
+  }, []);
+
+
     
-      const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-      };
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
     return (
         <>
         <Stack
@@ -70,16 +70,16 @@ function CourseList(props) {
               Back
             </Button> */}
             <Typography variant="h5" component="h2" gutterBottom>
-              List Course
+              List Partner
             </Typography>
           </Stack>
        
           <ColorButton
-          onClick={() => setOpenCreate(true)}
+       onClick={() => setCreatePartner(true)}
             endIcon={<AddIcon />}
             variant="contained"
           >
-            Create Course
+            Create Partner
           </ColorButton>
      
   
@@ -92,10 +92,10 @@ function CourseList(props) {
               <TableRow hover>
                 <TableCell sx={{ fontWeight: 700 }}>No</TableCell>
                 <TableCell sx={{ fontWeight: 700 }} align="left">
-                  Course's name
+                 Full name
                 </TableCell>
                 <TableCell sx={{ fontWeight: 700 }} align="left">
-                 Create Date
+                 Location
                 </TableCell>
                 <TableCell sx={{ fontWeight: 700 }} align="left">
                  Action
@@ -103,9 +103,9 @@ function CourseList(props) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {courses
+              {partners != null ? partners
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((course, index) => (
+                .map((partner, index) => (
                   <TableRow
                     hover
                     key={index}
@@ -113,20 +113,20 @@ function CourseList(props) {
                   >
                     <TableCell align="left">{index + 1}</TableCell>
   
-                    <TableCell component="th" scope="row">
+                    <TableCell component="th" scope="row" align='left'>
                     
-                  <Link to="/admin/detail-course" state={course.id}>
+                  <Link to="/admin/detail-partner" state={partner.id}>
 
                     <Button
                     
                         sx={{ color: "black" }}
                         variant="text"
                       >
-                        {course.skillName}
+                        {partner.name}
                       </Button>
           </Link>
                     </TableCell>
-                    <TableCell align="left">{moment(course.dateCreate).format("DD/MM/YYYY")}</TableCell>
+                    <TableCell align="left">{partner.local}</TableCell>
                     <TableCell align="left">
                     <Button
                              
@@ -137,26 +137,26 @@ function CourseList(props) {
                             </Button>
                     </TableCell>
                   </TableRow>
-                ))}
+                )) : <></>}
             </TableBody>
           </Table>
         </TableContainer>
         <TablePagination
           rowsPerPageOptions={[]}
           component="div"
-          count={courses.length}
+          count={partners.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-  <CreateCourse show={openCreate} close={() => setOpenCreate(false)} setShowAlert={setShowAlert} setShowAlertErr={setShowAlertErr} />
-  <Snackbar open={showAlert} autoHideDuration={6000} onClose={() => setShowAlert(false)}  anchorOrigin={{
+<CreatePartner show= {createPartner} close = {() => setCreatePartner(false)} setShowAlert={setShowAlert} setShowAlertErr={setShowAlertErr}/>
+<Snackbar open={showAlert} autoHideDuration={6000} onClose={() => setShowAlert(false)}  anchorOrigin={{
       vertical: "top",
       horizontal: "right"
    }}>
   <Alert variant='filled' onClose={() => setShowAlert(false)} severity="success" sx={{ width: '100%' }} >
-   Create new course successful!!!!
+   Create new partner successful!!!!
   </Alert>
 </Snackbar>
 <Snackbar open={showAlertErr} autoHideDuration={6000} onClose={() => setShowAlertErr(false)}  anchorOrigin={{
@@ -164,11 +164,11 @@ function CourseList(props) {
       horizontal: "right"
    }}>
   <Alert variant='filled' onClose={() => setShowAlertErr(false)} severity="error" sx={{ width: '100%' }} >
-    Create new course fail!!!!
+    Create new partner fail!!!!
   </Alert>
 </Snackbar>
       </>
     );
 }
 
-export default CourseList;
+export default PartnerList;

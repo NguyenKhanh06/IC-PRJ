@@ -29,6 +29,8 @@ import syllabusAPI from "../../../api/syllabusAPI";
 import slotAPI from "../../../api/slotAPI";
 import axios from "axios";
 import InfoIcon from "@mui/icons-material/Info";
+import moment from "moment";
+import RejectDetail from "./RejectDetail";
 
 DetailSlotDeal.propTypes = {};
 
@@ -40,6 +42,9 @@ function DetailSlotDeal(props) {
   const [editTime, setEditTime] = useState("");
   const [editType, setEditType] = useState("");
   const [editDetail, setEditDetail] = useState("");
+  const [openRejectDetail, setOpenRejectDetail] = useState(false);
+  const [reasonDetail, setReasonDetail] = useState({});
+
   const fetchData = async () => {
     await syllabusAPI.getSlotWithID(props.SlotID).then((response) => {
       setSlot(response.responseSuccess[0]);
@@ -423,72 +428,63 @@ function DetailSlotDeal(props) {
             >
               Reason reject
             </Typography>
-            <Stack
-              direction="row"
-              justifyContent="space-evenly"
-              alignItems="center"
-              spacing={2}
-              style = {{marginBottom: 10}}
-            >
-              <div className="reject-slot-detail">
-                <p className="reject-content-detail">
-                  <div className="infor-user">
-                    <p>Cong Khanh </p>
-                    <Typography
-                  sx={{
-                    float: "left",
-                    marginRight: "70%" ,
-   fontSize: "small",
-                    marginBottom: 2,
-                    color: "#8F8E8E"
-                  }}
-                >
-                  20/2/2023
-                </Typography>
-                    <Tooltip title="Rejected at 20/2/2023">
-                      <InfoIcon style={{ color: "red" }} />
-                    </Tooltip>
-                  </div>
-                  <p style={{ color: "red" }}>Rejected</p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget.
-                </p>
-              </div>
-            </Stack>
-            <Stack
-              direction="row"
-              justifyContent="space-evenly"
-              alignItems="center"
-              spacing={2}
-              style = {{marginBottom: 10}}
-            >
-              <div className="reject-slot-detail">
-                <p className="reject-content-detail">
-                  <div className="infor-user">
-                    <p>Cong Khanh </p>
-                    <Typography
-                  sx={{
-                    float: "left",
-                    marginRight: "70%" ,
-   fontSize: "small",
-                    marginBottom: 2,
-                    color: "#8F8E8E"
-                  }}
-                >
-                  20/2/2023
-                </Typography>
-                    <Tooltip title="Rejected at 20/2/2023">
-                      <InfoIcon style={{ color: "red" }} />
-                    </Tooltip>
-                  </div>
-                  <p style={{ color: "red" }}>Rejected</p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget.
-                </p>
-              </div>
-            </Stack>
+            {props?.slot?.reasons?.length ? props.slot.reasons.map((reason, index) => (
+ <Stack
+ direction="row"
+ justifyContent="space-evenly"
+ alignItems="center"
+ spacing={2}
+ style={{ marginBottom: 10 }}
+>
+{/* <div className="reject-slot">
+  
+                      <p className="reject-content">
+                        <p style={{color: "red"}} >Rejected</p>
+                        {reason.reasonContent}
+                      </p>
+                      <ColorButton onClick={() => setOpenRejectDetail(true)}>View Detail</ColorButton>
+                    </div> */}
+ <div className="reject-slot">
+   <p className="reject-content">
+
+     <div className="infor-user">
+     <Tooltip  title= {`Rejected at: ${moment(reason.dateCreate).format("DD/MM/YYYY")}`}>
+         <InfoIcon style={{color: "red", marginBottom: "15px"}} />
+       </Tooltip>
+       <p>Cong Khanh </p>
+       <Typography
+         sx={{
+           float: "left",
+           marginRight: "60%",
+           fontSize: "small",
+           marginBottom: 2,
+           color: "#8F8E8E",
+         }}
+       >
+         {moment(reason.dateCreate).format("DD/MM/YYYY")}
+         
+       </Typography>
+       
+     
+     </div>
+     <p style={{ color: "red" }}>Rejected</p>
+     {reason.reasonContent}
+   </p>
+   <Stack
+ direction="column"
+ justifyContent="space-between"
+ alignItems="flex-end"
+ spacing={2}
+   >
+ 
+   <ColorButton onClick={() => {setOpenRejectDetail(true); setReasonDetail(reason)}}>View Detail</ColorButton>
+   </Stack>
+
+
+ </div>
+
+</Stack>
+)) : <></>}
           </Box>
         </>
       </DialogContent>
@@ -497,6 +493,8 @@ function DetailSlotDeal(props) {
             Save changes
           </Button>
         </DialogActions> */}
+        <RejectDetail reason = {reasonDetail} show={openRejectDetail} close = {() => setOpenRejectDetail(false)}/>
+
     </Dialog>
   );
 }

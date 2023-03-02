@@ -4,6 +4,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography }
 
 import { Box } from '@mui/system';
 import axios from 'axios';
+import slotAPI from '../../api/slotAPI';
 
 RejectSlot.propTypes = {
     
@@ -11,12 +12,17 @@ RejectSlot.propTypes = {
 
 function RejectSlot(props) {
   const [open, setOpen] = useState(false);
+  const [reason, setReason] = useState("")
 
+
+  const handleChangeReason = (e) => {
+    setReason(e.target.value)
+  }
     const handleClose = () => {
         setOpen(props.close)
       };
 
-      console.log("status", props.show)
+
     
       const Swal = require("sweetalert2");
   const showAlert = () => {
@@ -36,13 +42,28 @@ function RejectSlot(props) {
     });
   };
 
+  const formData = new FormData();
+  formData.append("ReasonContent", reason)
+  formData.append("SlotId", props.slotID)
+
       const handleRejectSlot = () => {
         axios 
           .put(
             `https://localhost:7115/api/v1/slot/updateStatus/${props.slotID}?Status=2`
           ).then((response) => {
-            handleClose()
-            {response.isSuccess ? showAlert() : showAlertError()}
+            axios({
+              method: "POST",
+              data: formData,
+              url: "https://localhost:7115/api/v1/reason/create",
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }).then((response)=>{
+              handleClose()
+              console.log(response)
+              {response.isSuccess ? showAlert() : showAlertError()}
+            })
+           
           })
       };
     return (
@@ -68,6 +89,8 @@ function RejectSlot(props) {
             Reject reason
           </Typography>
           <textarea
+          value= {reason}
+          onChange = {handleChangeReason}
             placeholder="Please specify the reason for Reject"
             style={{ width: 766, height: 250 }}
           ></textarea>

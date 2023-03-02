@@ -5,6 +5,8 @@ import {
   Box,
   Button,
   Chip,
+  CircularProgress,
+  Fade,
   FormControl,
   IconButton,
   InputAdornment,
@@ -21,7 +23,7 @@ import { Link } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { StyledTextField } from "../../../styles/textfield";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { ColorButton } from "../../../styles/button";
 import AddIcon from "@mui/icons-material/Add";
 import TextareaAutosize from "@mui/base/TextareaAutosize";
@@ -43,7 +45,7 @@ function CreateProject(props) {
     leader: "",
     partner: "",
     description: "",
-    fee: 0
+    fee: 0,
   });
   const [estimate_start, setEstimate_start] = useState(null);
   const [estimate_end, setEstimate_end] = useState(null);
@@ -60,7 +62,7 @@ function CreateProject(props) {
   const [openAssignLeader, setOpenAssignLeader] = useState(false);
   const [openAssignPartner, setOpenAssignPartner] = useState(false);
   const [openCreate, setOpenCreate] = useState(false);
-  
+  const [loading, setLoading] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -121,17 +123,10 @@ function CreateProject(props) {
     });
   }, []);
 
-  console.log("course", courses)
   //fetch data course
   const fetchDataCourse = async () => {
     await courseAPI.getList().then((response) => {
-
-      
-      
-      const found = response.responseSuccess.find((obj) => {
-        return obj.isActive === true;
-      });
-      setCourses(found)
+      setCourses(response.responseSuccess);
     });
   };
   useEffect(() => {
@@ -139,11 +134,11 @@ function CreateProject(props) {
       console.log(error);
     });
   }, []);
-
+  console.log("course", courses);
   // fetch data partner
   const fetchDataPartner = async () => {
     await partnerAPI.getList().then((response) => {
-      setPartners(response.responseSuccess)
+      setPartners(response.responseSuccess);
     });
   };
   useEffect(() => {
@@ -153,24 +148,23 @@ function CreateProject(props) {
   }, []);
 
   const formData = new FormData();
-  formData.append("ProjectName", inputValue.name)
-  formData.append("Description", inputValue.description,)
-  formData.append("Fee", inputValue.fee)
-  formData.append("EstimateTimeStart",estimate_start)
-  formData.append("EstimateTimeEnd", estimate_end)
-  formData.append(" DateOpenRegis", regis_open)
-  formData.append("DateCloseRegis", regis_close)
-  formData.append("LeaderId", newLeader.id)
-  formData.append("CourseId", newCourse)
-  formData.append("PartnerId", newPartner.id)
+  formData.append("ProjectName", inputValue.name);
+  formData.append("Description", inputValue.description);
+  formData.append("Fee", inputValue.fee);
+  formData.append("EstimateTimeStart", estimate_start);
+  formData.append("EstimateTimeEnd", estimate_end);
+  formData.append(" DateOpenRegis", regis_open);
+  formData.append("DateCloseRegis", regis_close);
+  formData.append("LeaderId", newLeader.id);
+  formData.append("CourseId", newCourse);
+  formData.append("PartnerId", newPartner.id);
   // const data = {
   //   id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   //   assignDate: "2023-02-06T23:12:54.990Z",
   //   isActive: true
   // }
   // const formData = {
-    
-    
+
   //   EstimateTimeStart: estimate_start,
   //   EstimateTimeEnd: estimate_end,
   //   DateOpenRegis: regis_open,
@@ -197,333 +191,370 @@ function CreateProject(props) {
     });
   };
   const handleSubmit = (e) => {
-      axios({
-        method: "POST",
-        data: formData,
-        url: "https://localhost:7115/api/v1/project/create",
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }).then((response)=>{
-        {response.isSuccess ? showAlert() : showAlertError()}
-      })
-  
-  console.log("formdata", formData);
+    setLoading(true);
+    axios({
+      method: "POST",
+      data: formData,
+      url: "https://localhost:7115/api/v1/project/create",
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }).then((response) => {
+      {
+        response.isSuccess ? showAlert() : showAlertError();
+      }
+      setLoading(false);
+    });
 
+    console.log("formdata", formData);
   };
   return (
-   <>
-    <form onSubmit={handleSubmit}>
-      <Box>
-        <Link>
-          <Button
-            sx={{
-              float: "left",
-              marginBottom: 4,
-            }}
-            variant="outlined"
-            color="success"
-            startIcon={<ArrowBackIcon />}
-          >
-            Back
-          </Button>
-        </Link>
-        <p style={{ padding: "6px 0px 0px 10px" }} className="title-section">
-          CREATE PROJECT
-        </p>
-
+    <>
+      {loading ? (
         <Box
           sx={{
             display: "flex",
             flexDirection: "column",
-            backgroundColor: "#F8F8F8",
-            width: "100%",
-            padding: "40px 20px 20px 40px",
-            borderRadius: "20px",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: "25%",
           }}
         >
-          <Box
-            sx={{
-              borderBottom: "1px solid black",
-              borderBottomWidth: "100%",
-            }}
-          >
-            <Typography
-              sx={{
-                paddingBottom: 2,
-                float: "left",
-                fontWeight: "bold",
-                marginBottom: 2,
-              }}
-            >
-              Create new project
-            </Typography>
-          </Box>
-
-          <Box
-            sx={{
-              marginTop: 3,
-            }}
-          >
-            <Typography
-              sx={{
-                float: "left",
-                fontWeight: "bold",
-                marginBottom: 2,
-              }}
-            >
-              Project's Name *
-            </Typography>
-            <StyledTextField
-            
-            required
-              autoComplete="off"
-              fullWidth
-              size="small"
-              name="name"
-              value={inputValue.name}
-              onChange={handleOnChangeInputProject}
-            />
-          </Box>
-
-          <Stack
-            sx={{
-              marginTop: 3,
-            }}
-            justifyContent="space-between"
-            direction="row"
-            alignItems="center"
-            spacing="5%"
-          >
-            <Box
-              sx={{
-                width: "100%",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-              }}
-            >
-              <Typography
-                sx={{
-                  float: "left",
-                  fontWeight: "bold",
-                  marginBottom: 2,
-                }}
-              >
-                Estimate Time Start *
-              </Typography>
-              <LocalizationProvider size="small" dateAdapter={AdapterDayjs}>
-                <DatePicker
-
-                  value={estimate_start}
-                  onChange={(newValueTo) => {
-                    setEstimate_start(newValueTo);
-                  }}
-                  sx={{ width: " 548px" }}
-                  renderInput={(params) => (
-                    <StyledTextField
-                    
-                      onKeyDown={onKeyDown}
-                      size="small"
-                      {...params}
-                      sx={{ backgroundColor: "white"}}
-                      fullWidth
-                    />
-                  )}
-                />
-              </LocalizationProvider>
-            </Box>
-            <Box
-              sx={{
-                width: "100%",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-              }}
-            >
-              <Typography
-                sx={{
-                  float: "left",
-                  fontWeight: "bold",
-                  marginBottom: 2,
-                }}
-              >
-                Estimate time end *
-              </Typography>
-              <LocalizationProvider size="small" dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  
-                  name="estimate_end"
-                  value={estimate_end}
-                  onChange={(newValueTo) => {
-                    setEstimate_end(newValueTo);
-                  }}
-                  fullWidth
-                  renderInput={(params) => (
-                    <StyledTextField
-                    required
-                      onKeyDown={onKeyDown}
-                      size="small"
-                      {...params}
-                      sx={{ backgroundColor: "white" }}
-                      fullWidth
-                    />
-                  )}
-                />
-              </LocalizationProvider>
-            </Box>
-          </Stack>
-          <Stack
-            sx={{
-              marginTop: 3,
-            }}
-            justifyContent="space-between"
-            direction="row"
-            alignItems="center"
-            spacing="5%"
-          >
-            <Box
-              sx={{
-                width: "100%",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-              }}
-            >
-              <Typography
-                sx={{
-                  float: "left",
-                  fontWeight: "bold",
-                  marginBottom: 2,
-                }}
-              >
-                Registration Opening Time *
-              </Typography>
-              <LocalizationProvider size="small" dateAdapter={AdapterDayjs}>
-                <DatePicker
-       required
-                  value={regis_open}
-                  onChange={(newValueTo) => {
-                    setRegis_open(newValueTo);
-                  }}
-                  fullWidth
-                  renderInput={(params) => (
-                    <StyledTextField
-                      onKeyDown={onKeyDown}
-                      size="small"
-                      {...params}
-                      sx={{ backgroundColor: "white" }}
-                      fullWidth
-                    />
-                  )}
-                />
-              </LocalizationProvider>
-            </Box>
-            <Box
-            sx={{
-              width: "100%",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-            }}
-            >
-              <Typography
-                sx={{
-                  float: "left",
-                  fontWeight: "bold",
-                  marginBottom: 2,
-                }}
-              >
-                Registration Opening Close
-              </Typography>
-              <LocalizationProvider size="small" dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  name="regis_close"
-                  value={regis_close}
-                  onChange={(newValueTo) => {
-                    setRegis_close(newValueTo);
-                  }}
-                  fullWidth
-                  renderInput={(params) => (
-                    <StyledTextField
-                      onKeyDown={onKeyDown}
-                      size="small"
-                      {...params}
-                      sx={{ backgroundColor: "white"}}
-                      fullWidth
-                    />
-                  )}
-                />
-              </LocalizationProvider>
-            </Box>
-          </Stack>
-          <Stack
-              sx={{
-                marginTop: 3,
-              }}
-              justifyContent="space-between"
-              direction="row"
-              alignItems="center"
-              spacing="5%"
-            >
-              <Box
-                sx={{
-                  width: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                }}
-              >
-                <Typography
+              <CircularProgress style={{color: "#22a19a"}} />
+          <p>creating....</p>
+        </Box>
+      ) : (
+        <>
+          <form onSubmit={handleSubmit}>
+            <Box>
+              <Link>
+                <Button
                   sx={{
                     float: "left",
-                    fontWeight: "bold",
-                    marginBottom: 2,
+                    marginBottom: 4,
+                  }}
+                  variant="outlined"
+                  color="success"
+                  startIcon={<ArrowBackIcon />}
+                >
+                  Back
+                </Button>
+              </Link>
+              <p
+                style={{ padding: "6px 0px 0px 10px" }}
+                className="title-section"
+              >
+                CREATE PROJECT
+              </p>
+
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  backgroundColor: "#F8F8F8",
+                  width: "100%",
+                  padding: "40px 20px 20px 40px",
+                  borderRadius: "20px",
+                }}
+              >
+                <Box
+                  sx={{
+                    borderBottom: "1px solid black",
+                    borderBottomWidth: "100%",
                   }}
                 >
-                  Course *
-                </Typography>
-                <FormControl fullWidth>
-              <Select
-                    size="small"
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={newCourse}
-                    name="course"
-                    onChange={handleOnChangeCourse}
-                    sx={{ backgroundColor: "white" }}
+                  <Typography
+                    sx={{
+                      paddingBottom: 2,
+                      float: "left",
+                      fontWeight: "bold",
+                      marginBottom: 2,
+                    }}
                   >
-                    <MenuItem>  <ColorButton
-          onClick={() => setOpenCreate(true)}
-            endIcon={<AddIcon />}
-            variant="contained"
-          >
-            Create Course
-          </ColorButton></MenuItem>
-                  
-                    <MenuItem value={courses.id}>{courses.activity}</MenuItem>
-                 
-                  </Select>
-              </FormControl>
-              </Box>
-              <Box
-                sx={{
-                  width: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                }}
-              >
-                <Typography
+                    Create new project
+                  </Typography>
+                </Box>
+
+                <Box
                   sx={{
-                    float: "left",
-                    fontWeight: "bold",
-                    marginBottom: 2,
+                    marginTop: 3,
                   }}
                 >
-                  Participant Fee *
-                </Typography>
-                {/* <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
+                  <Typography
+                    sx={{
+                      float: "left",
+                      fontWeight: "bold",
+                      marginBottom: 2,
+                    }}
+                  >
+                    Project's Name *
+                  </Typography>
+                  <StyledTextField
+                    required
+                    autoComplete="off"
+                    fullWidth
+                    size="small"
+                    name="name"
+                    value={inputValue.name}
+                    onChange={handleOnChangeInputProject}
+                  />
+                </Box>
+
+                <Stack
+                  sx={{
+                    marginTop: 3,
+                  }}
+                  justifyContent="space-between"
+                  direction="row"
+                  alignItems="center"
+                  spacing="5%"
+                >
+                  <Box
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        float: "left",
+                        fontWeight: "bold",
+                        marginBottom: 2,
+                      }}
+                    >
+                      Estimate Time Start *
+                    </Typography>
+                    <LocalizationProvider
+                      size="small"
+                      dateAdapter={AdapterDayjs}
+                    >
+                      <DatePicker
+                        value={estimate_start}
+                        onChange={(newValueTo) => {
+                          setEstimate_start(newValueTo);
+                        }}
+                        sx={{ width: " 548px" }}
+                        renderInput={(params) => (
+                          <StyledTextField
+                            onKeyDown={onKeyDown}
+                            size="small"
+                            {...params}
+                            sx={{ backgroundColor: "white" }}
+                            fullWidth
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  </Box>
+                  <Box
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        float: "left",
+                        fontWeight: "bold",
+                        marginBottom: 2,
+                      }}
+                    >
+                      Estimate time end *
+                    </Typography>
+                    <LocalizationProvider
+                      size="small"
+                      dateAdapter={AdapterDayjs}
+                    >
+                      <DatePicker
+                        name="estimate_end"
+                        value={estimate_end}
+                        onChange={(newValueTo) => {
+                          setEstimate_end(newValueTo);
+                        }}
+                        fullWidth
+                        renderInput={(params) => (
+                          <StyledTextField
+                            required
+                            onKeyDown={onKeyDown}
+                            size="small"
+                            {...params}
+                            sx={{ backgroundColor: "white" }}
+                            fullWidth
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  </Box>
+                </Stack>
+                <Stack
+                  sx={{
+                    marginTop: 3,
+                  }}
+                  justifyContent="space-between"
+                  direction="row"
+                  alignItems="center"
+                  spacing="5%"
+                >
+                  <Box
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        float: "left",
+                        fontWeight: "bold",
+                        marginBottom: 2,
+                      }}
+                    >
+                      Registration Opening Time *
+                    </Typography>
+                    <LocalizationProvider
+                      size="small"
+                      dateAdapter={AdapterDayjs}
+                    >
+                      <DatePicker
+                        required
+                        value={regis_open}
+                        onChange={(newValueTo) => {
+                          setRegis_open(newValueTo);
+                        }}
+                        fullWidth
+                        renderInput={(params) => (
+                          <StyledTextField
+                            onKeyDown={onKeyDown}
+                            size="small"
+                            {...params}
+                            sx={{ backgroundColor: "white" }}
+                            fullWidth
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  </Box>
+                  <Box
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        float: "left",
+                        fontWeight: "bold",
+                        marginBottom: 2,
+                      }}
+                    >
+                      Registration Opening Close
+                    </Typography>
+                    <LocalizationProvider
+                      size="small"
+                      dateAdapter={AdapterDayjs}
+                    >
+                      <DatePicker
+                        name="regis_close"
+                        value={regis_close}
+                        onChange={(newValueTo) => {
+                          setRegis_close(newValueTo);
+                        }}
+                        fullWidth
+                        renderInput={(params) => (
+                          <StyledTextField
+                            onKeyDown={onKeyDown}
+                            size="small"
+                            {...params}
+                            sx={{ backgroundColor: "white" }}
+                            fullWidth
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  </Box>
+                </Stack>
+                <Stack
+                  sx={{
+                    marginTop: 3,
+                  }}
+                  justifyContent="space-between"
+                  direction="row"
+                  alignItems="center"
+                  spacing="5%"
+                >
+                  <Box
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        float: "left",
+                        fontWeight: "bold",
+                        marginBottom: 2,
+                      }}
+                    >
+                      Course *
+                    </Typography>
+                    <FormControl fullWidth>
+                      <Select
+                        size="small"
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={newCourse}
+                        name="course"
+                        onChange={handleOnChangeCourse}
+                        sx={{ backgroundColor: "white" }}
+                      >
+                        <MenuItem>
+                          {" "}
+                          <ColorButton
+                            onClick={() => setOpenCreate(true)}
+                            endIcon={<AddIcon />}
+                            variant="contained"
+                          >
+                            Create Course
+                          </ColorButton>
+                        </MenuItem>
+
+                        {courses
+                          .filter((course) => course.isActive == true)
+                          .map((filteredCourse, index) => (
+                            <MenuItem key={index} value={filteredCourse.id}>
+                              {filteredCourse.skillName}
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    </FormControl>
+                  </Box>
+                  <Box
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        float: "left",
+                        fontWeight: "bold",
+                        marginBottom: 2,
+                      }}
+                    >
+                      Participant Fee *
+                    </Typography>
+                    {/* <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
           <OutlinedInput
           style={{backgroundColor:"white"}}
           type="number"
@@ -534,20 +565,21 @@ function CreateProject(props) {
             startAdornment={<InputAdornment position="start">$</InputAdornment>}
             label="Amount"
           /> */}
-          
-           <OutlinedInput
-           style={{backgroundColor: "white"}}
-               type="number"
-          
-               autoComplete="off"
-               fullWidth
-               size="small"
-               name="fee"
-               value={inputValue.fee}
-               onChange={handleOnChangeInputProject}
-               startAdornment={<InputAdornment position="start">$</InputAdornment>}
-          />
-                {/* <StyledTextField
+
+                    <OutlinedInput
+                      style={{ backgroundColor: "white" }}
+                      type="number"
+                      autoComplete="off"
+                      fullWidth
+                      size="small"
+                      name="fee"
+                      value={inputValue.fee}
+                      onChange={handleOnChangeInputProject}
+                      startAdornment={
+                        <InputAdornment position="start">$</InputAdornment>
+                      }
+                    />
+                    {/* <StyledTextField
         type="number"
                   label="Participant Fee"
                   autoComplete="off"
@@ -558,133 +590,153 @@ function CreateProject(props) {
                   onChange={handleOnChangeInputProject}
                   startAdornment={<InputAdornment position="start">$</InputAdornment>}
                 /> */}
-              </Box>
-            </Stack>
-      
+                  </Box>
+                </Stack>
 
-            <Stack
-              sx={{
-                marginTop: 3,
-              }}
-              justifyContent="space-between"
-              direction="row"
-              alignItems="center"
-              spacing="5%"
-            >
-              <Box
-                sx={{
-                  width: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                }}
-              >
-                <Typography
+                <Stack
                   sx={{
-                    float: "left",
-                    fontWeight: "bold",
-                    marginBottom: 2,
+                    marginTop: 3,
+                  }}
+                  justifyContent="space-between"
+                  direction="row"
+                  alignItems="center"
+                  spacing="5%"
+                >
+                  <Box
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        float: "left",
+                        fontWeight: "bold",
+                        marginBottom: 2,
+                      }}
+                    >
+                      Leader *
+                    </Typography>
+                    <Stack
+                      direction="row"
+                      justifyContent="center"
+                      alignItems="center"
+                      spacing={2}
+                    >
+                      {newLeader.length != 0 ? (
+                        <Chip label={newLeader.fullName} />
+                      ) : null}
+                      <IconButton
+                        onClick={() => setOpenAssignLeader(true)}
+                        aria-label="fingerprint"
+                        color="secondary"
+                      >
+                        <PersonAddIcon style={{ color: "#22a19a" }} />
+                      </IconButton>
+                    </Stack>
+                  </Box>
+                  <Box
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        float: "left",
+                        fontWeight: "bold",
+                        marginBottom: 2,
+                      }}
+                    >
+                      Partner *
+                    </Typography>
+                    <Stack
+                      direction="row"
+                      justifyContent="center"
+                      alignItems="center"
+                      spacing={2}
+                    >
+                      {newPartner.length != 0 ? (
+                        <Chip label={newPartner.name} />
+                      ) : null}
+                      <IconButton
+                        onClick={() => setOpenAssignPartner(true)}
+                        aria-label="fingerprint"
+                        color="secondary"
+                      >
+                        <PersonAddIcon style={{ color: "#22a19a" }} />
+                      </IconButton>
+                    </Stack>
+                  </Box>
+                </Stack>
+
+                <Box
+                  sx={{
+                    marginTop: 3,
                   }}
                 >
-                  Leader *
-                </Typography>
-                <Stack
-                  direction="row"
-                  justifyContent="center"
-                  alignItems="center"
-                  spacing={2}
-                >
-                 {(newLeader.length != 0) ? (<Chip label={newLeader.fullName}/>) : null}
-                  <IconButton onClick={() => setOpenAssignLeader(true)} aria-label="fingerprint" color="secondary">
-                    <PersonAddIcon style={{ color: "#22a19a" }} />
-                  </IconButton>
-                </Stack>
+                  <Typography
+                    sx={{
+                      float: "left",
+                      fontWeight: "bold",
+                      marginBottom: 2,
+                    }}
+                  >
+                    Project Description
+                  </Typography>
+                  <StyledTextField
+                    autoComplete="off"
+                    fullWidth
+                    size="small"
+                    name="description"
+                    value={inputValue.description}
+                    onChange={handleOnChangeInputProject}
+                    multiline={true}
+                    rows={6}
+                  />
+                </Box>
+                <Box sx={{ marginTop: 6, marginLeft: "86%" }}>
+                  <ColorButton
+                    onClick={() => {
+                      handleSubmit();
+                    }}
+                    variant="contained"
+                  >
+                    Create Project
+                  </ColorButton>
+                </Box>
               </Box>
-              <Box
-                sx={{
-                  width: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                }}
-              >
-                <Typography
-                  sx={{
-                    float: "left",
-                    fontWeight: "bold",
-                    marginBottom: 2,
-                  }}
-                >
-                  Partner *
-                </Typography>
-                <Stack
-                  direction="row"
-                  justifyContent="center"
-                  alignItems="center"
-                  spacing={2}
-                >
-                  {(newPartner.length != 0) ? (<Chip label={newPartner.name}/>) : null}
-                  <IconButton onClick={() => setOpenAssignPartner(true)} aria-label="fingerprint" color="secondary">
-                    <PersonAddIcon style={{ color: "#22a19a" }} />
-                  </IconButton>
-                </Stack>
-              </Box>
-            </Stack>
-
-          <Box
-            sx={{
-              marginTop: 3,
-            }}
-          >
-            <Typography
-              sx={{
-                float: "left",
-                fontWeight: "bold",
-                marginBottom: 2,
-              }}
+            </Box>
+            <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
+              <Alert severity="success">Create project successfully.</Alert>
+            </Snackbar>
+            <Snackbar
+              open={openFalse}
+              autoHideDuration={5000}
+              onClose={handleClose}
             >
-              Project Description
-            </Typography>
-            <StyledTextField
-       
-              autoComplete="off"
-              fullWidth
-              size="small"
-              name="description"
-              value={inputValue.description}
-              onChange={handleOnChangeInputProject}
-              multiline={true}
-            />
-          </Box>
-          <Box sx={{ marginTop: 6, marginLeft: "86%" }}>
-            <ColorButton
-              onClick={() => {
-                handleSubmit();
-              }}
-              variant="contained"
-            >
-              Create Project
-            </ColorButton>
-          </Box>
-        </Box>
-      </Box>
-      <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
-        <Alert severity="success" >
-          Create project successfully.
-        </Alert>
-      </Snackbar>
-      <Snackbar open={openFalse} autoHideDuration={5000} onClose={handleClose}>
-        <Alert severity="error" >
-          Can not create new project!!!!!
-        </Alert>
-      </Snackbar>
-    </form>
-    
-   <AssignLeader show={openAssignLeader} close={() => setOpenAssignLeader(false)} setNewLeader={setNewLeader}/>
-   <AssignPartner show={openAssignPartner} close={() => setOpenAssignPartner(false)} setNewPartner={setNewPartner}/>
-   <CreateCourse show={openCreate} close={() => setOpenCreate(false)} />
-   </>
+              <Alert severity="error">Can not create new project!!!!!</Alert>
+            </Snackbar>
+          </form>
 
+          <AssignLeader
+            show={openAssignLeader}
+            close={() => setOpenAssignLeader(false)}
+            setNewLeader={setNewLeader}
+          />
+          <AssignPartner
+            show={openAssignPartner}
+            close={() => setOpenAssignPartner(false)}
+            setNewPartner={setNewPartner}
+          />
+          <CreateCourse show={openCreate} close={() => setOpenCreate(false)} />
+        </>
+      )}
+    </>
   );
 }
 

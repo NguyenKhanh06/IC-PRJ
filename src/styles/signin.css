@@ -2,7 +2,7 @@
     display: flex;
 }
 .pic-right {
-    width: 70%;
+    width: 65%;
     height: 100vh;
 }
 .sigin-right {
@@ -11,7 +11,7 @@
 .btn-login {
     position: relative;
     margin-top: 20px;
-    left: 80px;
+    left: 25%;
 }
 .logo-img {
     position: absolute;

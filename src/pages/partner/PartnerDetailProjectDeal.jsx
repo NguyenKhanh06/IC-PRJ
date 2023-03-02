@@ -58,6 +58,8 @@ function PartnerDetailProjectDeal(props) {
     const [ slotID, setSlotID] = useState("");
     const [ slotIDreject, setSlotIDreject] = useState("");
     const [slot, setSlot] = useState([]);
+  const [reasonDetail, setReasonDetail] = useState({});
+
 const [openRejectDetail, setOpenRejectDetail] = useState(false)
 
 const [openReject, setOpenReject] = useState(false)
@@ -233,6 +235,8 @@ const [openReject, setOpenReject] = useState(false)
       }
    
   
+console.log("slot", syllabusActive)
+
     return (
       <Box>
         <form>
@@ -670,15 +674,16 @@ const [openReject, setOpenReject] = useState(false)
                       </Stack>
                     </AccordionSummary>
                     <AccordionDetails>
-                    <div className="reject-slot">
-                      <p className="reject-content">
-                        <p style={{color: "red"}} >Rejected</p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Suspendisse malesuada lacus ex, sit amet blandit leo
-                        lobortis eget.
-                      </p>
-                      <ColorButton onClick={() => setOpenRejectDetail(true)}>View Detail</ColorButton>
-                    </div>
+                      {slot?.reasons.map((reason, index) => (
+ <div className="reject-slot">
+ <p className="reject-content">
+   <p style={{color: "red"}} >Rejected</p>
+   {reason.reasonContent}
+ </p>
+ <ColorButton onClick={() => {setOpenRejectDetail(true); setReasonDetail(reason)}}>View Detail</ColorButton>
+</div>
+                      ))}
+                   
                   </AccordionDetails>
                   </Accordion>
                 ))}
@@ -750,7 +755,7 @@ const [openReject, setOpenReject] = useState(false)
           </Box>
         </Stack>
         <RejectSlot show = {openReject} close = {() => setOpenReject(false)} slotID= {slotIDreject}/>
-  <RejectDetail show={openRejectDetail} close = {() => setOpenRejectDetail(false)}/>
+  <RejectDetail reason = {reasonDetail} show={openRejectDetail} close = {() => setOpenRejectDetail(false)}/>
         <PartnerDetailSlotDeal show={viewDetail} close={() => setViewDetail(false)} slot={slot} SlotID={slotID} syllabusID = {editSyllabus} />
       </Box>
     );

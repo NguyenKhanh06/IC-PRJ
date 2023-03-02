@@ -21,6 +21,16 @@ const navConfigPartner = [
         path: "/partner/deal",
         icon: icon("apps"),
     },
+    {
+        title: "Avatar",
+        path: "/partner/avatar",
+        icon: icon("apps"),
+    },
+    {
+        title: "Campus",
+        path: "/partner/campus",
+        icon: icon("apps"),
+    },
    
 ];
 

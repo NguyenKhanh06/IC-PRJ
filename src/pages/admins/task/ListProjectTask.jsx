@@ -127,7 +127,7 @@ function ListProjectTask(props) {
                     <TableCell align="left">{index + 1}</TableCell>
   
                     <TableCell component="th" scope="row">
-                      <Link to={`/admin/task-list-after`}>
+                      <Link to="/admin/task-list-after" state={project}>
                         <Button sx={{ color: "black" }} variant="text">
                           {project.projectName}
                         </Button>

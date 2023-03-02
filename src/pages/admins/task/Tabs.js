@@ -54,6 +54,7 @@ import SyllabusList from '../syllabus/SyllabusList';
 import ProjectList from '../project/ProjectList';
 import TaskList from './TaskList';
 import ListProjectTask from './ListProjectTask';
+import PlanList from './PlanList';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -104,7 +105,7 @@ export default function BasicTabs(data) {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-<TaskList/>
+<PlanList/>
       </TabPanel>
       <TabPanel value={value} index={1}>
 <ListProjectTask/>

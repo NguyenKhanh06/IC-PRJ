@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from "react";
 import {
+  Alert,
   Button,
   Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Paper,
+  Snackbar,
   Stack,
   Table,
   TableBody,
@@ -20,6 +27,7 @@ import { ColorButton } from "../../../styles/button";
 import { Link } from "react-router-dom";
 import projectAPI from "../../../api/projectAPI";
 import moment from "moment";
+import axios from "axios";
 
 ProjectList.propTypes = {};
 
@@ -27,9 +35,23 @@ function ProjectList(props) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(15);
   const [projects, setProjects] = useState([]);
+  const [showAlert, setShowAlert] = useState(false);
+  const [showAlertErr, setShowAlertErr] = useState(false);
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [idPrj, setIdPrj] = useState("");
+
+  const handleClickOpenConfirm = (id) => {
+    setIdPrj(id)
+    setOpenConfirm(true);
+  };
+
+  const handleCloseConfirm = () => {
+    setOpenConfirm(false);
+  };
+
   const fetchData = async () => {
     await projectAPI.getList().then((response) => {
-      setProjects(response.responseSuccess);
+      setProjects(response.responseSuccess.filter(project => project.isActive));
       console.log(response.responseSuccess);
     });
   };
@@ -48,6 +70,14 @@ function ProjectList(props) {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+
+  const handleDeletePrj = () => {
+    axios.put(`https://localhost:7115/api/v1/project/disable/${idPrj}`).then((response)=>{
+{response.isSuccess ? setShowAlert(true) : setShowAlertErr(true)}
+window.location.reload(false)
+    })
+  }
   return (
     <>
       <Stack
@@ -113,10 +143,13 @@ function ProjectList(props) {
               <TableCell sx={{ fontWeight: 700 }} align="left">
                 Status
               </TableCell>
+              <TableCell sx={{ fontWeight: 700 }} align="left">
+                Action
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {projects
+            {projects.length ? projects
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((project, index) => (
                 <TableRow
@@ -154,15 +187,36 @@ function ProjectList(props) {
                     {project.status === 0 ? (
                       <Chip label="New" color="warning" />
                     ) : project.status === 1 ? (
-                      <Chip label="Process" color="primary" />
+                      <Chip label="Start" color="primary" />
                     ) : project.status === 2 ? (
-                      <Chip label="Review" color="secondary" />
-                    ) : (
-                      <Chip label="Done" color="success" />
-                    )}
+                      <Chip label="Process" color="secondary" />
+                    ) : project.status === 3 ? (
+                      <Chip label="Waitting" color="secondary" />
+                    ) : project.status === 4 ? (
+                      <Chip label="Finish" color="secondary" />
+                    ): project.status === 5 ? (
+                      <Chip label="Pending" color="secondary" />
+                    ): project.status === 6 ? (
+                      <Chip label="Cancel" color="secondary" />
+                    ) : <></>}
+                  </TableCell>
+                  <TableCell>
+                    {project.status ?   <Button
+                             onClick={() => handleClickOpenConfirm(project.id)}
+                             variant="contained"
+                             color="error"
+                           >
+                             Delete
+                           </Button> :   <Button
+                             disabled
+                             variant="contained"
+                             color="error"
+                           >
+                             Delete
+                           </Button>}
                   </TableCell>
                 </TableRow>
-              ))}
+              )) : <></>}
           </TableBody>
         </Table>
       </TableContainer>
@@ -175,6 +229,45 @@ function ProjectList(props) {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
+
+<Snackbar open={showAlert} autoHideDuration={6000} onClose={() => setShowAlert(false)}  anchorOrigin={{
+      vertical: "top",
+      horizontal: "right"
+   }}>
+  <Alert variant="filled" onClose={() => setShowAlert(false)} severity="success" sx={{ width: '100%' }} >
+    Delete project successful!!!!
+  </Alert>
+</Snackbar>
+<Snackbar open={showAlertErr} autoHideDuration={6000} onClose={() => setShowAlertErr(false)}  anchorOrigin={{
+      vertical: "top",
+      horizontal: "right"
+   }}>
+  <Alert variant="filled" onClose={() => setShowAlertErr(false)} severity="error" sx={{ width: '100%' }} >
+   Delete project fail!!!
+  </Alert>
+</Snackbar>
+
+<Dialog
+        open={openConfirm}
+        onClose={handleCloseConfirm}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+     Delete Project
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+           You want to delete this project???
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button style= {{color: "#22a19a"}} onClick={handleCloseConfirm}>Cancel</Button>
+          <ColorButton onClick={() => handleDeletePrj()} autoFocus>
+            Delete
+          </ColorButton>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

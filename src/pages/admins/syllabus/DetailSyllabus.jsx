@@ -4,12 +4,19 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Alert,
   Box,
   Button,
   Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   FormControlLabel,
   InputAdornment,
   Paper,
+  Snackbar,
   Stack,
   Switch,
   Table,
@@ -48,6 +55,8 @@ function DetailSyllabus(props) {
   const [idSlot, setIdSlot] = useState("");
   const [viewDetail, setViewDetail] = useState(false);
   const [checked, setChecked] = React.useState(syllabusDetail.isActive);
+  const [showAlert, setShowAlert] = useState(false);
+  const [showAlertErr, setShowAlertErr] = useState(false);
 
   const handleChange = (event) => {
     setChecked(event.target.checked);
@@ -82,18 +91,18 @@ setViewDetail(true)
 
 
  }
-  const fetchData = async () => {
-    await syllabusAPI.getSyllabusWithID(props.syldetail.id).then((response) => {
-      setSyllabusDetail(response.responseSuccess[0]);
-      setSlot(response.responseSuccess[0].slots);
-    });
-  };
+  // const fetchData = async () => {
+  //   await syllabusAPI.getSyllabusWithID(props.syldetail.id).then((response) => {
+  //     setSyllabusDetail(response.responseSuccess[0]);
+  //     setSlot(response.responseSuccess[0].slots);
+  //   });
+  // };
 
-  useEffect(() => {
-    fetchData().catch((error) => {
-      console.log(error);
-    });
-  }, [props.syldetail]);
+  // useEffect(() => {
+  //   fetchData().catch((error) => {
+  //     console.log(error);
+  //   });
+  // }, [props.syldetail]);
   useEffect(() => {
     if (props.syldetail != null) {
       setEditContent(props.syldetail.content);
@@ -102,10 +111,30 @@ setViewDetail(true)
     
     }
   }, [props.syldetail]);
-
-  const handleUpdate = (e) => {};
+console.log("syl", props.syldetail)
+  const handleUpdate = (e) => {
+    axios.put(`https://localhost:7115/api/v1/syllabus/update/${props.syldetail.id}?Content=${editContent}&Description=${editDescription}&IsActive=${checked}&CourseId=${props.syldetail.courseId}`).then((response) => {
+      window.location.reload(false)
+      {response.isSuccess ? setShowAlert(true) : setShowAlertErr(true)}
+    })
+  };
   return (
-    <Box>
+
+
+
+<Dialog
+fullWidth
+maxWidth="md"
+onClose={props.close}
+aria-labelledby="customized-dialog-title"
+open={props.show}
+>
+{/* <DialogTitle
+    id="customized-dialog-title"
+    onClose={props.close}
+  ></DialogTitle> */}
+<DialogContent>
+<Box>
        <form onSubmit={handleUpdate}>
       <Stack>
         <p
@@ -302,7 +331,7 @@ color='success'
           
         </Box>
         <ColorButton
-              sx={{  marginRight: "30px"}}
+              style={{marginRight: "30px"}}
               variant="contained"
               endIcon={<AddIcon />}
               onClick={() => {setOpenCreateSlot(true)}}
@@ -334,7 +363,7 @@ color='success'
                 </TableRow>
               </TableHead>
               <TableBody>
-                {slot
+                {props?.syldetail?.slots != null ? props?.syldetail?.slots
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((slot, index) => (
                     <TableRow
@@ -359,7 +388,7 @@ color='success'
                       <Button variant="contained" color="error">Delete</Button>
                       </TableCell>
                     </TableRow>
-                  ))}
+                  )) : <></>}
               </TableBody>
             </Table>
           </TableContainer>
@@ -385,7 +414,7 @@ color='success'
             <ColorButton
              
              variant="contained"
-             onClick={() => {setOpenCreateSlot(true)}}
+             onClick={() => handleUpdate()}
            >
              Update Syllabus
            </ColorButton>
@@ -400,11 +429,37 @@ color='success'
       </Box>
  
            <DetailSlot show = {viewDetail} close = {() => setViewDetail(false)}  slotDetail ={slotDetail} slotID = {idSlot} />
-           <CreateSlot showCreateSlot={openCreateSlot} closeCreateSlot={() => setOpenCreateSlot(false)} syllabusID = {syllabusDetail.id} setOpenSyl={props.setViewDetail}/>
+           <CreateSlot showCreateSlot={openCreateSlot} closeCreateSlot={() => setOpenCreateSlot(false)} syllabusID = {props.syldetail.id} setOpenSyl={props.setViewDetail}/>
 
   
    </form>
     </Box>
+</DialogContent>
+{/* <DialogActions>
+    <Button autoFocus onClick={props.close}>
+      Save changes
+    </Button>
+    
+  </DialogActions> */}
+
+<Snackbar open={showAlert} autoHideDuration={6000} onClose={() => setShowAlert(false)}  anchorOrigin={{
+vertical: "top",
+horizontal: "right"
+}}>
+<Alert variant="filled" onClose={() => setShowAlert(false)} severity="success" sx={{ width: '100%' }} >
+Update syllabus successful!!!!
+</Alert>
+</Snackbar>
+<Snackbar open={showAlertErr} autoHideDuration={6000} onClose={() => setShowAlertErr(false)}  anchorOrigin={{
+vertical: "top",
+horizontal: "right"
+}}>
+<Alert variant="filled" onClose={() => setShowAlertErr(false)} severity="error" sx={{ width: '100%' }} >
+Update syllabus fail!!!!
+</Alert>
+</Snackbar>
+</Dialog>
+
   );
 }
 

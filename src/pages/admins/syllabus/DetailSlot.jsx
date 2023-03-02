@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Avatar, Box, Button, Dialog, DialogContent, FormControl, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select, Stack, TextField, Typography } from '@mui/material';
+import { Alert, Avatar, Box, Button, Dialog, DialogContent, FormControl, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select, Snackbar, Stack, TextField, Typography } from '@mui/material';
 import { Link, useParams } from 'react-router-dom';
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import syllabusAPI from '../../../api/syllabusAPI';
 import { StyledTextField } from '../../../styles/textfield';
 import { ColorButton } from '../../../styles/button';
+import axios from 'axios';
 DetailSlot.propTypes = {
     
 };
@@ -17,6 +18,8 @@ function DetailSlot(props) {
     const [editTime, setEditTime] = useState("");
     const [editType, setEditType] = useState("");
     const [editDetail, setEditDetail] = useState("");
+    const [showAlert, setShowAlert] = useState(false);
+    const [showAlertErr, setShowAlertErr] = useState(false);
     const fetchData = async () => {
         await syllabusAPI.getSlotWithID(props.slotID).then((response) => {
           setSlot(response.responseSuccess[0]);
@@ -56,6 +59,14 @@ function DetailSlot(props) {
   const handleOnChangeDetail = (event) => {
     setEditDetail(event.target.value);
   };
+
+
+  const handleUpdate = () => {
+    axios.put(`https://localhost:7115/api/v1/slot/update/${props.slotID}?Name=${editTopic}&Detail=${editDetail}&Session=${editSession}&TimeAllocation=${editTime}&Type=${editType}&SyllabusId=${props.slotDetail.syllabusId}`).then((response) => {
+      
+      {response.isSuccess ? setShowAlert(true) : setShowAlertErr(true)}
+    })
+  }
     return (
       <Dialog
       fullWidth
@@ -121,11 +132,12 @@ function DetailSlot(props) {
               marginBottom: 2,
             }}
           >
-            Session
+            Slot
           </Typography>
           <StyledTextField
               autoComplete="off"
               fullWidth
+              placeholder='Slot'
               size="small"
               name="SESSION"
               value={editSession}
@@ -150,6 +162,7 @@ function DetailSlot(props) {
             Topic
           </Typography>
           <StyledTextField
+          placeholder='Topic'
               autoComplete="off"
               fullWidth
               size="small"
@@ -175,17 +188,19 @@ function DetailSlot(props) {
           >
             Time Allocation
           </Typography>
-          <OutlinedInput
+          <StyledTextField
            style={{backgroundColor: "white"}}
                type="number"
-          
+          placeholder='Time allocation'
                autoComplete="off"
                fullWidth
                size="small"
                name="fee"
                value={editTime}
                onChange={handleOnChangeTime}
-               endAdornment={<InputAdornment position="end">Minutes</InputAdornment>}
+               InputProps={{
+                endAdornment: <InputAdornment position="start">Minutes</InputAdornment>,
+              }}
           />
           {/* <StyledTextField
               label="Time Allocation"
@@ -212,9 +227,10 @@ function DetailSlot(props) {
               marginBottom: 2,
             }}
           >
-            Learning's Type
+            Learning Type
           </Typography>
           <StyledTextField
+          placeholder= "Learning's type"
               autoComplete="off"
               fullWidth
               size="small"
@@ -274,6 +290,7 @@ function DetailSlot(props) {
             Detail
           </Typography>
           <StyledTextField
+          placeholder='Detail'
               autoComplete="off"
               fullWidth
               size="small"
@@ -298,10 +315,10 @@ function DetailSlot(props) {
             >
               Approve
             </Button> */}
-            
+                 <Button style= {{color: "#22A19A"}} variant="text" onClick = {props.close}>Close</Button>
             <ColorButton
               onClick={() => {
-                
+                handleUpdate()
               }}
               variant="contained"
             >
@@ -319,7 +336,25 @@ function DetailSlot(props) {
           <Button autoFocus onClick={props.close}>
             Save changes
           </Button>
+          
         </DialogActions> */}
+
+<Snackbar open={showAlert} autoHideDuration={6000} onClose={() => setShowAlert(false)}  anchorOrigin={{
+      vertical: "top",
+      horizontal: "right"
+   }}>
+  <Alert variant='filled' onClose={() => setShowAlert(false)} severity="success" sx={{ width: '100%' }} >
+    Update slot successful!!!!
+  </Alert>
+</Snackbar>
+<Snackbar open={showAlertErr} autoHideDuration={6000} onClose={() => setShowAlertErr(false)}  anchorOrigin={{
+      vertical: "top",
+      horizontal: "right"
+   }}>
+  <Alert variant='filled' onClose={() => setShowAlertErr(false)} severity="error" sx={{ width: '100%' }} >
+    Update slot fail!!!!
+  </Alert>
+</Snackbar>
     </Dialog>
      
     );

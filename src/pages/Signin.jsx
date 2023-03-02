@@ -113,7 +113,7 @@ const Signin = () => {
               src="https://scontent.fsgn2-8.fna.fbcdn.net/v/t39.30808-1/301630649_516498430281814_2662510924317735779_n.png?stp=dst-png_p320x320&_nc_cat=105&ccb=1-7&_nc_sid=c6021c&_nc_ohc=swYGXRq5y5gAX-KUqgY&_nc_ht=scontent.fsgn2-8.fna&oh=00_AfDzC-S_Wf8BVGcRKuxYyBx0AmY8_hUWOUZzfRhwzlWC2w&oe=63F46C57"
               style={{ width: 240, height: 240 }}
             />
-            <h3 style={{ color: "#22a19a", fontWeight: 700 }}>Sign in</h3>
+            <h3 style={{ color: "#22a19a", fontWeight: 700, marginTop: 30 }}>Sign in</h3>
             {/* <Box
               component="form"
               onSubmit={handleSubmit}
@@ -184,7 +184,7 @@ const Signin = () => {
               src="https://scontent.fsgn2-8.fna.fbcdn.net/v/t39.30808-1/301630649_516498430281814_2662510924317735779_n.png?stp=dst-png_p320x320&_nc_cat=105&ccb=1-7&_nc_sid=c6021c&_nc_ohc=swYGXRq5y5gAX-KUqgY&_nc_ht=scontent.fsgn2-8.fna&oh=00_AfDzC-S_Wf8BVGcRKuxYyBx0AmY8_hUWOUZzfRhwzlWC2w&oe=63F46C57"
               style={{ width: 240, height: 240 }}
             />
-            <h3 style={{ color: "#22a19a", fontWeight: 700 }}>Sign in</h3>
+            <h3 style={{ color: "#22a19a", fontWeight: 700, marginTop: 30, marginBottom: 25 }}>Sign in</h3>
             <GoogleButton
                             className="btn-login"
                             onClick={handleGoogleSignIn}

@@ -33,6 +33,7 @@ import { height } from "@mui/system";
 import DetailSlotDeal from "./DetailSlotDeal";
 import axios from "axios";
 import Swal from "sweetalert2";
+import RejectDetail from "./RejectDetail";
 
 // CommonJS
 
@@ -52,8 +53,11 @@ function DetailCourseDeal(props) {
   const [slotApprove, setSlotApprove] = useState("");
   const [slotReject, setSlotReject] = useState("");
   const [viewDetail, setViewDetail] = useState(false);
+  const [viewDetailReject, setViewDetailReject] = useState(false);
   const [slotID, setSlotID] = useState("");
   const [slot, setSlot] = useState([]);
+  const [reasonDetail, setReasonDetail] = useState({});
+
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -661,15 +665,15 @@ function DetailCourseDeal(props) {
                     </Stack>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <div className="reject-slot">
-                      <p className="reject-content">
-                        <p style={{color: "red"}} >Rejected</p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Suspendisse malesuada lacus ex, sit amet blandit leo
-                        lobortis eget.
-                      </p>
-                      <ColorButton>View Detail</ColorButton>
-                    </div>
+                    {slot?.reasons.map((reason, index) => (
+ <div className="reject-slot">
+ <p className="reject-content">
+   <p style={{color: "red"}} >Rejected</p>
+   {reason.reasonContent}
+ </p>
+ <ColorButton onClick={() => {setViewDetailReject(true); setReasonDetail(reason)}}>View Detail</ColorButton>
+</div>
+                      ))}
                   </AccordionDetails>
                 </Accordion>
               ))}
@@ -749,7 +753,11 @@ function DetailCourseDeal(props) {
           </Stack>
         </Box>
       </Stack>
-
+      <RejectDetail
+      reason = {reasonDetail}
+        show={viewDetailReject}
+        close={() => setViewDetailReject(false)}
+      />
       <DetailSlotDeal
         show={viewDetail}
         close={() => setViewDetail(false)}
@@ -757,6 +765,8 @@ function DetailCourseDeal(props) {
         SlotID={slotID}
         syllabusID={editSyllabus}
       />
+ 
+
     </Box>
   );
 }

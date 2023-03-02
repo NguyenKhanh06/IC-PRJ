@@ -6,8 +6,8 @@ import Signin from "../pages/Signin";
 import Home from "../pages/students/Home.jsx";
 // Admin
 import Dashboard from "../pages/admins/Dashboard";
-import News from "../pages/admins/News";
-import Employee from "../pages/admins/Employee";
+
+
 import Student from "../pages/admins/Student";
 import ProjectList from "../pages/admins/project/ProjectList";
 import ProjectListDeal from "../pages/admins/dealing/ProjectListDeal";
@@ -27,6 +27,11 @@ import PartnerDashboard from "../pages/partner/PartnerDashboard";
 import PartnerDeal from "../pages/partner/PartnerDeal";
 import PartnerDetailProjectDeal from "../pages/partner/PartnerDetailProjectDeal";
 import TaskListAfter from "../pages/admins/task/TaskListAfter";
+import PartnerList from "../pages/admins/partner/PartnerList";
+import DetailPartner from "../pages/admins/partner/DetailPartner";
+import TaskList from "../pages/admins/task/TaskList";
+import ManageAvt from "../pages/partner/avatar/ManageAvt";
+import ManageCampus from "../pages/partner/campus/ManageCampus";
 
 export default function Router() {
     const routes = useRoutes([
@@ -45,11 +50,12 @@ export default function Router() {
                 { element: <Navigate to="/admin/dashboard" /> },
                 { path: "dashboard", element: <Dashboard /> },
                 { path: "project", element: <ProjectList/> },
-                { path: "news", element: <News /> },
-                { path: "employee", element: <Employee /> },
+               
+    
                 { path: "student", element: <Student /> },
                 { path: "task", element: <Manager/> },
                 { path: "task-list-after", element: <TaskListAfter/> },
+                { path: "task-list-before", element: <TaskList/> },
                 { path: "create-project", element: <CreateProject /> },
                 { path: "create-course", element: <CreateCourse /> },
                 { path: "create-syllabus", element: <CreateSyllabus /> },
@@ -60,6 +66,8 @@ export default function Router() {
                 { path: "create-slot", element: <CreateSlot /> },
                 { path: "course", element: <CourseList /> },
                 { path: "dealing", element: <ProjectListDeal /> },
+                { path: "partner", element: <PartnerList /> },
+                { path: "detail-partner", element: <DetailPartner/> },
                 { path: "detail-project-deal/:id", element: <DetailCourseDeal /> },
                 
             ],
@@ -71,6 +79,8 @@ export default function Router() {
                 { element: <Navigate to="/partner/dashboard" /> },
                 { path: "dashboard", element: <PartnerDashboard /> },
                 { path: "deal", element: <PartnerDeal /> },
+                { path: "avatar", element: <ManageAvt /> },
+                { path: "campus", element: <ManageCampus /> },
                 { path: "detail-project-deal/:id", element: <PartnerDetailProjectDeal/> },
                 
                 

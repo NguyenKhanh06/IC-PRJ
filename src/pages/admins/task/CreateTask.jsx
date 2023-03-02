@@ -12,7 +12,8 @@ CreateTask.propTypes = {
 
 function CreateTask(props) {
     const [value, setValue] = useState(null);
-const [open, setOpen] = useState(false)
+const [open, setOpen] = useState(false);
+
 const handleClose = () =>{
     setOpen(props.close)
 }
@@ -68,7 +69,7 @@ const handleClose = () =>{
           <DialogActions>
             <Button
               size="small"
-              onClick={handleClose}
+              onClick={props.close}
               variant="text"
               sx={{ color: "#22a19a" }}
             >

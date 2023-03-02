@@ -11,7 +11,8 @@ CreateCourse.propTypes = {};
 
 function CreateCourse(props) {
   const navigate = useNavigate();
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(true);
+
   const handleClose = () => {
     setOpen(props.close);
   };
@@ -38,10 +39,11 @@ function CreateCourse(props) {
     SkillName: inputValue.skillname,
   };
 
-  const handleSubmit = async (e) => {
-    await courseAPI.CreateCourse( inputValue.activity, inputValue.content, inputValue.skillname).then((response) => {
-      console.log(response);
-      // response.isSuccess = true ? navigate("/admin/create-syllabus") : null;
+  const handleSubmit = (e) => {
+   courseAPI.CreateCourse( inputValue.activity, inputValue.content, inputValue.skillname).then((response) => {
+      {response.isSuccess ? props.setShowAlert(true) : props.setShowAlertErr(true)}
+
+      window.location.reload(false)
     });
     console.log("data course", data)
   };
@@ -62,7 +64,7 @@ function CreateCourse(props) {
         <Box>
         <Stack>
           <p
-            style={{ padding: " 0px 0px 10px", marginTop: 40 }}
+            style={{ padding: " 0px 0px 10px", marginTop: 20 }}
             className="title-section"
           >
             Create Course
@@ -141,6 +143,7 @@ function CreateCourse(props) {
                 value={inputValue.activity}
                 onChange={handleOnChangeInputCourse}
                 multiline={true}
+                rows={5}
               />
             </Box>
             <Box
@@ -166,6 +169,7 @@ function CreateCourse(props) {
                 value={inputValue.content}
                 onChange={handleOnChangeInputCourse}
                 multiline={true}
+                rows={5}
               />
             </Box>
             <Box sx={{ marginTop: 6, marginLeft: "80%" }}>

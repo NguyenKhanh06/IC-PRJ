@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import {
+  Alert,
   Autocomplete,
   Box,
   Button,
@@ -16,6 +17,7 @@ import {
   MenuItem,
   OutlinedInput,
   Select,
+  Snackbar,
   Stack,
   TextField,
   Typography,
@@ -37,6 +39,8 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import AssignLeader from "./AssignLeader";
 import AssignPartner from "./AssignPartner";
 import CreateCourse from "../course/CreateCourse";
+import axios from "axios";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 DetailProject.propTypes = {};
 
@@ -56,7 +60,7 @@ function DetailProject(props) {
   const [editLeader, setEditLeader] = useState("");
   const [editFee, setEditFee] = useState("");
   const [editDescription, setEditDescription] = useState("");
-  const [editStatus, setEditStatus] = useState(0);
+  const [editStatus, setEditStatus] = useState('');
   const [open, setOpen] = useState(false);
   const [itemCancel, setItemCancel] = useState(null);
   const [project, setProject] = useState([]);
@@ -73,6 +77,8 @@ function DetailProject(props) {
   
   const [newPartner, setNewPartner] = useState([]);
   const [newLeader, setNewLeader] = useState([]);
+  const [showAlert, setShowAlert] = useState(false);
+  const [showAlertErr, setShowAlertErr] = useState(false);
   
   const handleClickOpen = () => {
     setOpen(true);
@@ -86,15 +92,29 @@ function DetailProject(props) {
     e.preventDefault();
   };
 
-  const handleUpdate = (e) => {
-    console.log("onchange leader", newLeader.fullName);
-  };
 
   //fetch data project
   const fetchData = async () => {
     await projectAPI.getProjectDetail(projectID).then((response) => {
       setProject(response.responseSuccess[0]);
       setEditStaffName( response.responseSuccess[0].joinProjects[0]);
+      setEditName(response.responseSuccess[0].projectName);
+      setEditEstimate_start(response.responseSuccess[0].estimateTimeStart);
+      setEditEstimate_end(response.responseSuccess[0].estimateTimeEnd);
+      setEditRegis_open(response.responseSuccess[0].estimateTimeStart);
+      setEditRegis_close(response.responseSuccess[0].estimateTimeEnd);
+      setOfficial_start(response.responseSuccess[0].officalTimeStart);
+      setOfficial_end(response.responseSuccess[0].officalTimeEnd);
+      setEditCourse(response.responseSuccess[0].courseId);
+      setEditPartner(response.responseSuccess[0].partnerId);
+      setEditLeader(response.responseSuccess[0].leaderId);
+
+      {response.responseSuccess[0].description != "null" ? setEditDescription(response.responseSuccess[0].description) : setEditDescription("")}
+      
+      setEditFee(response.responseSuccess[0].fee)
+      setStaffName(response.responseSuccess[0].joinProjects[0]?.staffs?.fullName)
+      setEditPartnerName(response.responseSuccess[0].partner?.name)
+      setEditStatus(response.responseSuccess[0].status)
    
     });
   };
@@ -117,28 +137,17 @@ function DetailProject(props) {
     fetchDataCourse().catch((error) => {
       console.log(error);
     });
-  }, [courses]);
+  }, []);
+ 
+
 
   useEffect(() => {
     if (project != null) {
-      setEditName(project.projectName);
-      setEditEstimate_start(project.estimateTimeStart);
-      setEditEstimate_end(project.estimateTimeEnd);
-      setEditRegis_open(project.estimateTimeStart);
-      setEditRegis_close(project.estimateTimeEnd);
-      setOfficial_start(project.officalTimeStart);
-      setOfficial_end(project.officalTimeEnd);
-      setEditCourse(project.course?.id);
-      setEditPartner(project?.partner?.id);
-      setEditLeader(project?.leader?.staff?.id);
-      setEditDescription(project.description);
-      setEditFee(project.fee)
-      setStaffName(editStaffname?.staffs?.fullName)
-      setEditPartnerName(project?.partner?.name)
+    
     }
   }, [project]);
   // console.log("project.leader.staff.fullname", project.leader.staff.fullname)
-  // console.log("project", project.status)
+  console.log("project", project)
   const handleOnChangeName = (event) => {
     setEditName(event.target.value);
   };
@@ -163,9 +172,30 @@ function DetailProject(props) {
   const handleOnChangeFile = (event) => {
     setItemCancel(event.target.files[0]);
   };
+
+  const handleUpdate1 = () => {
+    axios.put(`https://localhost:7115/api/v1/project/update/${projectID}?ProjectName=${editName}&Description=${editDescription}&
+    Creater=%22%22&IsActive=true&EstimateTimeStart=${editEstimate_start}&EstimateTimeEnd=${editEstimate_end}&OfficalTimeStart=${official_start}&OfficalTimeEnd=${official_end}&DateCreate=2023-03-17T17%3A00%3A00&DateEnd=2023-03-17T17%3A00%3A00&DateOpenRegis=${editRegis_open}&DateCloseRegis=${editRegis_open}&Fee=${editFee}&Status=${editStatus}&LeaderId=${editLeader}&CourseId=${editCourse}&PartnerId=${editPartner}`).then((response) => {
+      {response.isSuccess ? setShowAlert(true) : setShowAlertErr(true)}
+window.location.reload(false)
+    })
+  }
+
+  const handleUpdate2 = () => {
+    axios.put(`https://localhost:7115/api/v1/project/update/${projectID}?ProjectName=${editName}&Description=${editDescription}&
+    Creater=%22%22&IsActive=true&EstimateTimeStart=${editEstimate_start}&EstimateTimeEnd=${editEstimate_end}&DateCreate=2023-03-17T17%3A00%3A00&DateEnd=2023-03-17T17%3A00%3A00&DateOpenRegis=${editRegis_open}&DateCloseRegis=${editRegis_open}&Fee=${editFee}&Status=${editStatus}&LeaderId=${editLeader}&CourseId=${editCourse}&PartnerId=${editPartner}`).then((response) => {
+      {response.isSuccess ? setShowAlert(true) : setShowAlertErr(true)}
+      window.location.reload(false)
+    })
+  }
+const handleUpdateProject = () => {
+  {official_start & official_end != null ? handleUpdate1() : handleUpdate2() }
+  
+}
+
   return (
     <>
-      <form onSubmit={handleUpdate}>
+      <form onSubmit={handleUpdateProject}>
         <Box>
           <Stack>
             <Link>
@@ -215,7 +245,7 @@ function DetailProject(props) {
               >
                 Detail project
               </Typography>
-              <ColorButton size="small"  endIcon={<AddIcon />}>Create Task</ColorButton>
+              {/* <ColorButton size="small"  endIcon={<AddIcon />}>Create Task</ColorButton> */}
             </Box>
 
             <Box
@@ -268,8 +298,9 @@ function DetailProject(props) {
                 >
                   Estimate time start
                 </Typography>
-                <LocalizationProvider size="small" dateAdapter={AdapterMoment}>
+                <LocalizationProvider size="small" dateAdapter={AdapterDayjs}>
                   <DatePicker
+                    inputFormat="DD/MM/YYYY"
                     label="To date"
                     value={editEstimate_start}
                     onChange={(newValueTo) => {
@@ -305,8 +336,9 @@ function DetailProject(props) {
                 >
                   Estimate time end
                 </Typography>
-                <LocalizationProvider size="small" dateAdapter={AdapterMoment}>
+                <LocalizationProvider size="small" dateAdapter={AdapterDayjs}>
                   <DatePicker
+                    inputFormat="DD/MM/YYYY"
                     label="To date"
                     name="estimate_end"
                     value={editEstimate_end}
@@ -354,8 +386,9 @@ function DetailProject(props) {
                 >
                   Registration Opening Time
                 </Typography>
-                <LocalizationProvider size="small" dateAdapter={AdapterMoment}>
+                <LocalizationProvider size="small" dateAdapter={AdapterDayjs}>
                   <DatePicker
+                    inputFormat="DD/MM/YYYY"
                     label="To date"
                     value={editRegis_open}
                     onChange={(newValueTo) => {
@@ -391,8 +424,9 @@ function DetailProject(props) {
                 >
                   Registration Closing Time
                 </Typography>
-                <LocalizationProvider size="small" dateAdapter={AdapterMoment}>
+                <LocalizationProvider size="small" dateAdapter={AdapterDayjs}>
                   <DatePicker
+                    inputFormat="DD/MM/YYYY"
                     label="To date"
                     name="regis_close"
                     value={editRegis_close}
@@ -439,8 +473,9 @@ function DetailProject(props) {
                 >
                   Official Time Start
                 </Typography>
-                <LocalizationProvider size="small" dateAdapter={AdapterMoment}>
+                <LocalizationProvider size="small" dateAdapter={AdapterDayjs}>
                   <DatePicker
+                    inputFormat="DD/MM/YYYY"
                     label="To date"
                     value={official_start}
                     onChange={(newValueTo) => {
@@ -476,8 +511,9 @@ function DetailProject(props) {
                 >
                   Official Time End
                 </Typography>
-                <LocalizationProvider size="small" dateAdapter={AdapterMoment}>
+                <LocalizationProvider size="small" dateAdapter={AdapterDayjs}>
                   <DatePicker
+                    inputFormat="DD/MM/YYYY"
                     label="To date"
                     name="regis_close"
                     value={official_end}
@@ -722,10 +758,10 @@ function DetailProject(props) {
                   <MenuItem value={0}>New</MenuItem>
                   <MenuItem value={1}>Start</MenuItem>
                   <MenuItem value={2}>Process</MenuItem>
-                  <MenuItem value={3}>Pending</MenuItem>
+                  <MenuItem value={3}>Waitting</MenuItem>
                   <MenuItem value={4}>Finish</MenuItem>
-                  <MenuItem value={5}>Approve</MenuItem>
-                  <MenuItem value={6}>Reject</MenuItem>
+                  <MenuItem value={5}>Pending</MenuItem>
+                  <MenuItem value={6}>Cancel</MenuItem>
                 </Select>
               </FormControl>
             </Box>
@@ -745,10 +781,10 @@ function DetailProject(props) {
               >
                 Cancel Project
               </Button>
-              <Button variant="contained">Start Project</Button>
+    
               <ColorButton
                 onClick={() => {
-                  handleUpdate();
+                  handleUpdateProject();
                 }}
                 variant="contained"
               >
@@ -834,6 +870,25 @@ function DetailProject(props) {
       <CreateCourse show={openCreate} close={() => setOpenCreate(false)} />
       <AssignLeader show={openAssignLeader} close={() => setOpenAssignLeader(false)} setNewLeader={setNewLeader}/>
    <AssignPartner show={openAssignPartner} close={() => setOpenAssignPartner(false)} setNewPartner={setNewPartner}/>
+
+
+
+<Snackbar open={showAlert} autoHideDuration={6000} onClose={() => setShowAlert(false)}  anchorOrigin={{
+      vertical: "top",
+      horizontal: "right"
+   }}>
+  <Alert variant="filled" onClose={() => setShowAlert(false)} severity="success" sx={{ width: '100%' }} >
+    Update project successful!!!!
+  </Alert>
+</Snackbar>
+<Snackbar open={showAlertErr} autoHideDuration={6000} onClose={() => setShowAlertErr(false)}  anchorOrigin={{
+      vertical: "top",
+      horizontal: "right"
+   }}>
+  <Alert variant="filled" onClose={() => setShowAlertErr(false)} severity="error" sx={{ width: '100%' }} >
+   Update project successful!!!!
+  </Alert>
+</Snackbar>
     </>
   );
 }

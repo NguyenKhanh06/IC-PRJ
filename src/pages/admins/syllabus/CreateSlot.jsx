@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Chip, Dialog, DialogContent, FormControl, InputAdornment, InputLabel, MenuItem, Paper, Select, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography } from '@mui/material';
+import { Button, Chip, Dialog, DialogContent, FormControl, InputAdornment, InputLabel, MenuItem, OutlinedInput, Paper, Select, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { Link, useLocation } from 'react-router-dom';
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -109,7 +109,7 @@ function CreateSlot(props) {
             >
               <Typography
                 sx={{
-                  paddingBottom: 2,
+                  
                   float: "left",
                   fontWeight: "bold",
                   marginBottom: 2,
@@ -133,7 +133,7 @@ function CreateSlot(props) {
               Slot
             </Typography>
             <StyledTextField
-              label=" Slot"
+              placeholder='Slot'
               autoComplete="off"
               fullWidth
               size="small"
@@ -157,7 +157,7 @@ function CreateSlot(props) {
               Topic
             </Typography>
             <StyledTextField
-              label="Topic"
+              placeholder='Topic'
               autoComplete="off"
               fullWidth
               size="small"
@@ -180,15 +180,19 @@ function CreateSlot(props) {
             >
               Time Allocation
             </Typography>
+        
             <StyledTextField
             type="number"
-              label=" Time Allocation"
+              placeholder=" Time Allocation"
               autoComplete="off"
               fullWidth
               size="small"
               name="timeAllocation"
               value={inputValue.timeAllocation}
               onChange={handleOnChangeInputSlot}
+              InputProps={{
+                endAdornment: <InputAdornment position="start">Minutes</InputAdornment>,
+              }}
             />
           </Box>
           <Box
@@ -206,7 +210,7 @@ function CreateSlot(props) {
               Learning Type
             </Typography>
             <StyledTextField
-              label="Detail"
+             placeholder='Learning Type'
               autoComplete="off"
               fullWidth
               size="small"
@@ -247,7 +251,7 @@ function CreateSlot(props) {
               Detail
             </Typography>
             <StyledTextField
-              label="Detail"
+              placeholder="Detail"
               autoComplete="off"
               fullWidth
               size="small"

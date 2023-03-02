@@ -40,7 +40,7 @@ function CreateSyllabus(props) {
   }
   console.log(inputValue.courseid)
   const handleSubmit = (e) => {
- axios.post(`https://localhost:7115/api/v1/syllabus/create?Content=${inputValue.description}&Description=${inputValue.name}&CourseId=${props.courseid}`).then((response)=>{
+ axios.post(`https://localhost:7115/api/v1/syllabus/create?Content=${inputValue.name}&Description=${inputValue.description}&CourseId=${props.courseid}`).then((response)=>{
       window.location.reload(false);
     })
   };
@@ -139,6 +139,7 @@ function CreateSyllabus(props) {
              value={inputValue.description}
              onChange={handleOnChangeInputSyl}
              multiline={true}
+             rows={5}
            />
          </Box>
          <Box sx={{ marginTop: 6, marginLeft: "75%" }}>

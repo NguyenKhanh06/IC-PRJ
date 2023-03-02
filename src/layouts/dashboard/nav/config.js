@@ -51,6 +51,11 @@ const navConfig = [
         path: "/admin/task",
         icon: icon("user-group-solid"),
     },
+    {
+        title: "Partner",
+        path: "/admin/partner",
+        icon: icon("user-group-solid"),
+    },
 ];
 
 export default navConfig;

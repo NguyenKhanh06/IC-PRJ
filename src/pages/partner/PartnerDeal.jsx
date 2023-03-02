@@ -34,7 +34,7 @@ function PartnerDeal(props) {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-  var result = partner.projects.map(project => (console.log(project.projectName)));
+
 
     return (
         <>
@@ -97,7 +97,7 @@ function PartnerDeal(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {partner.projects
+            {partner.projects.filter(prj => prj.isActive)
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((project, index) => (
                 <TableRow
@@ -128,12 +128,18 @@ function PartnerDeal(props) {
                     {project.status === 0 ? (
                       <Chip label="New" color="warning" />
                     ) : project.status === 1 ? (
-                      <Chip label="Process" color="primary" />
+                      <Chip label="Start" color="primary" />
                     ) : project.status === 2 ? (
-                      <Chip label="Review" color="secondary" />
-                    ) : (
-                      <Chip label="Done" color="success" />
-                    )}
+                      <Chip label="Process" color="secondary" />
+                    ) : project.status === 3 ? (
+                      <Chip label="Waitting" color="secondary" />
+                    ) : project.status === 4 ? (
+                      <Chip label="Finish" color="secondary" />
+                    ): project.status === 5 ? (
+                      <Chip label="Pending" color="secondary" />
+                    ): project.status === 6 ? (
+                      <Chip label="Cancel" color="secondary" />
+                    ) : <></>}
                   </TableCell>
                 </TableRow>
               ))}
@@ -143,7 +149,7 @@ function PartnerDeal(props) {
       <TablePagination
         rowsPerPageOptions={[]}
         component="div"
-        count={partner.projects.length}
+        count={partner.projects.filter(prj => prj.isActive).length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

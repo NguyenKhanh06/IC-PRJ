@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import {
+  Alert,
   Autocomplete,
   Box,
   Button,
@@ -16,6 +17,7 @@ import {
   MenuItem,
   Paper,
   Select,
+  Snackbar,
   Stack,
   Switch,
   Table,
@@ -40,7 +42,7 @@ import moment from "moment";
 import axios from "axios";
 import CreateSyllabus from "../syllabus/CreateSyllabus";
 import DetailSyllabus from "../syllabus/DetailSyllabus";
-import AcopySyllabus from "../syllabus/AcopySyllabus";
+import AcopySyllabus from "../syllabus/copySyllabus/AcopySyllabus";
 
 DetailCourse.propTypes = {};
 
@@ -50,7 +52,7 @@ function DetailCourse(props) {
   const [editName, setEditName] = useState("");
   const [editActivity, setEditActivity] = useState("");
   const [editContent, setEditContent] = useState("");
-  const [editSyllabus, setEditSyllabus] = useState("");
+  const [editSyllabus, setEditSyllabus] = useState({});
   const [syllabus, setSyllabus] = useState([]);
   const [syllabusActive, setSyllabusActive] = useState({});
   const [syllabusCopy, setSyllabusCopy] = useState({});
@@ -64,6 +66,9 @@ function DetailCourse(props) {
   const [viewCopy, setViewCopy] = useState(false);
   const [syllabusID, setSyllabusID] = useState("");
   const [sylDetail, setSylDetail] = useState({});
+  const [showAlert, setShowAlert] = useState(false);
+  const [showAlertErr, setShowAlertErr] = useState(false);
+
 
   const handleDetailSyl = (syl) => {
     setSylDetail(syl);
@@ -89,7 +94,7 @@ function DetailCourse(props) {
     setPage(0);
   };
 
-  const handleUpdate = (e) => {};
+  
   const handleOnChangeName = (event) => {
     setEditName(event.target.value);
   };
@@ -146,10 +151,19 @@ function DetailCourse(props) {
       const found = syllabus.find((obj) => {
         return obj.isActive === true;
       });
-      console.log("found", found?.id);
-      setEditSyllabus(found?.id);
+      console.log("found", found);
+      setEditSyllabus(found);
     }
   }, [courseDetail]);
+
+
+  const handleUpdate = () => {
+    axios.put(`https://localhost:7115/api/v1/course/update/${courseID}?Activity=${editActivity}&Content=${editContent}&SkillName=${editName}&DateCreate=${courseDetail.dateCreate}&IsActive=${checked}`).then((response) => {
+     
+      window.location.reload(false)
+      {response.isSuccess ? setShowAlert(true) : setShowAlertErr(true)}
+    })
+  }
 
   return (
     <Box>
@@ -219,7 +233,7 @@ function DetailCourse(props) {
                 Skill Name
               </Typography>
               <StyledTextField
-                label=" Skill Name"
+                placeholder="Skill Name"
                 autoComplete="off"
                 fullWidth
                 size="small"
@@ -243,7 +257,8 @@ function DetailCourse(props) {
                 Activity
               </Typography>
               <StyledTextField
-                label="Activity"
+                placeholder="Activity"
+                multiline = {true}
                 autoComplete="off"
                 fullWidth
                 size="small"
@@ -267,13 +282,14 @@ function DetailCourse(props) {
                 Content
               </Typography>
               <StyledTextField
-                label="Content"
+                placeholder="Content"
                 autoComplete="off"
                 fullWidth
                 size="small"
                 name="content"
                 value={editContent}
                 onChange={handleOnChangeContent}
+                multiline = {true}
               />
             </Box>
             <Stack
@@ -300,8 +316,21 @@ function DetailCourse(props) {
                   }}
                 >
                   Syllabus
+                  
                 </Typography>
-                <FormControl fullWidth>
+          {/* <Typography>{editSyllabus?.content}</Typography> */}
+          {editSyllabus != null ?  <Button
+                        onClick={() => {
+                          handleViewDetail(editSyllabus?.id);
+                          handleDetailSyl(editSyllabus);
+                        }}
+                        sx={{ color: "black" }}
+                        variant="text"
+                      >
+                        {editSyllabus?.content}
+                      </Button> : <></> }
+         
+                {/* <FormControl fullWidth>
                   <Select
                     size="small"
                     labelId="demo-simple-select-label"
@@ -309,7 +338,7 @@ function DetailCourse(props) {
                     value={editSyllabus}
                     name="leader"
                     onChange={handleOnChangeSyllabus}
-                    sx={{ backgroundColor: "white" }}
+                    sx={{ backgroundColor: "white", textAlign: "left" }}
                   >
                     <MenuItem value={syllabusActive.id}>
                       {syllabusActive.content}
@@ -320,7 +349,7 @@ function DetailCourse(props) {
                       </MenuItem>
                     ))}
                   </Select>
-                </FormControl>
+                </FormControl> */}
               </Box>
 
               {/* <ColorButton
@@ -388,7 +417,7 @@ function DetailCourse(props) {
                 }}
                 variant="contained"
               >
-                Save Change
+                  Update course
               </ColorButton>
             </Stack>
           </Box>
@@ -559,14 +588,14 @@ function DetailCourse(props) {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Box>
-      {viewDetail && (
+       
         <DetailSyllabus
           syldetail={sylDetail}
           syllabusID={syllabusID}
           show={viewDetail}
           close={() => setViewDetail(false)}
         />
-      )}
+      
       {viewCopy && (
         <AcopySyllabus
           show={viewCopy}
@@ -579,6 +608,22 @@ function DetailCourse(props) {
         close={() => setOpenCreate(false)}
         courseid={courseDetail.id}
       />
+    <Snackbar open={showAlert} autoHideDuration={6000} onClose={() => setShowAlert(false)}  anchorOrigin={{
+      vertical: "top",
+      horizontal: "right"
+   }}>
+  <Alert variant='filled' onClose={() => setShowAlert(false)} severity="success" sx={{ width: '100%' }} >
+    Update course successful!!!!
+  </Alert>
+</Snackbar>
+<Snackbar open={showAlertErr} autoHideDuration={6000} onClose={() => setShowAlertErr(false)}  anchorOrigin={{
+      vertical: "top",
+      horizontal: "right"
+   }}>
+  <Alert variant='filled' onClose={() => setShowAlertErr(false)} severity="error" sx={{ width: '100%' }} >
+    Update course fail!!!!
+  </Alert>
+</Snackbar>
     </Box>
   );
 }
